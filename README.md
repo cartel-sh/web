@@ -20,6 +20,36 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Content Management
+
+This project uses JSON files for managing dynamic content across the site:
+
+### Members (`src/data/members.json`)
+Manages the "Public Members" section with clickable badges styled similar to web3.bio. Each member entry includes:
+- `id`: Unique identifier
+- `name`: Display name
+- `handle`: Web3 handle or address
+- `avatar`: Avatar image URL (uses web3.bio API)
+- `link`: External profile link
+- `badge`: Badge type (e.g., "ethereum", "nouns")
+
+### Projects (`src/data/projects.json`)
+Manages the "Projects" section with project cards and maintainers. Each project entry includes:
+- `id`: Unique identifier
+- `name`: Project name
+- `description`: Project description
+- `link`: Project link
+- `maintainers`: Array of member IDs who maintain the project
+
+### Aligned Communities (`src/data/communities.json`)
+Manages the "Aligned Communities" section. Each community entry includes:
+- `id`: Unique identifier
+- `name`: Community name
+- `description`: Community description
+- `link`: Community website link
+
+To add, remove, or modify content in any of these sections, simply edit the corresponding JSON file.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
