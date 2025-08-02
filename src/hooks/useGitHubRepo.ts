@@ -86,12 +86,13 @@ export function useGitHubRepo(githubUrl: string): GitHubRepoData {
 
         // Filter out bots and sort by contributions
         const filteredContributors = contributors
-          .filter(contributor => 
-            contributor.type === 'User' && 
-            !BOT_USERNAMES.some(bot => 
-              contributor.login.toLowerCase().includes(bot.toLowerCase())
-            )
-          )
+          .filter(contributor => {
+            const login = contributor.login.toLowerCase();
+            return contributor.type === 'User' && 
+              !BOT_USERNAMES.some(bot => login.includes(bot.toLowerCase())) &&
+              !login.includes('bot') &&
+              !login.includes('agent');
+          })
           .sort((a, b) => b.contributions - a.contributions);
 
         setData({
