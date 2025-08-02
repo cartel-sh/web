@@ -7,6 +7,7 @@ import { BackgroundFlower } from "@/components/ui/background-flower";
 import { RollingText } from "@/components/animate-ui/text/rolling";
 import { MemberBadge } from "@/components/ui/member-badge";
 import { ProjectCard } from "@/components/ui/project-card";
+import { TreasuryDisplay } from "@/components/treasury-display";
 import membersData from "@/data/members.json";
 import projectsData from "@/data/projects.json";
 import communitiesData from "@/data/communities.json";
@@ -145,6 +146,10 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </section>
+
+        <section id="treasury" className="mb-20">
+          <TreasuryDisplay />
         </section>
 
         <section id="apply" className="mb-20 text-center">
