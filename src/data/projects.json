@@ -2,22 +2,19 @@
   {
     "id": "paper-ink",
     "name": "paper.ink",
-    "description": "Decentralized identity management system for cross-platform social interactions.",
-    "link": "#",
-    "maintainers": ["kualta", "deven"]
+    "githubLink": "https://github.com/on-paper/ink",
+    "deploymentUrl": "#"
   },
   {
     "id": "lens-box", 
     "name": "lens.box",
-    "description": "Open protocol for content monetization without intermediaries.",
-    "link": "#",
-    "maintainers": ["daoleno", "a1thra"]
+    "githubLink": "https://github.com/cartel-sh/lens-box",
+    "deploymentUrl": "#"
   },
   {
     "id": "art-lens-box",
     "name": "art.lens.box", 
-    "description": "Decentralized graph database for social connections and interactions.",
-    "link": "#",
-    "maintainers": ["haole", "0xjavi", "ciefa"]
+    "githubLink": "https://github.com/cartel-sh/bad-art",
+    "deploymentUrl": "#"
   }
 ]

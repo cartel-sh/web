@@ -1,20 +1,22 @@
-import type { Metadata } from "next";
+"use client";
+
 import Image from "next/image";
 import { Navigation } from "@/components/navigation";
 import { GooeyText } from "@/components/ui/gooey-text-morphing";
 import { BackgroundFlower } from "@/components/ui/background-flower";
 import { RollingText } from "@/components/animate-ui/text/rolling";
 import { MemberBadge } from "@/components/ui/member-badge";
+import { ProjectCard } from "@/components/ui/project-card";
 import membersData from "@/data/members.json";
 import projectsData from "@/data/projects.json";
 import communitiesData from "@/data/communities.json";
-
-export const metadata: Metadata = {
-  title: "Cartel",
-  description: "Accelerating decentralized social",
-};
+import { useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+    document.title = "Cartel";
+  }, []);
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background flowers sorted by vertical position (top to bottom) */}
@@ -105,26 +107,12 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
             {projectsData.map((project) => (
-              <div key={project.id} className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-                <h3 className="text-xl font-semibold mb-2">{project.name}</h3>
-                <p className="text-muted-foreground mb-4">
-                  {project.description}
-                </p>
-                <div className="mb-4">
-                  <p className="text-sm font-medium mb-2">Maintainers:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.maintainers.map((maintainerId) => {
-                      const maintainer = membersData.find(m => m.id === maintainerId);
-                      return maintainer ? (
-                        <span key={maintainerId} className="text-xs px-2 py-1 bg-muted/50 rounded-full">
-                          {maintainer.name}
-                        </span>
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-                <a href={project.link} className="text-primary hover:underline">Learn more →</a>
-              </div>
+              <ProjectCard
+                key={project.id}
+                name={project.name}
+                githubLink={project.githubLink}
+                deploymentUrl={project.deploymentUrl}
+              />
             ))}
           </div>
         </section>
@@ -136,10 +124,9 @@ export default function Home() {
               <MemberBadge
                 key={member.id}
                 name={member.name}
-                handle={member.handle}
-                avatar={member.avatar}
-                link={member.link}
+                ensName={member.ensName}
                 badge={member.badge}
+                link={member.link}
               />
             ))}
           </div>

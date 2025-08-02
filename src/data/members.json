@@ -2,57 +2,50 @@
   {
     "id": "kualta",
     "name": "kualta",
-    "handle": "kualta.eth",
-    "avatar": "https://web3.bio/api/avatar/kualta.eth",
-    "link": "https://web3.bio/kualta.eth",
-    "badge": "ethereum"
+    "ensName": "kualta.eth",
+    "badge": "ethereum",
+    "link": "https://app.ens.domains/kualta.eth"
   },
   {
     "id": "deven",
     "name": "Deven",
-    "handle": "deven.eth",
-    "avatar": "https://web3.bio/api/avatar/deven.eth",
-    "link": "https://web3.bio/deven.eth",
-    "badge": "ethereum"
+    "ensName": "deven.eth",
+    "badge": "ethereum",
+    "link": "https://app.ens.domains/deven.eth"
   },
   {
     "id": "daoleno",
     "name": "Daoleno",
-    "handle": "daoleno.eth",
-    "avatar": "https://web3.bio/api/avatar/daoleno.eth", 
-    "link": "https://web3.bio/daoleno.eth",
-    "badge": "ethereum"
+    "ensName": "daoleno.eth",
+    "badge": "ethereum",
+    "link": "https://app.ens.domains/daoleno.eth"
   },
   {
     "id": "a1thra",
     "name": "a1thra",
-    "handle": "a1thra.eth",
-    "avatar": "https://web3.bio/api/avatar/a1thra.eth",
-    "link": "https://web3.bio/a1thra.eth",
-    "badge": "ethereum"
+    "ensName": "a1thra.eth",
+    "badge": "ethereum",
+    "link": "https://app.ens.domains/a1thra.eth"
   },
   {
     "id": "haole",
     "name": "Haole",
-    "handle": "haole.eth",
-    "avatar": "https://web3.bio/api/avatar/haole.eth",
-    "link": "https://web3.bio/haole.eth",
-    "badge": "ethereum"
+    "ensName": "haole.eth",
+    "badge": "ethereum",
+    "link": "https://app.ens.domains/haole.eth"
   },
   {
     "id": "0xjavi",
     "name": "0xjavi",
-    "handle": "0xjavi.eth",
-    "avatar": "https://web3.bio/api/avatar/0xjavi.eth",
-    "link": "https://web3.bio/0xjavi.eth",
-    "badge": "ethereum"
+    "ensName": "0xjavi.eth",
+    "badge": "ethereum",
+    "link": "https://app.ens.domains/0xjavi.eth"
   },
   {
     "id": "ciefa",
     "name": "Ciefa",
-    "handle": "ciefa.eth",
-    "avatar": "https://web3.bio/api/avatar/ciefa.eth",
-    "link": "https://web3.bio/ciefa.eth",
-    "badge": "ethereum"
+    "ensName": "ciefa.eth",
+    "badge": "ethereum",
+    "link": "https://app.ens.domains/ciefa.eth"
   }
 ]
