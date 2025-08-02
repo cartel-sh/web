@@ -1,16 +1,22 @@
-import type { Metadata } from "next";
+"use client";
+
 import Image from "next/image";
 import { Navigation } from "@/components/navigation";
 import { GooeyText } from "@/components/ui/gooey-text-morphing";
 import { BackgroundFlower } from "@/components/ui/background-flower";
 import { RollingText } from "@/components/animate-ui/text/rolling";
-
-export const metadata: Metadata = {
-  title: "Cartel",
-  description: "Accelerating decentralized social",
-};
+import { MemberBadge } from "@/components/ui/member-badge";
+import { ProjectCard } from "@/components/ui/project-card";
+import membersData from "@/data/members.json";
+import projectsData from "@/data/projects.json";
+import communitiesData from "@/data/communities.json";
+import { useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+    document.title = "Cartel";
+  }, []);
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background flowers sorted by vertical position (top to bottom) */}
@@ -100,67 +106,44 @@ export default function Home() {
         <section id="projects" className="mb-20 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-            <div className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-              <h3 className="text-xl font-semibold mb-2">Project Alpha</h3>
-              <p className="text-muted-foreground mb-4">
-                Decentralized identity management system for cross-platform social interactions.
-              </p>
-              <a href="#" className="text-primary hover:underline">Learn more →</a>
-            </div>
-            <div className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-              <h3 className="text-xl font-semibold mb-2">Project Beta</h3>
-              <p className="text-muted-foreground mb-4">
-                Open protocol for content monetization without intermediaries.
-              </p>
-              <a href="#" className="text-primary hover:underline">Learn more →</a>
-            </div>
-            <div className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-              <h3 className="text-xl font-semibold mb-2">Project Gamma</h3>
-              <p className="text-muted-foreground mb-4">
-                Decentralized graph database for social connections and interactions.
-              </p>
-              <a href="#" className="text-primary hover:underline">Learn more →</a>
-            </div>
+            {projectsData.map((project) => (
+              <ProjectCard
+                key={project.id}
+                name={project.name}
+                githubLink={project.githubLink}
+                deploymentUrl={project.deploymentUrl}
+              />
+            ))}
           </div>
         </section>
 
         <section id="members" className="mb-20 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Public Members</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted/50 rounded-full mx-auto mb-3"></div>
-              <h4 className="font-semibold">Member 1</h4>
-              <p className="text-sm text-muted-foreground">@handle</p>
-            </div>
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted/50 rounded-full mx-auto mb-3"></div>
-              <h4 className="font-semibold">Member 2</h4>
-              <p className="text-sm text-muted-foreground">@handle</p>
-            </div>
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted/50 rounded-full mx-auto mb-3"></div>
-              <h4 className="font-semibold">Member 3</h4>
-              <p className="text-sm text-muted-foreground">@handle</p>
-            </div>
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted/50 rounded-full mx-auto mb-3"></div>
-              <h4 className="font-semibold">Member 4</h4>
-              <p className="text-sm text-muted-foreground">@handle</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            {membersData.map((member) => (
+              <MemberBadge
+                key={member.id}
+                name={member.name}
+                ensName={member.ensName}
+                badge={member.badge}
+                link={member.link}
+              />
+            ))}
           </div>
         </section>
 
         <section id="aligned-communities" className="mb-20 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Aligned Communities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left mx-auto max-w-4xl">
-            <div className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-              <h3 className="text-xl font-semibold mb-2">Sapphirepunk</h3>
-              <p className="text-muted-foreground mb-4">
-                Reimagining technology with ethics, justice, and care. Building cryptographic tools that
-                foster connection over alienation, commons over bunkers.
-              </p>
-              <a href="https://sapphirepunk.com" className="text-primary hover:underline">Learn more →</a>
-            </div>
+            {communitiesData.map((community) => (
+              <div key={community.id} className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
+                <h3 className="text-xl font-semibold mb-2">{community.name}</h3>
+                <p className="text-muted-foreground mb-4">
+                  {community.description}
+                </p>
+                <a href={community.link} className="text-primary hover:underline">Learn more →</a>
+              </div>
+            ))}
           </div>
         </section>
 
