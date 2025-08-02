@@ -4,6 +4,10 @@ import { Navigation } from "@/components/navigation";
 import { GooeyText } from "@/components/ui/gooey-text-morphing";
 import { BackgroundFlower } from "@/components/ui/background-flower";
 import { RollingText } from "@/components/animate-ui/text/rolling";
+import { MemberBadge } from "@/components/ui/member-badge";
+import membersData from "@/data/members.json";
+import projectsData from "@/data/projects.json";
+import communitiesData from "@/data/communities.json";
 
 export const metadata: Metadata = {
   title: "Cartel",
@@ -100,67 +104,59 @@ export default function Home() {
         <section id="projects" className="mb-20 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-            <div className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-              <h3 className="text-xl font-semibold mb-2">Project Alpha</h3>
-              <p className="text-muted-foreground mb-4">
-                Decentralized identity management system for cross-platform social interactions.
-              </p>
-              <a href="#" className="text-primary hover:underline">Learn more →</a>
-            </div>
-            <div className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-              <h3 className="text-xl font-semibold mb-2">Project Beta</h3>
-              <p className="text-muted-foreground mb-4">
-                Open protocol for content monetization without intermediaries.
-              </p>
-              <a href="#" className="text-primary hover:underline">Learn more →</a>
-            </div>
-            <div className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-              <h3 className="text-xl font-semibold mb-2">Project Gamma</h3>
-              <p className="text-muted-foreground mb-4">
-                Decentralized graph database for social connections and interactions.
-              </p>
-              <a href="#" className="text-primary hover:underline">Learn more →</a>
-            </div>
+            {projectsData.map((project) => (
+              <div key={project.id} className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
+                <h3 className="text-xl font-semibold mb-2">{project.name}</h3>
+                <p className="text-muted-foreground mb-4">
+                  {project.description}
+                </p>
+                <div className="mb-4">
+                  <p className="text-sm font-medium mb-2">Maintainers:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.maintainers.map((maintainerId) => {
+                      const maintainer = membersData.find(m => m.id === maintainerId);
+                      return maintainer ? (
+                        <span key={maintainerId} className="text-xs px-2 py-1 bg-muted/50 rounded-full">
+                          {maintainer.name}
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
+                </div>
+                <a href={project.link} className="text-primary hover:underline">Learn more →</a>
+              </div>
+            ))}
           </div>
         </section>
 
         <section id="members" className="mb-20 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Public Members</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted/50 rounded-full mx-auto mb-3"></div>
-              <h4 className="font-semibold">Member 1</h4>
-              <p className="text-sm text-muted-foreground">@handle</p>
-            </div>
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted/50 rounded-full mx-auto mb-3"></div>
-              <h4 className="font-semibold">Member 2</h4>
-              <p className="text-sm text-muted-foreground">@handle</p>
-            </div>
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted/50 rounded-full mx-auto mb-3"></div>
-              <h4 className="font-semibold">Member 3</h4>
-              <p className="text-sm text-muted-foreground">@handle</p>
-            </div>
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted/50 rounded-full mx-auto mb-3"></div>
-              <h4 className="font-semibold">Member 4</h4>
-              <p className="text-sm text-muted-foreground">@handle</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            {membersData.map((member) => (
+              <MemberBadge
+                key={member.id}
+                name={member.name}
+                handle={member.handle}
+                avatar={member.avatar}
+                link={member.link}
+                badge={member.badge}
+              />
+            ))}
           </div>
         </section>
 
         <section id="aligned-communities" className="mb-20 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Aligned Communities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left mx-auto max-w-4xl">
-            <div className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
-              <h3 className="text-xl font-semibold mb-2">Sapphirepunk</h3>
-              <p className="text-muted-foreground mb-4">
-                Reimagining technology with ethics, justice, and care. Building cryptographic tools that
-                foster connection over alienation, commons over bunkers.
-              </p>
-              <a href="https://sapphirepunk.com" className="text-primary hover:underline">Learn more →</a>
-            </div>
+            {communitiesData.map((community) => (
+              <div key={community.id} className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
+                <h3 className="text-xl font-semibold mb-2">{community.name}</h3>
+                <p className="text-muted-foreground mb-4">
+                  {community.description}
+                </p>
+                <a href={community.link} className="text-primary hover:underline">Learn more →</a>
+              </div>
+            ))}
           </div>
         </section>
 
