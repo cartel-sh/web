@@ -1,9 +1,48 @@
 'use client'
 
 import { useTreasuryData } from '@/hooks/useTreasuryData'
+import { useState, useEffect } from 'react'
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
 
 export function TreasuryDisplay() {
-  const { balances, totalEthUsd, totalUsdcUsd, latestTransactions, loading, error } = useTreasuryData()
+  const { balances, latestTransactions, loading, error } = useTreasuryData()
+  const [ensNames, setEnsNames] = useState<Record<string, string | null>>({})
+
+  // Create mainnet client for ENS resolution
+  const mainnetClient = createPublicClient({
+    chain: mainnet,
+    transport: http(),
+  })
+
+  // Resolve ENS names for transaction senders
+  useEffect(() => {
+    const resolveEnsNames = async () => {
+      const newEnsNames: Record<string, string | null> = {}
+      
+      for (const tx of latestTransactions) {
+        if (!ensNames[tx.from]) {
+          try {
+            const ensName = await mainnetClient.getEnsName({
+              address: tx.from as `0x${string}`,
+            })
+            newEnsNames[tx.from] = ensName
+          } catch (error) {
+            console.error(`Failed to resolve ENS for ${tx.from}:`, error)
+            newEnsNames[tx.from] = null
+          }
+        }
+      }
+      
+      if (Object.keys(newEnsNames).length > 0) {
+        setEnsNames(prev => ({ ...prev, ...newEnsNames }))
+      }
+    }
+
+    if (latestTransactions.length > 0) {
+      resolveEnsNames()
+    }
+  }, [latestTransactions])
 
   if (loading) {
     return (
@@ -30,7 +69,6 @@ export function TreasuryDisplay() {
   }
 
   const totalEth = balances.reduce((sum, balance) => sum + parseFloat(balance.eth), 0)
-  const totalUsdc = balances.reduce((sum, balance) => sum + parseFloat(balance.usdc), 0)
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
@@ -43,13 +81,8 @@ export function TreasuryDisplay() {
           className="block hover:opacity-80 transition-opacity"
         >
           <div className="text-8xl font-bold text-primary flex items-center justify-center gap-3">
-            {totalEth.toFixed(4)} <span className="text-6xl">Ξ</span>
+            {totalEth.toFixed(4)} <span className="text-8xl">Ξ</span>
           </div>
-          {totalUsdc > 0 && (
-            <div className="text-3xl font-semibold text-muted-foreground mt-2">
-              {totalUsdc.toLocaleString()} USDC
-            </div>
-          )}
         </a>
       </div>
 
@@ -62,13 +95,10 @@ export function TreasuryDisplay() {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <span className="font-bold text-primary">
-                      {parseFloat(tx.value).toFixed(4)} {tx.tokenSymbol}
+                      +{parseFloat(tx.value).toFixed(4)} {tx.tokenSymbol}
                     </span>
                     <span className="text-sm text-muted-foreground">
-                      from {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      on {tx.chainName}
+                      from {ensNames[tx.from] || `${tx.from.slice(0, 6)}...${tx.from.slice(-4)}`}
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
