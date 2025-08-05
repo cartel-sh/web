@@ -1,7 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  // Removed static export to enable API routes
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
