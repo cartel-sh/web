@@ -6,7 +6,6 @@ const TREASURY_ADDRESS = '0x0c49bC3DAadDf30b78718d5ae623ffBC076b6f8b' as const
 
 export async function GET() {
   try {
-    // Create public clients for Mainnet and Base
     const mainnetClient = createPublicClient({
       chain: mainnet,
       transport: http(),
@@ -17,13 +16,10 @@ export async function GET() {
       transport: http(),
     })
 
-    // Fetch ETH balances from both chains
     const [mainnetBalance, baseBalance] = await Promise.all([
       mainnetClient.getBalance({ address: TREASURY_ADDRESS }),
       baseClient.getBalance({ address: TREASURY_ADDRESS }),
     ])
-
-    // Format balances
     const balances = [
       {
         chainId: mainnet.id,
@@ -37,7 +33,6 @@ export async function GET() {
       },
     ]
 
-    // Fetch recent transactions from Etherscan
     const latestTransactions = await fetchTransactionsFromEtherscan()
 
     return NextResponse.json({
@@ -58,7 +53,6 @@ async function fetchTransactionsFromEtherscan() {
   try {
     const transactions: any[] = []
 
-    // Fetch from Ethereum Mainnet
     const ethApiKey = process.env.ETHERSCAN_API_KEY
     if (ethApiKey) {
       const ethUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${TREASURY_ADDRESS}&startblock=0&endblock=99999999&page=1&offset=5&sort=desc&apikey=${ethApiKey}`
@@ -93,7 +87,6 @@ async function fetchTransactionsFromEtherscan() {
       }
     }
 
-    // Fetch from Base (using same API key)
     if (ethApiKey) {
       const baseUrl = `https://api.basescan.org/api?module=account&action=txlist&address=${TREASURY_ADDRESS}&startblock=0&endblock=99999999&page=1&offset=5&sort=desc&apikey=${ethApiKey}`
       
@@ -127,7 +120,6 @@ async function fetchTransactionsFromEtherscan() {
       }
     }
 
-    // Sort by timestamp descending and take latest 5
     return transactions
       .sort((a, b) => parseInt(b.timeStamp) - parseInt(a.timeStamp))
       .slice(0, 5)

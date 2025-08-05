@@ -9,13 +9,11 @@ export function TreasuryDisplay() {
   const { balances, latestTransactions, loading, error } = useTreasuryData()
   const [ensNames, setEnsNames] = useState<Record<string, string | null>>({})
 
-  // Create mainnet client for ENS resolution
   const mainnetClient = createPublicClient({
     chain: mainnet,
     transport: http(),
   })
 
-  // Resolve ENS names for transaction senders
   useEffect(() => {
     const resolveEnsNames = async () => {
       const newEnsNames: Record<string, string | null> = {}
