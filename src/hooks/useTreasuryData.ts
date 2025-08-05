@@ -75,8 +75,8 @@ export function useTreasuryData(): TreasuryData {
         },
       ]
 
-      // Fetch recent transactions from API route
-      const latestTransactions = await fetchTransactionsFromAPI()
+      // Fetch recent transactions from Etherscan
+      const latestTransactions = await fetchTransactionsFromEtherscan()
 
       setData({
         balances,
@@ -95,7 +95,7 @@ export function useTreasuryData(): TreasuryData {
     }
   }
 
-  const fetchTransactionsFromAPI = async (): Promise<IncomingTransaction[]> => {
+  const fetchTransactionsFromEtherscan = async (): Promise<IncomingTransaction[]> => {
     try {
       const transactions: IncomingTransaction[] = []
 
