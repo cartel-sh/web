@@ -29,18 +29,19 @@ This is a Next.js 15 static site for the Indie Cartel landing page with the foll
 - Utility functions in `src/lib/`
 
 **Key Technologies:**
-- Next.js 15 with static export (`output: "export"` in next.config.ts)
+- Next.js 15 with server-side rendering (removed static export)
 - React 19 with TypeScript
 - Tailwind CSS 4 for styling
 - next-themes for dark/light theme switching
 - Radix UI components for dropdowns and slots
 - Motion library for animations
 - Roboto font from Google Fonts
+- viem for blockchain interactions
 
-**Static Site Configuration:**
-- Configured as static export in `next.config.ts` with unoptimized images
+**Server Configuration:**
+- Server-side API routes enabled for treasury data fetching
 - All images stored in `public/images/` (flower assets and skull logo)
-- No server-side features - pure client-side rendering
+- Treasury data fetched via `/api/treasury` endpoint
 
 **Component Patterns:**
 - Theme provider wrapped around the app in `src/components/providers.tsx`
@@ -55,4 +56,4 @@ This is a Next.js 15 static site for the Indie Cartel landing page with the foll
 - Custom background/foreground color variables
 - Component variants using class-variance-authority pattern
 
-The site is a single-page application showcasing the Indie Cartel manifesto, projects, members, and aligned communities with an artistic floral background design.
+The site is a server-rendered application showcasing the Indie Cartel manifesto, projects, members, aligned communities, and live treasury data with an artistic floral background design.
