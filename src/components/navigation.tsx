@@ -82,24 +82,24 @@ export function Navigation() {
         <button
           id="menu-button"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden relative size-9 flex flex-col items-center justify-center gap-1 focus:outline-none rounded-md border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+          className="md:hidden relative size-9 flex flex-col items-center justify-center gap-[3px] focus:outline-none rounded-md border bg-background shadow-xs hover:bg-accent dark:bg-input/30 dark:border-input dark:hover:bg-input/50 transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
           aria-label="Toggle mobile menu"
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"
         >
           <span 
-            className={`block w-5 h-0.5 bg-current transition-all duration-300 ease-out ${
-              isMenuOpen ? 'rotate-45 translate-y-1.5' : ''
+            className={`block w-[1.2rem] h-[2px] bg-foreground transition-all duration-300 ease-out ${
+              isMenuOpen ? 'rotate-45 translate-y-[5px]' : ''
             }`}
           />
           <span 
-            className={`block w-5 h-0.5 bg-current transition-all duration-300 ease-out ${
+            className={`block w-[1.2rem] h-[2px] bg-foreground transition-all duration-300 ease-out ${
               isMenuOpen ? 'opacity-0' : ''
             }`}
           />
           <span 
-            className={`block w-5 h-0.5 bg-current transition-all duration-300 ease-out ${
-              isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
+            className={`block w-[1.2rem] h-[2px] bg-foreground transition-all duration-300 ease-out ${
+              isMenuOpen ? '-rotate-45 -translate-y-[5px]' : ''
             }`}
           />
         </button>
