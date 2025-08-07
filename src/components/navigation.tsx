@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ModeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,6 +49,21 @@ export function Navigation() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-full mx-auto px-6 py-4 flex items-center justify-between">
+        <button
+          id="menu-button"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="md:hidden relative size-9 flex items-center justify-center focus:outline-none rounded-md border bg-background shadow-xs hover:bg-accent dark:bg-input/30 dark:border-input dark:hover:bg-input/50 transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] text-foreground"
+          aria-label="Toggle mobile menu"
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+        >
+          {isMenuOpen ? (
+            <RxCross2 className="h-[1rem] w-[1rem] transition-transform duration-300" />
+          ) : (
+            <RxHamburgerMenu className="h-[1rem] w-[1rem] transition-transform duration-300" />
+          )}
+        </button>
+
         <div className="hidden md:flex items-center gap-8">
           <a
             href="#manifesto"
@@ -78,31 +94,6 @@ export function Navigation() {
             Apply
           </Button>
         </div>
-
-        <button
-          id="menu-button"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden relative size-9 flex flex-col items-center justify-center gap-[3px] focus:outline-none rounded-md border bg-background shadow-xs hover:bg-accent dark:bg-input/30 dark:border-input dark:hover:bg-input/50 transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
-          aria-label="Toggle mobile menu"
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-menu"
-        >
-          <span 
-            className={`block w-[1.2rem] h-[2px] bg-foreground transition-all duration-300 ease-out ${
-              isMenuOpen ? 'rotate-45 translate-y-[5px]' : ''
-            }`}
-          />
-          <span 
-            className={`block w-[1.2rem] h-[2px] bg-foreground transition-all duration-300 ease-out ${
-              isMenuOpen ? 'opacity-0' : ''
-            }`}
-          />
-          <span 
-            className={`block w-[1.2rem] h-[2px] bg-foreground transition-all duration-300 ease-out ${
-              isMenuOpen ? '-rotate-45 -translate-y-[5px]' : ''
-            }`}
-          />
-        </button>
 
         <ModeToggle />
       </div>
