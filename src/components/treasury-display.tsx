@@ -71,36 +71,36 @@ export function TreasuryDisplay() {
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold mb-6">Treasury</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Treasury</h2>
         <a
           href="https://etherscan.io/address/0x0c49bc3daaddf30b78718d5ae623ffbc076b6f8b#asset-multichain"
           target="_blank"
           rel="noopener noreferrer"
           className="block hover:opacity-80 transition-opacity"
         >
-          <div className="text-8xl font-bold text-primary flex items-center justify-center gap-3">
-            {totalEth.toFixed(4)} <span className="text-8xl">Ξ</span>
+          <div className="text-5xl sm:text-6xl md:text-8xl font-bold text-primary flex items-center justify-center gap-2 sm:gap-3">
+            {totalEth.toFixed(4)} <span className="text-5xl sm:text-6xl md:text-8xl">Ξ</span>
           </div>
         </a>
       </div>
 
       {latestTransactions.length > 0 && (
         <div className="mb-6">
-          <h3 className="text-xl font-bold mb-4 text-center">Latest Transactions</h3>
+          <h3 className="text-lg sm:text-xl font-bold mb-4 text-center">Latest Transactions</h3>
           <div className="space-y-2">
             {latestTransactions.map((tx) => (
-              <div key={tx.hash} className="bg-card/60 border rounded-2xl p-4">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-primary">
+              <div key={tx.hash} className="bg-card/60 border rounded-2xl p-3 sm:p-4">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                    <span className="font-bold text-primary text-sm sm:text-base">
                       +{parseFloat(tx.value).toFixed(4)} {tx.tokenSymbol}
                     </span>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-xs sm:text-sm text-muted-foreground">
                       from {ensNames[tx.from] || `${tx.from.slice(0, 6)}...${tx.from.slice(-4)}`}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <span className="text-xs sm:text-sm text-muted-foreground">
                       {new Date(parseInt(tx.timeStamp) * 1000).toLocaleDateString()}
                     </span>
                     <a
@@ -109,7 +109,7 @@ export function TreasuryDisplay() {
                         : 'https://basescan.org'}/tx/${tx.hash}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary hover:underline text-sm"
+                      className="text-primary hover:underline text-xs sm:text-sm"
                     >
                       →
                     </a>
