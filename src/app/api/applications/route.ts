@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyMessage } from 'viem';
 
-// Simple in-memory rate limiting (consider Redis for production)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
 interface ApplicationData {
@@ -21,7 +20,7 @@ async function sendToApplicationServer(data: ApplicationData): Promise<boolean> 
   const serverUrl = process.env.APPLICATION_SERVER_URL;
   
   if (!serverUrl) {
-    console.error("Application server URL not configured");
+    console.error("[DELIVERY FAILED] Application server URL not configured in environment variables");
     return false;
   }
   
@@ -30,28 +29,32 @@ async function sendToApplicationServer(data: ApplicationData): Promise<boolean> 
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.APPLICATION_SERVER_TOKEN || ''}`, // Optional auth token
+        "Authorization": `Bearer ${process.env.APPLICATION_SERVER_TOKEN || ''}`,
       },
       body: JSON.stringify(data),
     });
     
     if (!response.ok) {
-      const error = await response.text();
-      console.error("Application server error:", error);
+      console.error(`[DELIVERY FAILED] Bot server returned ${response.status}`);
       return false;
     }
     
     return true;
   } catch (error) {
-    console.error("Failed to send to application server:", error);
+    console.error(`[DELIVERY FAILED] Could not reach bot server`);
     return false;
   }
 }
 
 function checkRateLimit(ip: string): boolean {
+  // Skip rate limiting in development
+  if (process.env.NODE_ENV === 'development') {
+    return true;
+  }
+  
   const now = Date.now();
-  const limit = 1; // 1 application per week
-  const windowMs = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+  const limit = 1;
+  const windowMs = 7 * 24 * 60 * 60 * 1000;
   
   const record = rateLimitMap.get(ip);
   
@@ -71,7 +74,6 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-// Clean up old rate limit entries periodically
 setInterval(() => {
   const now = Date.now();
   for (const [ip, record] of rateLimitMap.entries()) {
@@ -79,16 +81,14 @@ setInterval(() => {
       rateLimitMap.delete(ip);
     }
   }
-}, 24 * 60 * 60 * 1000); // Clean up once per day
+}, 24 * 60 * 60 * 1000);
 
 export async function POST(request: NextRequest) {
   try {
-    // Get client IP
     const ip = request.headers.get("x-forwarded-for") || 
                request.headers.get("x-real-ip") || 
                "unknown";
     
-    // Check rate limit
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
         { error: "Too many applications. Please try again later." },
@@ -96,10 +96,8 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Parse request body
     const data: ApplicationData = await request.json();
     
-    // Validate required fields
     if (!data.walletAddress || !data.excitement?.trim() || 
         !data.motivation?.trim() || !data.signature || !data.message) {
       return NextResponse.json(
@@ -108,7 +106,6 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Verify signature
     try {
       const isValid = await verifyMessage({
         address: data.walletAddress as `0x${string}`,
@@ -123,14 +120,13 @@ export async function POST(request: NextRequest) {
         );
       }
     } catch (error) {
-      console.error("Signature verification error:", error);
+      console.error(`[SIGNATURE ERROR] Failed to verify signature`);
       return NextResponse.json(
         { error: "Failed to verify signature" },
         { status: 400 }
       );
     }
     
-    // Additional validation
     if (data.motivation.length > 500) {
       return NextResponse.json(
         { error: "Motivation must be under 500 characters" },
@@ -138,12 +134,10 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Send to application server (which handles Discord and Telegram)
     const sent = await sendToApplicationServer(data);
     
     if (!sent) {
-      // Log the application even if server is down
-      console.error("Failed to send application to server:", data);
+      console.error("[APPLICATION FAILED] Could not deliver to bot server");
       
       return NextResponse.json(
         { error: "Failed to submit application. Please try again or contact support." },
@@ -151,13 +145,15 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    console.log(`[APPLICATION SUCCESS] Application processed and delivered`);
+    
     return NextResponse.json(
       { success: true, message: "Application submitted successfully!" },
       { status: 200 }
     );
     
   } catch (error) {
-    console.error("Application API error:", error);
+    console.error("[API ERROR] Unexpected error in application endpoint:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -165,7 +161,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function OPTIONS(request: NextRequest) {
+export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {

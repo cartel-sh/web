@@ -6,7 +6,6 @@ export default function ApplyPage() {
   return (
     <Web3Provider>
       <>
-        {/* Background decorative flowers */}
         <BackgroundFlower flowerNumber={1} rotation={15} className="top-20 left-10" size={180} />
         <BackgroundFlower flowerNumber={6} rotation={-45} className="top-1/3 right-20" size={160} />
         <BackgroundFlower flowerNumber={3} rotation={30} className="bottom-20 left-1/4" size={140} />

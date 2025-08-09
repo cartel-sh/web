@@ -32,7 +32,6 @@ export function ApplicationForm() {
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   
-  // Get ENS name for connected wallet
   const { data: ensName } = useEnsName({
     address: address,
     chainId: 1,
@@ -52,8 +51,12 @@ export function ApplicationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
+  const [mounted, setMounted] = useState(false);
 
-  // Update wallet address and ENS name when account changes
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (address) {
       setFormData(prev => ({
@@ -104,15 +107,12 @@ export function ApplicationForm() {
     setSubmitMessage("");
 
     try {
-      // Create message to sign
       const message = `I am applying to join the Indie Cartel.\n\nWallet: ${address}\nTimestamp: ${new Date().toISOString()}`;
       
-      // Request signature
       const signature = await signMessageAsync({
         message,
       });
 
-      // Submit form with signature
       const response = await fetch("/api/applications", {
         method: "POST",
         headers: {
@@ -132,7 +132,6 @@ export function ApplicationForm() {
       if (response.ok) {
         setSubmitStatus("success");
         setSubmitMessage("Application submitted successfully! We'll review it and get back to you soon.");
-        // Reset form
         setFormData({
           walletAddress: address,
           ensName: ensName || undefined,
@@ -163,7 +162,6 @@ export function ApplicationForm() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
-    // Clear error for this field when user starts typing
     if (errors[field as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
@@ -171,12 +169,13 @@ export function ApplicationForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
-      {/* Wallet Connection */}
       <div className="space-y-2">
         <label className="block text-sm font-medium">
           Wallet Address *
         </label>
-        {!isConnected ? (
+        {!mounted ? (
+          <div className="h-10 w-full rounded-md border border-foreground/30 bg-card/50 animate-pulse" />
+        ) : !isConnected ? (
           <div className="space-y-2">
             <Button
               type="button"
@@ -221,7 +220,6 @@ export function ApplicationForm() {
         )}
       </div>
 
-      {/* GitHub */}
       <div className="space-y-2">
         <label htmlFor="github" className="block text-sm font-medium">
           GitHub (Optional)
@@ -235,7 +233,6 @@ export function ApplicationForm() {
         />
       </div>
 
-      {/* Social Profiles */}
       <div className="space-y-4">
         <h3 className="text-sm font-medium">Social Profiles (Optional)</h3>
         
@@ -279,7 +276,6 @@ export function ApplicationForm() {
         </div>
       </div>
 
-      {/* What excites you */}
       <div className="space-y-2">
         <label htmlFor="excitement" className="block text-sm font-medium">
           What excites you the most in life? *
@@ -297,7 +293,6 @@ export function ApplicationForm() {
         />
       </div>
 
-      {/* Motivation */}
       <div className="space-y-2">
         <label htmlFor="motivation" className="block text-sm font-medium">
           Why do you think you're a good fit for the cartel? *
@@ -334,14 +329,14 @@ export function ApplicationForm() {
 
       <Button
         type="submit"
-        disabled={isSubmitting || !isConnected}
+        disabled={!mounted || isSubmitting || !isConnected}
         className="w-full"
         variant="default"
       >
         {isSubmitting ? "Signing & Submitting..." : "Submit Application"}
       </Button>
       
-      {isConnected && (
+      {mounted && isConnected && (
         <p className="text-xs text-center text-muted-foreground">
           You will be asked to sign a message to verify wallet ownership
         </p>
