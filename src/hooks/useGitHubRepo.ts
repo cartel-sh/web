@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-interface GitHubContributor {
+export interface GitHubContributor {
   login: string;
   contributions: number;
   avatar_url: string;
