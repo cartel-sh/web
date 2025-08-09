@@ -17,102 +17,41 @@ interface ApplicationData {
   message: string;
 }
 
-function formatTelegramMessage(data: ApplicationData, ip: string): string {
-  const timestamp = new Date().toISOString();
+async function sendToApplicationServer(data: ApplicationData): Promise<boolean> {
+  const serverUrl = process.env.APPLICATION_SERVER_URL;
   
-  let message = `🚀 <b>New Cartel Application</b>\n\n`;
-  message += `👛 <b>Wallet:</b> <code>${escapeHtml(data.walletAddress)}</code>\n`;
-  
-  if (data.ensName) {
-    message += `📛 <b>ENS:</b> ${escapeHtml(data.ensName)}\n`;
-  }
-  
-  if (data.github && data.github.trim()) {
-    const githubUsername = cleanGitHubUsername(data.github);
-    message += `🔗 <b>GitHub:</b> <a href="https://github.com/${githubUsername}">@${githubUsername}</a>\n`;
-  }
-  
-  message += `\n<b>Social Profiles:</b>\n`;
-  if (data.farcaster && data.farcaster.trim()) {
-    message += `🟣 <b>Farcaster:</b> ${escapeHtml(data.farcaster)}\n`;
-  }
-  if (data.lens && data.lens.trim()) {
-    message += `🌿 <b>Lens:</b> ${escapeHtml(data.lens)}\n`;
-  }
-  if (data.twitter && data.twitter.trim()) {
-    message += `🐦 <b>Twitter:</b> ${escapeHtml(data.twitter)}\n`;
-  }
-  
-  message += `\n🎯 <b>What excites them:</b>\n${escapeHtml(data.excitement)}\n`;
-  message += `\n💭 <b>Why they're a good fit:</b>\n${escapeHtml(data.motivation)}\n`;
-  message += `\n✅ <b>Signature Verified:</b> Yes\n`;
-  message += `⏰ <b>Submitted:</b> ${timestamp}\n`;
-  message += `📍 <b>IP:</b> ${ip}`;
-  
-  return message;
-}
-
-function cleanGitHubUsername(github: string): string {
-  // Extract username from GitHub URL or return as-is if already a username
-  if (github.startsWith("https://github.com/")) {
-    return github.replace("https://github.com/", "").split("/")[0];
-  }
-  return github;
-}
-
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-async function sendToTelegram(message: string): Promise<boolean> {
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  const channelId = process.env.TELEGRAM_CHANNEL_ID;
-  
-  if (!botToken || !channelId) {
-    console.error("Telegram configuration missing");
+  if (!serverUrl) {
+    console.error("Application server URL not configured");
     return false;
   }
   
-  const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-  
   try {
-    const response = await fetch(telegramUrl, {
+    const response = await fetch(serverUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.APPLICATION_SERVER_TOKEN || ''}`, // Optional auth token
       },
-      body: JSON.stringify({
-        chat_id: channelId,
-        text: message,
-        parse_mode: "HTML",
-        disable_web_page_preview: false,
-      }),
+      body: JSON.stringify(data),
     });
     
     if (!response.ok) {
-      const error = await response.json();
-      console.error("Telegram API error:", error);
+      const error = await response.text();
+      console.error("Application server error:", error);
       return false;
     }
     
     return true;
   } catch (error) {
-    console.error("Failed to send to Telegram:", error);
+    console.error("Failed to send to application server:", error);
     return false;
   }
 }
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
-  const limit = parseInt(process.env.APPLICATION_RATE_LIMIT || "3");
-  const windowMs = 60 * 60 * 1000; // 1 hour
+  const limit = 1; // 1 application per week
+  const windowMs = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
   
   const record = rateLimitMap.get(ip);
   
@@ -140,7 +79,7 @@ setInterval(() => {
       rateLimitMap.delete(ip);
     }
   }
-}, 60 * 60 * 1000); // Clean up every hour
+}, 24 * 60 * 60 * 1000); // Clean up once per day
 
 export async function POST(request: NextRequest) {
   try {
@@ -199,17 +138,13 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Format message for Telegram
-    const telegramMessage = formatTelegramMessage(data, ip);
-    
-    // Send to Telegram
-    const sent = await sendToTelegram(telegramMessage);
+    // Send to application server (which handles Discord and Telegram)
+    const sent = await sendToApplicationServer(data);
     
     if (!sent) {
-      // Log the application even if Telegram fails
-      console.error("Failed to send application to Telegram:", data);
+      // Log the application even if server is down
+      console.error("Failed to send application to server:", data);
       
-      // You might want to store in a database or send email as fallback
       return NextResponse.json(
         { error: "Failed to submit application. Please try again or contact support." },
         { status: 500 }
