@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyMessage } from 'viem';
 
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-
 interface ApplicationData {
   walletAddress: string;
   ensName?: string;
@@ -14,6 +12,35 @@ interface ApplicationData {
   motivation: string;
   signature: string;
   message: string;
+  captchaToken: string;
+}
+
+async function verifyTurnstileToken(token: string): Promise<boolean> {
+  const secretKey = process.env.TURNSTILE_SECRET_KEY;
+  
+  if (!secretKey) {
+    console.error("[CAPTCHA ERROR] Turnstile secret key not configured");
+    return false;
+  }
+  
+  try {
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        secret: secretKey,
+        response: token,
+      }),
+    });
+    
+    const data = await response.json();
+    return data.success === true;
+  } catch (error) {
+    console.error("[CAPTCHA ERROR] Failed to verify Turnstile token");
+    return false;
+  }
 }
 
 async function sendToApplicationServer(data: ApplicationData): Promise<boolean> {
@@ -46,62 +73,22 @@ async function sendToApplicationServer(data: ApplicationData): Promise<boolean> 
   }
 }
 
-function checkRateLimit(ip: string): boolean {
-  // Skip rate limiting in development
-  if (process.env.NODE_ENV === 'development') {
-    return true;
-  }
-  
-  const now = Date.now();
-  const limit = 1;
-  const windowMs = 7 * 24 * 60 * 60 * 1000;
-  
-  const record = rateLimitMap.get(ip);
-  
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(ip, {
-      count: 1,
-      resetTime: now + windowMs,
-    });
-    return true;
-  }
-  
-  if (record.count >= limit) {
-    return false;
-  }
-  
-  record.count++;
-  return true;
-}
-
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, record] of rateLimitMap.entries()) {
-    if (now > record.resetTime) {
-      rateLimitMap.delete(ip);
-    }
-  }
-}, 24 * 60 * 60 * 1000);
-
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get("x-forwarded-for") || 
-               request.headers.get("x-real-ip") || 
-               "unknown";
-    
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json(
-        { error: "Too many applications. Please try again later." },
-        { status: 429 }
-      );
-    }
-    
     const data: ApplicationData = await request.json();
     
     if (!data.walletAddress || !data.excitement?.trim() || 
-        !data.motivation?.trim() || !data.signature || !data.message) {
+        !data.motivation?.trim() || !data.signature || !data.message || !data.captchaToken) {
       return NextResponse.json(
         { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+    
+    const isCaptchaValid = await verifyTurnstileToken(data.captchaToken);
+    if (!isCaptchaValid) {
+      return NextResponse.json(
+        { error: "Captcha verification failed. Please try again." },
         { status: 400 }
       );
     }
