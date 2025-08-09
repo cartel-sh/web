@@ -131,7 +131,7 @@ export function ApplicationForm() {
 
       if (response.ok) {
         setSubmitStatus("success");
-        setSubmitMessage("Application submitted successfully! We'll review it and get back to you soon.");
+        setSubmitMessage("Application received. We may contact you in the near future.");
         setFormData({
           walletAddress: address,
           ensName: ensName || undefined,
@@ -319,7 +319,7 @@ export function ApplicationForm() {
           className={cn(
             "p-4 rounded-md text-sm",
             submitStatus === "success"
-              ? "bg-green-500/10 text-green-600 border border-green-500/20"
+              ? "bg-primary/10 text-primary border border-primary/20"
               : "bg-destructive/10 text-destructive border border-destructive/20"
           )}
         >
