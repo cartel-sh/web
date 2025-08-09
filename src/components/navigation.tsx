@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ModeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
+import Link from "next/link";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -86,13 +87,14 @@ export function Navigation() {
           >
             Members
           </a>
-          <Button
-            onClick={(e) => scrollToSection(e, 'apply')}
-            size="default"
-            className="font-semibold"
-          >
-            Apply
-          </Button>
+          <Link href="/apply">
+            <Button
+              size="default"
+              className="font-semibold"
+            >
+              Apply
+            </Button>
+          </Link>
         </div>
 
         <ModeToggle />
@@ -130,14 +132,15 @@ export function Navigation() {
           >
             Members
           </a>
-          <Button
-            onClick={(e) => scrollToSection(e, 'apply')}
-            size="default"
-            className="font-semibold w-full mt-2"
-            tabIndex={isMenuOpen ? 0 : -1}
-          >
-            Apply
-          </Button>
+          <Link href="/apply" className="w-full">
+            <Button
+              size="default"
+              className="font-semibold w-full mt-2"
+              tabIndex={isMenuOpen ? 0 : -1}
+            >
+              Apply
+            </Button>
+          </Link>
         </div>
       </div>
     </nav>
