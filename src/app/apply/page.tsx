@@ -1,16 +1,10 @@
 import { ApplicationForm } from "@/components/forms/application-form";
-import { BackgroundFlower } from "@/components/ui/background-flower";
 import { Web3Provider } from "@/components/providers/web3-provider";
 
 export default function ApplyPage() {
   return (
     <Web3Provider>
-      <>
-        <BackgroundFlower flowerNumber={1} rotation={15} className="top-20 left-10" size={180} />
-        <BackgroundFlower flowerNumber={6} rotation={-45} className="top-1/3 right-20" size={160} />
-        <BackgroundFlower flowerNumber={3} rotation={30} className="bottom-20 left-1/4" size={140} />
-        <BackgroundFlower flowerNumber={8} rotation={-20} className="bottom-1/3 right-1/3" size={150} />
-        <main className="min-h-screen p-8 md:p-16 relative">
+      <div className="min-h-screen p-8 md:p-16 relative">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
@@ -30,8 +24,7 @@ export default function ApplyPage() {
             <ApplicationForm />
           </div>
         </div>
-        </main>
-      </>
+      </div>
     </Web3Provider>
   );
 }

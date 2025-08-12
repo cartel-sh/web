@@ -4,6 +4,9 @@ import { useTreasuryData } from '@/hooks/useTreasuryData'
 import { useState, useEffect } from 'react'
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
+import { Stoke } from "next/font/google"
+
+const stoke = Stoke({ subsets: ["latin"], weight: "400" })
 
 export function TreasuryDisplay() {
   const { balances, latestTransactions, loading, error } = useTreasuryData()
@@ -17,7 +20,7 @@ export function TreasuryDisplay() {
   useEffect(() => {
     const resolveEnsNames = async () => {
       const newEnsNames: Record<string, string | null> = {}
-      
+
       for (const tx of latestTransactions) {
         if (!ensNames[tx.from]) {
           try {
@@ -31,7 +34,7 @@ export function TreasuryDisplay() {
           }
         }
       }
-      
+
       if (Object.keys(newEnsNames).length > 0) {
         setEnsNames(prev => ({ ...prev, ...newEnsNames }))
       }
@@ -69,16 +72,16 @@ export function TreasuryDisplay() {
   const totalEth = balances.reduce((sum, balance) => sum + parseFloat(balance.eth), 0)
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Treasury</h2>
+    <div className="w-full mx-auto">
+      <div className="mb-8">
+        <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
         <a
           href="https://etherscan.io/address/0x0c49bc3daaddf30b78718d5ae623ffbc076b6f8b#asset-multichain"
           target="_blank"
           rel="noopener noreferrer"
           className="block hover:opacity-80 transition-opacity"
         >
-          <div className="text-5xl sm:text-6xl md:text-8xl font-bold text-primary flex items-center justify-center gap-2 sm:gap-3">
+          <div className="text-5xl sm:text-6xl md:text-8xl font-bold text-primary flex items-center gap-2 sm:gap-3">
             {totalEth.toFixed(4)} <span className="text-5xl sm:text-6xl md:text-8xl">Ξ</span>
           </div>
         </a>
@@ -86,7 +89,7 @@ export function TreasuryDisplay() {
 
       {latestTransactions.length > 0 && (
         <div className="mb-6">
-          <h3 className="text-lg sm:text-xl font-bold mb-4 text-center">Latest Transactions</h3>
+          <h3 className="text-lg sm:text-xl font-bold mb-4 text-left">Latest Transactions</h3>
           <div className="space-y-2">
             {latestTransactions.map((tx) => (
               <div key={tx.hash} className="bg-card/60 border rounded-2xl p-3 sm:p-4">
@@ -104,8 +107,8 @@ export function TreasuryDisplay() {
                       {new Date(parseInt(tx.timeStamp) * 1000).toLocaleDateString()}
                     </span>
                     <a
-                      href={`${tx.chainId === 1 
-                        ? 'https://etherscan.io' 
+                      href={`${tx.chainId === 1
+                        ? 'https://etherscan.io'
                         : 'https://basescan.org'}/tx/${tx.hash}`}
                       target="_blank"
                       rel="noopener noreferrer"

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { Navigation } from "@/components/navigation";
+import { SiteHeader } from "@/components/ui/site-header";
+import { SiteFooter } from "@/components/ui/site-footer";
+import { BackgroundLayout } from "@/components/ui/background-layout";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -24,7 +28,19 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} font-sans antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="min-h-screen relative overflow-hidden">
+            <BackgroundLayout />
+            <Navigation />
+            <div className="max-w-6xl mx-auto px-6 pt-16 relative z-10">
+              <SiteHeader />
+              <main className="relative z-10">
+                {children}
+              </main>
+              <SiteFooter />
+            </div>
+          </div>
+        </Providers>
       </body>
     </html>
   );
