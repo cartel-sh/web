@@ -152,14 +152,6 @@ export default function Home() {
           <TreasuryDisplay />
         </section>
 
-        <section id="apply" className="mb-20 text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Apply</h2>
-          <div className="max-w-lg mx-auto">
-            <div className="border-2 border-dashed border-foreground/30 rounded-lg p-12 bg-card/50">
-              <p className="text-xl text-muted-foreground mb-4">Application process coming soon</p>
-            </div>
-          </div>
-        </section>
 
         <footer className="py-6 border-t text-center">
           <p className="text-sm text-foreground/60">
