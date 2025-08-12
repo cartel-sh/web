@@ -1,10 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { Stoke, Italianno } from "next/font/google";
 import { Navigation } from "@/components/navigation";
-import { GooeyText } from "@/components/ui/gooey-text-morphing";
 import { BackgroundFlower } from "@/components/ui/background-flower";
-import { RollingText } from "@/components/animate-ui/text/rolling";
 import { MemberBadge } from "@/components/ui/member-badge";
 import { ProjectCard } from "@/components/ui/project-card";
 import { TreasuryDisplay } from "@/components/treasury-display";
@@ -13,6 +12,9 @@ import projectsData from "@/data/projects.json";
 import communitiesData from "@/data/communities.json";
 import { useEffect } from "react";
 
+const stoke = Stoke({ subsets: ["latin"], weight: ["400"] });
+const italianno = Italianno({ subsets: ["latin"], weight: "400" });
+
 export default function Home() {
   useEffect(() => {
     document.title = "Cartel";
@@ -20,6 +22,17 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {/* Paper texture layer: above base color, below flowers */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none opacity-35"
+        style={{
+          backgroundImage: 'url(/images/paper_texture.png)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '1024px 1024px',
+        }}
+      />
+
       {/* Background flowers sorted by vertical position (top to bottom) */}
 
       {/* Top section (top-10 to top-20) */}
@@ -59,44 +72,67 @@ export default function Home() {
       <Navigation />
 
       <div className="max-w-6xl mx-auto px-6 pt-16 relative z-10">
-        <header className="mb-20 pt-20 flex justify-center">
-          <div className="flex items-center gap-8 mb-6">
-            <Image
-              src="/images/skull.png"
-              alt="Skull"
-              width={300}
-              height={300}
-              className="w-40 h-40 md:w-56 md:h-56 lg:w-64 lg:h-64 -m-10"
-            />
-            <div className="text-left">
-              <h1 className="text-5xl md:text-7xl  font-bold">
-                <RollingText
-                  text="Indie Cartel"
+        <header className="mb-6 pt-10">
+          <div className="relative w-full mx-auto h-fit">
+            <div
+              className="relative mx-auto text-foreground"
+              style={{
+                width: "min(80vw, 1000px)",
+                aspectRatio: "1391 / 378",
+              }}
+            >
+              <div className="relative w-full h-full">
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-current"
+                  style={{
+                    WebkitMaskImage: "url(/images/cartel_header.svg)",
+                    maskImage: "url(/images/cartel_header.svg)",
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                  }}
                 />
-              </h1>
-              <p className="text-xl md:text-2xl lg:text-3xl font-bold text-muted-foreground mt-2">
-                Accelerating decentralized social
-              </p>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <h1
+                    className={`${stoke.className} font-normal`}
+                    style={{
+                      fontSize: "calc(min(80vw, 1000px) * 0.085)",
+                      lineHeight: 1,
+                      transform: "translateX(calc(min(80vw, 1000px) * 0.03))",
+                    }}
+                  >
+                    Indie Cartel
+                  </h1>
+                </div>
+              </div>
             </div>
+          </div>
+          <div className="mt-2 text-center">
+            <p className={`${italianno.className} text-3xl md:text-4xl lg:text-5xl text-foreground/90`}>
+              The people of the world, accelerating Ethereum social.
+            </p>
           </div>
         </header>
 
-        <section id="manifesto" className="mb-20 text-center">
-          {/* <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Manifesto</h2> */}
+        <section id="manifesto" className="mt-16 mb-20 text-center">
           <div className="max-w-3xl mx-auto">
-            <div className="border rounded-lg p-8 md:p-10 lg:p-12 border-foreground/30 transition-colors bg-card/50">
-              <div className="prose prose-invert prose-lg max-w-none text-foreground/60 font-bold text-left">
-                <p className="text-lg md:text-xl leading-relaxed mb-4">
+            <div className="p-4 px-16 bg-card/30">
+              <div className={`${italianno.className} text-left text-foreground/90`}>
+                <p className="underline decoration-foreground/40 decoration-2 underline-offset-4 text-3xl md:text-4xl leading-[1.8] mb-0">
                   We reject the hyper-individualism. Instead, we build infra grounded in togetherness,
                   where cryptographic tools foster connection rather than alienation.
                 </p>
-                <p className="text-lg md:text-xl leading-relaxed mb-4">
+                <p className="underline decoration-foreground/40 decoration-2 underline-offset-4 text-3xl md:text-4xl leading-[1.8] mb-0">
                   Technology alone cannot heal broken trust, but technology built with right ethics and care can create the conditions for healing.
                 </p>
-                <p className="text-lg md:text-xl leading-relaxed mb-4">
+                <p className="underline decoration-foreground/40 decoration-2 underline-offset-4 text-3xl md:text-4xl leading-[1.8] mb-0">
                   We reimagine cryptographic tools as instruments of communion, not alienation.
                 </p>
-                <p className="text-lg md:text-xl leading-relaxed">
+                <p className="underline decoration-foreground/40 decoration-2 underline-offset-4 text-3xl md:text-4xl leading-[1.8] mb-0">
                   The future of social is built with care for all.
                 </p>
               </div>
