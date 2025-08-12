@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Roboto, Tangerine } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Navigation } from "@/components/navigation";
@@ -10,6 +10,13 @@ import { BackgroundLayout } from "@/components/ui/background-layout";
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const tangerine = Tangerine({
+  variable: "--font-tangerine",
+  subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -26,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${roboto.variable} font-sans antialiased`}
+        className={`${roboto.variable} ${tangerine.variable} font-sans antialiased`}
       >
         <Providers>
           <div className="min-h-screen relative overflow-hidden">

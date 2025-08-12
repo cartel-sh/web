@@ -33,7 +33,7 @@ export function ApplicationForm() {
   const { connect, connectors, isPending: isConnecting } = useConnect();
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
-  
+
   const { data: ensName } = useEnsName({
     address: address,
     chainId: 1,
@@ -95,7 +95,7 @@ export function ApplicationForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -117,7 +117,7 @@ export function ApplicationForm() {
 
     try {
       const message = `I am applying to join the Indie Cartel.\n\nWallet: ${address}\nTimestamp: ${new Date().toISOString()}`;
-      
+
       const signature = await signMessageAsync({
         message,
       });
@@ -179,20 +179,20 @@ export function ApplicationForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <label className="block text-sm font-medium">
           Wallet Address *
         </label>
         {!mounted ? (
-          <div className="h-10 w-full rounded-md border border-foreground/30 bg-card/50 animate-pulse" />
+          <div className="h-10 w-full rounded-none border border-foreground/30 bg-card/50 animate-pulse" />
         ) : !isConnected ? (
           <div className="space-y-2">
             <Button
               type="button"
               onClick={() => connect({ connector: connectors[0] })}
               disabled={isConnecting}
-              className="w-full"
+              className="w-full rounded-none"
               variant="outline"
             >
               {isConnecting ? "Connecting..." : "Connect Wallet"}
@@ -203,7 +203,7 @@ export function ApplicationForm() {
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 rounded-md border border-foreground/30 bg-card/50">
+            <div className="flex items-center justify-between p-3 rounded-none border border-foreground/30 bg-card/50">
               <div>
                 {ensName ? (
                   <>
@@ -223,6 +223,7 @@ export function ApplicationForm() {
                 onClick={() => disconnect()}
                 size="sm"
                 variant="ghost"
+                className="rounded-none"
               >
                 Disconnect
               </Button>
@@ -240,13 +241,15 @@ export function ApplicationForm() {
           name="github"
           value={formData.github}
           onChange={handleChange("github")}
+          placeholder="https://github.com/username"
+          className="bg-transparent"
           disabled={isSubmitting}
         />
       </div>
 
       <div className="space-y-4">
         <h3 className="text-sm font-medium">Social Profiles (Optional)</h3>
-        
+
         <div className="space-y-2">
           <label htmlFor="farcaster" className="block text-xs text-muted-foreground">
             Farcaster
@@ -256,6 +259,8 @@ export function ApplicationForm() {
             name="farcaster"
             value={formData.farcaster}
             onChange={handleChange("farcaster")}
+            placeholder="@username or farcaster://..."
+            className="bg-transparent"
             disabled={isSubmitting}
           />
         </div>
@@ -269,6 +274,8 @@ export function ApplicationForm() {
             name="lens"
             value={formData.lens}
             onChange={handleChange("lens")}
+            placeholder="lens.xyz/username or @username.lens"
+            className="bg-transparent"
             disabled={isSubmitting}
           />
         </div>
@@ -282,6 +289,8 @@ export function ApplicationForm() {
             name="twitter"
             value={formData.twitter}
             onChange={handleChange("twitter")}
+            placeholder="@username or https://x.com/username"
+            className="bg-transparent"
             disabled={isSubmitting}
           />
         </div>
@@ -299,7 +308,8 @@ export function ApplicationForm() {
           error={!!errors.excitement}
           errorMessage={errors.excitement}
           disabled={isSubmitting}
-          className="min-h-[100px]"
+          className="min-h-[100px] bg-transparent"
+          placeholder="Share a story or theme that lights you up. Be specific."
           required
         />
       </div>
@@ -316,8 +326,9 @@ export function ApplicationForm() {
           error={!!errors.motivation}
           errorMessage={errors.motivation}
           disabled={isSubmitting}
-          className="min-h-[80px]"
+          className="min-h-[80px] bg-transparent"
           maxLength={500}
+          placeholder="What can you contribute to the Cartel? What do you hope to gain?"
           required
         />
         <p className="text-xs text-muted-foreground">
@@ -356,12 +367,12 @@ export function ApplicationForm() {
       <Button
         type="submit"
         disabled={!mounted || isSubmitting || !isConnected}
-        className="w-full"
+        className="w-full rounded-none"
         variant="default"
       >
         {isSubmitting ? "Signing & Submitting..." : "Submit Application"}
       </Button>
-      
+
       {mounted && isConnected && (
         <p className="text-xs text-center text-muted-foreground">
           You will be asked to sign a message to verify wallet ownership
