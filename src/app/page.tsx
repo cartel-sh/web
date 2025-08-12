@@ -141,7 +141,7 @@ export default function Home() {
         </section>
 
         <section id="projects" className="mb-20 text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Projects</h2>
+          <h2 className={`${italianno.className} text-3xl md:text-4xl lg:text-5xl font-black mb-10`}>Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
             {projectsData.map((project) => (
               <ProjectCard
@@ -155,7 +155,7 @@ export default function Home() {
         </section>
 
         <section id="members" className="mb-20 text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Public Members</h2>
+          <h2 className={`${italianno.className} text-3xl md:text-4xl lg:text-5xl font-black mb-10`}>Public Members</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {membersData.map((member) => (
               <MemberBadge
@@ -170,7 +170,7 @@ export default function Home() {
         </section>
 
         <section id="aligned-communities" className="mb-20 text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-10">Aligned Communities</h2>
+          <h2 className={`${italianno.className} text-3xl md:text-4xl lg:text-5xl font-black mb-10`}>Aligned Communities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left mx-auto max-w-4xl">
             {communitiesData.map((community) => (
               <div key={community.id} className="border rounded-lg p-6 border-foreground/30 transition-colors bg-card/50">
