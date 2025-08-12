@@ -22,7 +22,7 @@ export default function Home() {
 
       <section id="manifesto" className="mt-16 mb-20 text-center">
         <div className="max-w-3xl mx-auto">
-          <div className="p-4 px-16 bg-card/30">
+          <div className="p-10 px-16 bg-card/50">
             <div className={`${tangerine.className} text-left text-foreground/90`}>
               <p className="decoration-foreground/40 decoration-2 text-3xl md:text-4xl leading-[1.8] mb-0">
                 We reject the hyper-individualism. Instead, we build infra grounded in togetherness,

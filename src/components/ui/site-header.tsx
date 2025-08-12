@@ -10,10 +10,11 @@ export function SiteHeader() {
     <header className="mb-6 pt-10">
       <div className="relative w-full mx-auto h-fit">
         <div
-          className="relative mx-auto text-foreground"
+          className="relative text-foreground"
           style={{
             width: "min(80vw, 1000px)",
             aspectRatio: "1391 / 378",
+            marginLeft: "calc(50% - min(80vw, 1000px)/2 - 50px)",
           }}
         >
           <div className="relative w-full h-full">
@@ -47,7 +48,7 @@ export function SiteHeader() {
         </div>
       </div>
       <div className="mt-2 text-center">
-        <p className={`${tangerine.className} text-3xl md:text-4xl lg:text-5xl text-foreground/90`}>
+        <p className={`${tangerine.className} text-3xl md:text-4xl lg:text-5xl text-foreground/90 pl-24 -mt-10`}>
           The people of the world, accelerating Ethereum social.
         </p>
       </div>
