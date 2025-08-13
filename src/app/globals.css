@@ -146,3 +146,72 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* OverlayScrollbars hover-expand theme */
+.os-theme-cartel {
+  /* 60% transparent (40% visible) handle */
+  --os-handle-bg: oklch(from var(--foreground) l c h / 0.4);
+  --os-handle-bg-hover: oklch(from var(--foreground) l c h / 0.4);
+  --os-handle-bg-active: oklch(from var(--foreground) l c h / 0.4);
+  --os-handle-opacity: 1;
+  --os-handle-opacity-hover: 1;
+  --os-handle-opacity-active: 1;
+}
+
+.dark .os-theme-cartel {
+  --os-handle-bg: oklch(from var(--foreground) l c h / 0.4);
+  --os-handle-bg-hover: oklch(from var(--foreground) l c h / 0.4);
+  --os-handle-bg-active: oklch(from var(--foreground) l c h / 0.4);
+}
+
+.os-theme-cartel.os-scrollbar-horizontal>.os-scrollbar-track>.os-scrollbar-handle,
+.os-theme-cartel.os-scrollbar-vertical>.os-scrollbar-track>.os-scrollbar-handle {
+  transition: height 150ms ease, width 150ms ease, background-color 150ms ease, opacity 150ms ease;
+}
+
+.os-theme-cartel.os-scrollbar-horizontal {
+  height: 6px;
+  transition: height 150ms ease;
+}
+
+.os-theme-cartel.os-scrollbar-vertical {
+  width: 6px;
+  transition: width 150ms ease;
+  right: 2px !important;
+}
+
+.os-theme-cartel.os-scrollbar-horizontal:hover {
+  height: 8px;
+}
+
+.os-theme-cartel.os-scrollbar-vertical:hover {
+  width: 8px;
+}
+
+.os-theme-cartel .os-scrollbar-track {
+  background: transparent;
+}
+
+.os-theme-cartel .os-scrollbar-handle {
+  background-color: oklch(from var(--foreground) l c h / 0.4);
+  border-radius: 9999px;
+}
+
+.dark .os-theme-cartel .os-scrollbar-handle {
+  background-color: oklch(from var(--foreground) l c h / 0.4);
+}
+
+/* Keep handle visible on hover/active */
+.os-theme-cartel .os-scrollbar:hover .os-scrollbar-handle,
+.os-theme-cartel .os-scrollbar:active .os-scrollbar-handle,
+.os-theme-cartel .os-scrollbar-handle:hover {
+  opacity: 1;
+  background-color: oklch(from var(--foreground) l c h / 0.4);
+}
+
+.dark .os-theme-cartel .os-scrollbar:hover .os-scrollbar-handle,
+.dark .os-theme-cartel .os-scrollbar:active .os-scrollbar-handle,
+.dark .os-theme-cartel .os-scrollbar-handle:hover {
+  opacity: 1;
+  background-color: oklch(from var(--foreground) l c h / 0.4);
+}

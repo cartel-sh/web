@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Roboto, Tangerine } from "next/font/google";
 import "./globals.css";
+import "overlayscrollbars/overlayscrollbars.css";
 import { Providers } from "@/components/providers";
+import { AppScrollbars } from "@/components/ui/app-scrollbars";
 import { Navigation } from "@/components/navigation";
 import { SiteHeader } from "@/components/ui/site-header";
 import { SiteFooter } from "@/components/ui/site-footer";
@@ -36,17 +38,19 @@ export default function RootLayout({
         className={`${roboto.variable} ${tangerine.variable} font-sans antialiased`}
       >
         <Providers>
-          <div className="min-h-screen relative overflow-hidden">
-            <BackgroundLayout />
-            <Navigation />
-            <div className="max-w-6xl mx-auto px-6 pt-16 relative z-10">
-              <SiteHeader />
-              <main className="relative z-10">
-                {children}
-              </main>
-              <SiteFooter />
+          <AppScrollbars>
+            <div className="min-h-screen relative overflow-hidden">
+              <BackgroundLayout />
+              <Navigation />
+              <div className="max-w-6xl mx-auto px-6 pt-16 relative z-10">
+                <SiteHeader />
+                <main className="relative z-10">
+                  {children}
+                </main>
+                <SiteFooter />
+              </div>
             </div>
-          </div>
+          </AppScrollbars>
         </Providers>
       </body>
     </html>
