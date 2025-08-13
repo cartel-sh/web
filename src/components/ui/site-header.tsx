@@ -1,9 +1,9 @@
 "use client";
 
-import { Stoke, Tangerine } from "next/font/google";
+import { Stoke, Italianno } from "next/font/google";
 
 const stoke = Stoke({ subsets: ["latin"], weight: ["400"] });
-const tangerine = Tangerine({ subsets: ["latin"], weight: "400" });
+const italianno = Italianno({ subsets: ["latin"], weight: "400" });
 
 export function SiteHeader() {
   return (
@@ -48,7 +48,7 @@ export function SiteHeader() {
         </div>
       </div>
       <div className="mt-2 text-center">
-        <p className={`${tangerine.className} text-3xl md:text-4xl lg:text-5xl text-foreground/90 pl-24 -mt-10`}>
+        <p className={`${italianno.className} text-3xl md:text-4xl lg:text-5xl text-foreground/90 pl-24 -mt-10`}>
           The people of the world, accelerating Ethereum social.
         </p>
       </div>
