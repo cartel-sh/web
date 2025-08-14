@@ -7,7 +7,7 @@ const italianno = Italianno({ subsets: ["latin"], weight: "400" });
 
 export function SiteHeader() {
   return (
-    <header className="mb-6 pt-10">
+    <header className="mb-6">
       <div className="relative w-full mx-auto h-fit">
         <div
           className="relative text-foreground"
@@ -20,7 +20,7 @@ export function SiteHeader() {
           <div className="relative w-full h-full">
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-current"
+              className="ml-24 absolute inset-0 bg-current"
               style={{
                 WebkitMaskImage: "url(/images/cartel_header.svg)",
                 maskImage: "url(/images/cartel_header.svg)",
@@ -33,16 +33,28 @@ export function SiteHeader() {
               }}
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <h1
-                className={`${stoke.className} font-normal`}
-                style={{
-                  fontSize: "calc(min(80vw, 1000px) * 0.085)",
-                  lineHeight: 1,
-                  transform: "translateX(calc(min(80vw, 1000px) * 0.03))",
-                }}
-              >
-                Indie Cartel
-              </h1>
+              <div className="relative">
+                <h1
+                  className={`${stoke.className} font-normal`}
+                  style={{
+                    fontSize: "calc(min(80vw, 1000px) * 0.085)",
+                    lineHeight: 1,
+                    transform: "translateX(calc(min(80vw, 1000px) * 0.12))",
+                  }}
+                >
+                  Indie Cartel,
+                </h1>
+                <span
+                  className={`${stoke.className} font-normal absolute underline decoration-foreground decoration-2.5 underline-offset-4`}
+                  style={{
+                    fontSize: "calc(min(80vw, 1000px) * 0.045)",
+                    bottom: "calc(-1 * min(80vw, 1000px) * 0.06)",
+                    right: "calc(-1 * min(80vw, 1000px) * 0.209)",
+                  }}
+                >
+                  global.
+                </span>
+              </div>
             </div>
           </div>
         </div>

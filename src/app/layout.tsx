@@ -42,20 +42,18 @@ export default function RootLayout({
             <div className="min-h-screen relative overflow-hidden">
               <BackgroundLayout />
               <div className="relative z-10">
-                <div className="flex">
-                  <div className="flex-1 md:pr-64">
-                    <div className="max-w-6xl mx-auto px-6">
-                      <div className="max-w-6xl mx-auto px-6 pt-6">
-                        <SiteHeader />
-                      </div>
-                      <main className="relative z-10">
-                        {children}
-                      </main>
-                      <SiteFooter />
+                <div className="md:ml-64">
+                  <div className="max-w-6xl mx-auto px-6">
+                    <div className="max-w-6xl mx-auto px-6 pt-6">
+                      <SiteHeader />
                     </div>
+                    <main className="relative z-10">
+                      {children}
+                    </main>
+                    <SiteFooter />
                   </div>
-                  <Sidebar />
                 </div>
+                <Sidebar />
               </div>
             </div>
           </AppScrollbars>

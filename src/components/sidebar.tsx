@@ -60,7 +60,7 @@ export function Sidebar() {
   return (
     <nav className="relative z-50">
       {/* Mobile hamburger button */}
-      <div className="md:hidden fixed top-4 right-4 flex items-center gap-2">
+      <div className="md:hidden fixed top-4 left-4 flex items-center gap-2">
         <button
           id="menu-button"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -79,7 +79,7 @@ export function Sidebar() {
 
       {/* Desktop sidebar in normal flow */}
       <aside
-        className="hidden md:flex fixed inset-y-0 right-0 w-64 border-l flex-col items-stretch px-5 py-6 gap-4 shrink-0"
+        className="hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-6 gap-4 shrink-0 z-40"
         aria-label="Sidebar navigation"
       >
         <div className="flex flex-col gap-3">
@@ -138,7 +138,7 @@ export function Sidebar() {
         <aside
           role="dialog"
           aria-modal="true"
-          className={`absolute top-0 right-0 h-full w-72 border-l shadow-xl transition-transform duration-300 ease-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`absolute top-0 left-0 h-full w-72 border-r shadow-xl transition-transform duration-300 ease-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
         >
           <div className="px-5 py-6 flex flex-col gap-4 h-full bg-background">
             <Link
