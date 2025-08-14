@@ -1,0 +1,66 @@
+"use client";
+
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { PropsWithChildren } from "react";
+
+type CornerVariant = "manifesto" | "project" | "ally" | "member" | "treasury";
+
+interface CornerCardProps extends PropsWithChildren {
+  className?: string;
+  contentClassName?: string;
+  variant?: CornerVariant;
+  cornerSrc?: string; // override image path if provided
+  interactive?: boolean;
+  ariaLabel?: string;
+  cornerClassName?: string;
+}
+
+const variantToCorner: Record<CornerVariant, string> = {
+  manifesto: "/images/corner1.png",
+  project: "/images/corner4.png",
+  ally: "/images/corner3.png",
+  member: "/images/corner5.png",
+  treasury: "/images/corner1.png",
+};
+
+export const CornerCard = ({
+  className,
+  contentClassName,
+  children,
+  variant = "project",
+  cornerSrc,
+  interactive = false,
+  ariaLabel,
+  cornerClassName,
+}: CornerCardProps) => {
+  const imageSrc = cornerSrc || variantToCorner[variant];
+
+  return (
+    <div
+      className={cn(
+        "relative border rounded-lg border-foreground/30 bg-card/50",
+        interactive && "transition-transform duration-200 hover:bg-card/80 hover:scale-105",
+        className
+      )}
+      aria-label={ariaLabel}
+    >
+      <div className={cn("p-6", contentClassName)}>{children}</div>
+
+      {/* Decorative corner image */}
+      <Image
+        src={imageSrc}
+        alt=""
+        width={180}
+        height={80}
+        className={cn(
+          "pointer-events-none select-none absolute top-0 -right-1 opacity-90 dark:opacity-60",
+          cornerClassName
+        )}
+        priority={false}
+      />
+    </div>
+  );
+};
+
+

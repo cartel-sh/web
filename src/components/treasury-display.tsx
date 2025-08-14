@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { useTreasuryData } from '@/hooks/useTreasuryData'
 import { useState, useEffect } from 'react'
@@ -8,7 +8,12 @@ import { Stoke } from "next/font/google"
 
 const stoke = Stoke({ subsets: ["latin"], weight: "400" })
 
-export function TreasuryDisplay() {
+interface TreasuryDisplayProps {
+  showHeading?: boolean;
+  showTransactions?: boolean;
+}
+
+export function TreasuryDisplay({ showHeading = true, showTransactions = true }: TreasuryDisplayProps) {
   const { balances, latestTransactions, loading, error } = useTreasuryData()
   const [ensNames, setEnsNames] = useState<Record<string, string | null>>({})
 
@@ -72,9 +77,11 @@ export function TreasuryDisplay() {
   const totalEth = balances.reduce((sum, balance) => sum + parseFloat(balance.eth), 0)
 
   return (
-    <div className="w-full mx-auto">
-      <div className="mb-8">
-        <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
+    <div className="w-fit flex flex-col items-center justify-center">
+      <div className="">
+        {showHeading && (
+          <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
+        )}
         <a
           href="https://etherscan.io/address/0x0c49bc3daaddf30b78718d5ae623ffbc076b6f8b#asset-multichain"
           target="_blank"
@@ -87,7 +94,7 @@ export function TreasuryDisplay() {
         </a>
       </div>
 
-      {latestTransactions.length > 0 && (
+      {showTransactions && latestTransactions.length > 0 && (
         <div className="mb-6">
           <h3 className="text-lg sm:text-xl font-bold mb-4 text-left">Latest Transactions</h3>
           <div className="space-y-2">
