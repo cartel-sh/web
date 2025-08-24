@@ -121,15 +121,6 @@ export function Sidebar() {
             </Link>
           </div>
           <Link
-            href="/#manifesto"
-            onClick={(e) => handleNavClick(e, 'manifesto')}
-            aria-label="Go to Manifesto section"
-          >
-            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
-              Manifesto
-            </Button>
-          </Link>
-          <Link
             href="/#projects"
             onClick={(e) => handleNavClick(e, 'projects')}
             aria-label="Go to Projects section"
@@ -145,6 +136,24 @@ export function Sidebar() {
           >
             <Button variant="ghost" className="w-full justify-start font-semibold text-base">
               Members
+            </Button>
+          </Link>
+          <Link
+            href="/#community"
+            onClick={(e) => handleNavClick(e, 'community')}
+            aria-label="Go to Community section"
+          >
+            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+              Community
+            </Button>
+          </Link>
+          <Link
+            href="/#manifesto"
+            onClick={(e) => handleNavClick(e, 'manifesto')}
+            aria-label="Go to Manifesto section"
+          >
+            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+              Manifesto
             </Button>
           </Link>
           <Link
@@ -233,15 +242,6 @@ export function Sidebar() {
               </Link>
             </div>
             <Link
-              href="/#manifesto"
-              onClick={(e) => handleNavClick(e, 'manifesto')}
-              aria-label="Go to Manifesto section"
-            >
-              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
-                Manifesto
-              </Button>
-            </Link>
-            <Link
               href="/#projects"
               onClick={(e) => handleNavClick(e, 'projects')}
               aria-label="Go to Projects section"
@@ -260,12 +260,30 @@ export function Sidebar() {
               </Button>
             </Link>
             <Link
-              href="/#aligned"
-              onClick={(e) => handleNavClick(e, 'aligned')}
-              aria-label="Go to Aligned section"
+              href="/#community"
+              onClick={(e) => handleNavClick(e, 'community')}
+              aria-label="Go to Community section"
             >
               <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
-                Aligned
+                Community
+              </Button>
+            </Link>
+            <Link
+              href="/#manifesto"
+              onClick={(e) => handleNavClick(e, 'manifesto')}
+              aria-label="Go to Manifesto section"
+            >
+              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+                Manifesto
+              </Button>
+            </Link>
+            <Link
+              href="/#allies"
+              onClick={(e) => handleNavClick(e, 'allies')}
+              aria-label="Go to Allies section"
+            >
+              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+                Allies
               </Button>
             </Link>
             <Link
