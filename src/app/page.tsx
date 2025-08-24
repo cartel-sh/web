@@ -7,18 +7,22 @@ import { TreasuryDisplay } from "@/components/treasury-display";
 import { CornerCard } from "@/components/ui/corner-card";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { AlliesCard } from "@/components/ui/allies-card";
+import { Button } from "@/components/ui/button";
 import membersData from "@/data/members.json";
 import projectsData from "@/data/projects.json";
 import communitiesData from "@/data/communities.json";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const italianno = Italianno({ subsets: ["latin"], weight: "400" });
 const stoke = Stoke({ subsets: ["latin"], weight: "400" });
 
 export default function Home() {
+  const router = useRouter();
   useEffect(() => {
     document.title = "Cartel";
   }, []);
+
 
   return (
     <>
@@ -105,6 +109,24 @@ export default function Home() {
         </CornerCard>
       </section>
 
+      <section id="apply" className="my-20">
+        <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl text-center font-bold mb-8`} style={{ letterSpacing: '-0.1em' }}>
+          Want to help us build <br /> the future of social?
+        </h2>
+        <div className="flex gap-4 justify-center">
+          <Button size="lg" className="text-xl px-6 py-3 h-auto rounded-xl" onClick={() => router.push('/apply')}>
+            Apply
+          </Button>
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="text-xl px-6 py-2 h-auto rounded-xl"
+            onClick={() => router.push('/community')}
+          >
+            Join Community
+          </Button>
+        </div>
+      </section>
 
     </>
   );
