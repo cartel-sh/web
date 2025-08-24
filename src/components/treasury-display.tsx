@@ -52,7 +52,7 @@ export function TreasuryDisplay({ showHeading = true, showTransactions = true }:
 
   if (loading) {
     return (
-      <div className="w-full max-w-4xl mx-auto p-6">
+      <div className="w-full max-w-4xl mx-auto p-10 px-20">
         <div className="animate-pulse">
           <div className="h-8 bg-muted rounded mb-4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -66,7 +66,7 @@ export function TreasuryDisplay({ showHeading = true, showTransactions = true }:
 
   if (error) {
     return (
-      <div className="w-full max-w-4xl mx-auto p-6">
+      <div className="w-full max-w-4xl mx-auto p-10 px-20">
         <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
           <p className="text-destructive">Failed to load treasury data: {error}</p>
         </div>
@@ -77,10 +77,10 @@ export function TreasuryDisplay({ showHeading = true, showTransactions = true }:
   const totalEth = balances.reduce((sum, balance) => sum + parseFloat(balance.eth), 0)
 
   return (
-    <div className="w-fit flex flex-col items-center justify-center">
+    <div className="w-fit flex flex-col items-center justify-center p-10 px-20">
       <div className="">
         {showHeading && (
-          <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
+          <h2 className={`${stoke.className} text-3xl sm:text-4xl md:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
         )}
         <a
           href="https://etherscan.io/address/0x0c49bc3daaddf30b78718d5ae623ffbc076b6f8b#asset-multichain"
@@ -88,15 +88,15 @@ export function TreasuryDisplay({ showHeading = true, showTransactions = true }:
           rel="noopener noreferrer"
           className="block hover:opacity-80 transition-opacity"
         >
-          <div className="text-5xl sm:text-6xl md:text-8xl font-bold text-primary flex items-center gap-2 sm:gap-3">
-            {totalEth.toFixed(4)} <span className="text-5xl sm:text-6xl md:text-8xl">Ξ</span>
+          <div className={`${stoke.className} text-3xl font-bold text-primary flex items-center gap-2 sm:gap-3`}>
+            {totalEth.toFixed(2)} <span className="text-2xl">Ξ</span>
           </div>
         </a>
       </div>
 
       {showTransactions && latestTransactions.length > 0 && (
         <div className="mb-6">
-          <h3 className="text-lg sm:text-xl font-bold mb-4 text-left">Latest Transactions</h3>
+          <h3 className={`${stoke.className} text-lg sm:text-xl font-bold mb-4 text-left`}>Latest Transactions</h3>
           <div className="space-y-2">
             {latestTransactions.map((tx) => (
               <div key={tx.hash} className="bg-card/60 border rounded-2xl p-3 sm:p-4">

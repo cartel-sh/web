@@ -5,13 +5,12 @@ import { ModeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 import Link from "next/link";
-import { RollingText } from "@/components/animate-ui/text/rolling";
+import { SplittingText } from "@/components/animate-ui/text/splitting";
 import { UserMenu } from "@/components/user-menu";
 
 export function Sidebar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false);
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -90,22 +89,36 @@ export function Sidebar() {
               onClick={(e) => handleNavClick(e, 'top')}
               className="text-2xl font-bold text-primary font-[family-name:var(--font-stoke)] hover:text-primary transition-colors py-1"
               aria-label="Go to top"
-              onMouseEnter={() => {
-                if (!hasAnimated) {
-                  setIsHovered(true);
-                  setHasAnimated(true);
-                  setTimeout(() => {
-                    setIsHovered(false);
-                    setHasAnimated(false);
-                  }, 500);
-                }
-              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
-              {isHovered ? (
-                <RollingText transition={{ duration: 0.2, delay: 0.1, ease: 'easeOut' }} text="Cartel" />
-              ) : (
-                "Cartel"
-              )}
+              <div className="inline-block">
+                {isHovered ? (
+                  <SplittingText
+                    key="spread"
+                    text="Cartel"
+                    type="chars"
+                    motionVariants={{
+                      initial: { x: 0, opacity: 1, letterSpacing: '0em' },
+                      animate: { x: 0, opacity: 1, letterSpacing: '0.2em' },
+                      transition: { duration: 0.3, ease: 'easeOut' },
+                      stagger: 0.03
+                    }}
+                  />
+                ) : (
+                  <SplittingText
+                    key="normal"
+                    text="Cartel"
+                    type="chars"
+                    motionVariants={{
+                      initial: { x: 0, opacity: 0 },
+                      animate: { x: 0, opacity: 1 },
+                      transition: { duration: 0.2, ease: 'easeOut' },
+                      stagger: 0.02
+                    }}
+                  />
+                )}
+              </div>
             </Link>
             <ModeToggle />
           </div>
@@ -189,22 +202,36 @@ export function Sidebar() {
                 className="text-2xl font-[family-name:var(--font-stoke)] hover:text-primary transition-colors py-2"
                 tabIndex={isMenuOpen ? 0 : -1}
                 aria-label="Go to top"
-                onMouseEnter={() => {
-                  if (!hasAnimated) {
-                    setIsHovered(true);
-                    setHasAnimated(true);
-                    setTimeout(() => {
-                      setIsHovered(false);
-                      setHasAnimated(false);
-                    }, 500);
-                  }
-                }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
               >
-                {isHovered ? (
-                  <RollingText text="Cartel" />
-                ) : (
-                  "Cartel"
-                )}
+                <div className="inline-block">
+                  {isHovered ? (
+                    <SplittingText
+                      key="spread"
+                      text="Cartel"
+                      type="chars"
+                      motionVariants={{
+                        initial: { x: 0, opacity: 1, letterSpacing: '0em' },
+                        animate: { x: 0, opacity: 1, letterSpacing: '0.2em' },
+                        transition: { duration: 0.3, ease: 'easeOut' },
+                        stagger: 0.03
+                      }}
+                    />
+                  ) : (
+                    <SplittingText
+                      key="normal"
+                      text="Cartel"
+                      type="chars"
+                      motionVariants={{
+                        initial: { x: 0, opacity: 0 },
+                        animate: { x: 0, opacity: 1 },
+                        transition: { duration: 0.2, ease: 'easeOut' },
+                        stagger: 0.02
+                      }}
+                    />
+                  )}
+                </div>
               </Link>
               <ModeToggle />
             </div>
