@@ -25,6 +25,7 @@ export function InfiniteScroll({
   const positionsRef = useRef<number[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const [minHeight, setMinHeight] = useState<number>(100);
 
   const duplicatedChildren = [...children, ...children];
 
@@ -33,17 +34,24 @@ export function InfiniteScroll({
     
     const gap = 24;
     let currentX = 0;
+    let maxHeight = 0;
     
     positionsRef.current = [];
     
-    // Position all items sequentially
+    // Position all items sequentially and find max height
     itemsRef.current.forEach((item, index) => {
       if (item) {
         positionsRef.current[index] = currentX;
         item.style.transform = `translateX(${currentX}px)`;
         currentX += item.offsetWidth + gap;
+        maxHeight = Math.max(maxHeight, item.offsetHeight);
       }
     });
+    
+    // Update minimum height based on tallest element
+    if (maxHeight > 0) {
+      setMinHeight(maxHeight);
+    }
     
     setIsInitialized(true);
   }, []);
@@ -184,7 +192,7 @@ export function InfiniteScroll({
       <div
         ref={scrollRef}
         className="relative h-full"
-        style={{ minHeight: "200px" }}
+        style={{ minHeight: `${minHeight}px` }}
       >
         {duplicatedChildren.map((child, index) => (
           <div 
@@ -192,11 +200,12 @@ export function InfiniteScroll({
             ref={(el) => {
               itemsRef.current[index] = el;
             }}
-            className="absolute top-0 left-0"
+            className="absolute top-0 left-0 h-full"
             style={{ 
               willChange: "transform",
               opacity: isInitialized ? 1 : 0,
-              transition: "opacity 0.3s ease-in-out"
+              transition: "opacity 0.3s ease-in-out",
+              minHeight: `${minHeight}px`
             }}
           >
             {child}

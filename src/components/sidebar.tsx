@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ModeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 import Link from "next/link";
@@ -120,7 +119,6 @@ export function Sidebar() {
                 )}
               </div>
             </Link>
-            <ModeToggle />
           </div>
           <Link
             href="/#manifesto"
@@ -233,7 +231,6 @@ export function Sidebar() {
                   )}
                 </div>
               </Link>
-              <ModeToggle />
             </div>
             <Link
               href="/#manifesto"

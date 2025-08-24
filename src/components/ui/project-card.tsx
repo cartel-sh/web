@@ -63,8 +63,8 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
     <CornerCard
       variant="project"
       interactive
-      className={cn("cursor-pointer bg-card/50 rounded-xl rounded-tr-2xl", className)}
-      contentClassName="p-6"
+      className={cn("cursor-pointer bg-card/50 rounded-xl rounded-tr-2xl h-full", className)}
+      contentClassName="p-6 h-full flex flex-col"
       cornerClassName="-top-0.5 -right-1"
       ariaLabel={`Open ${name} project`}
     >
@@ -73,7 +73,7 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
         onKeyDown={handleCardKeyDown}
         role="button"
         tabIndex={0}
-        className="outline-none"
+        className="outline-none flex flex-col h-full"
       >
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xl font-semibold">{name}</h3>
@@ -86,21 +86,21 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
         </div>
 
         {isLoading ? (
-          <div className="space-y-2 mb-4">
+          <div className="space-y-2 mb-4 flex-grow">
             <div className="h-4 bg-muted/50 rounded animate-pulse"></div>
             <div className="h-4 bg-muted/50 rounded animate-pulse w-3/4"></div>
           </div>
         ) : error ? (
-          <p className="text-muted-foreground mb-4 text-sm italic">
+          <p className="text-muted-foreground mb-4 text-sm italic flex-grow">
             Failed to load repository data
           </p>
         ) : (
-          <p className="text-muted-foreground mb-4">
+          <p className="text-muted-foreground mb-4 flex-grow">
             {repo?.description || "No description available"}
           </p>
         )}
 
-        <div className="mb-4">
+        <div className="mb-4 mt-auto">
           {isLoading ? (
             <div className="flex gap-2">
               {[1, 2, 3].map(i => (

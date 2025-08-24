@@ -9,7 +9,7 @@ export default function ApplyPage() {
 
           <div className="bg-card/50 backdrop-blur-sm border border-foreground/30 rounded-none p-8 md:p-12">
             <div className="mb-8 text-center">
-              <h2 className="mb-4 font-[family-name:var(--font-tangerine)] text-5xl md:text-7xl">Application Letter</h2>
+              <h2 className="mb-4 font-[family-name:var(--font-italianno)] text-5xl md:text-7xl">Application Letter</h2>
             </div>
 
             <div className="text-left">

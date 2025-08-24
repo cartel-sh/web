@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto, Tangerine, Stoke } from "next/font/google";
+import { Italianno, Roboto, Stoke } from "next/font/google";
 import "./globals.css";
 import "overlayscrollbars/overlayscrollbars.css";
 import { Providers } from "@/components/providers";
@@ -15,10 +15,10 @@ const roboto = Roboto({
   display: "swap",
 });
 
-const tangerine = Tangerine({
-  variable: "--font-tangerine",
+const italianno = Italianno({
+  variable: "--font-italianno",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: "400",
   display: "swap",
 });
 
@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${roboto.variable} ${tangerine.variable} ${stoke.variable} font-sans antialiased`}
+        className={`${roboto.variable} ${italianno.variable} ${stoke.variable} font-sans antialiased`}
       >
         <Providers>
           <AppScrollbars>
