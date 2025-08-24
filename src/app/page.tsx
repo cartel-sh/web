@@ -72,7 +72,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="aligned-communities" className="mb-20">
+      <section id="allies" className="mb-20">
         <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Allies</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
           {communitiesData.map((community) => (

@@ -47,6 +47,7 @@ export default function RootLayout({
         <Providers>
           <AppScrollbars>
             <div className="min-h-screen relative overflow-hidden">
+              <div id="top" className="absolute top-0" />
               <BackgroundLayout />
               <div className="relative z-10">
                 <div className="md:ml-64">

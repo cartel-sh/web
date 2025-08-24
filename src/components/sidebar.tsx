@@ -5,24 +5,24 @@ import { ModeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 import Link from "next/link";
+import { RollingText } from "@/components/animate-ui/text/rolling";
+import { UserMenu } from "@/components/user-menu";
 
 export function Sidebar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     sectionId: string | null
   ) => {
     const isHome = window.location.pathname === "/";
-    if (isHome) {
+    if (isHome && sectionId) {
       e.preventDefault();
-      if (!sectionId) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
       }
     }
     setIsMenuOpen(false);
@@ -57,6 +57,7 @@ export function Sidebar() {
     };
   }, [isMenuOpen]);
 
+
   return (
     <nav className="relative z-50">
       {/* Mobile hamburger button */}
@@ -79,48 +80,88 @@ export function Sidebar() {
 
       {/* Desktop sidebar in normal flow */}
       <aside
-        className="hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-6 gap-4 shrink-0 z-40 bg-secondary/40"
+        className="hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-3 gap-4 shrink-0 z-40 bg-secondary/40"
         aria-label="Sidebar navigation"
       >
         <div className="flex flex-col gap-3">
-          <Link
-            href="/"
-            onClick={(e) => handleNavClick(e, null)}
-            className="text-2xl font-[family-name:var(--font-stoke)] hover:text-primary transition-colors py-1 mb-4"
-            aria-label="Go to top"
-          >
-            Cartel
-          </Link>
+          <div className="flex items-center justify-between mb-2">
+            <Link
+              href="/#top"
+              onClick={(e) => handleNavClick(e, 'top')}
+              className="text-2xl font-bold text-primary font-[family-name:var(--font-stoke)] hover:text-primary transition-colors py-1"
+              aria-label="Go to top"
+              onMouseEnter={() => {
+                if (!hasAnimated) {
+                  setIsHovered(true);
+                  setHasAnimated(true);
+                  setTimeout(() => {
+                    setIsHovered(false);
+                    setHasAnimated(false);
+                  }, 500);
+                }
+              }}
+            >
+              {isHovered ? (
+                <RollingText transition={{ duration: 0.2, delay: 0.1, ease: 'easeOut' }} text="Cartel" />
+              ) : (
+                "Cartel"
+              )}
+            </Link>
+            <ModeToggle />
+          </div>
           <Link
             href="/#manifesto"
             onClick={(e) => handleNavClick(e, 'manifesto')}
-            className="text-base font-semibold hover:text-primary transition-colors py-1"
             aria-label="Go to Manifesto section"
           >
-            Manifesto
+            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+              Manifesto
+            </Button>
           </Link>
           <Link
             href="/#projects"
             onClick={(e) => handleNavClick(e, 'projects')}
-            className="text-base font-semibold hover:text-primary transition-colors py-1"
             aria-label="Go to Projects section"
           >
-            Projects
+            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+              Projects
+            </Button>
           </Link>
           <Link
             href="/#members"
             onClick={(e) => handleNavClick(e, 'members')}
-            className="text-base font-semibold hover:text-primary transition-colors py-1"
             aria-label="Go to Members section"
           >
-            Members
+            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+              Members
+            </Button>
           </Link>
-          <ModeToggle />
+          <Link
+            href="/#allies"
+            onClick={(e) => handleNavClick(e, 'allies')}
+            aria-label="Go to Allies section"
+          >
+            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+              Allies
+            </Button>
+          </Link>
+          <Link
+            href="/#treasury"
+            onClick={(e) => handleNavClick(e, 'treasury')}
+            aria-label="Go to Treasury section"
+          >
+            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+              Treasury
+            </Button>
+          </Link>
+          <div className="mt-6">
+            <Link href="/apply" aria-label="Go to Apply page">
+              <Button size="default" className="font-semibold w-full">Apply</Button>
+            </Link>
+          </div>
         </div>
         <div className="mt-auto pt-2">
-          <Link href="/apply" aria-label="Go to Apply page">
-            <Button size="default" className="font-semibold w-full">Apply</Button>
-          </Link>
+          <UserMenu />
         </div>
       </aside>
 
@@ -140,54 +181,91 @@ export function Sidebar() {
           aria-modal="true"
           className={`absolute top-0 left-0 h-full w-72 border-r shadow-xl transition-transform duration-300 ease-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} bg-secondary/40 backdrop-blur-sm`}
         >
-          <div className="px-5 py-6 flex flex-col gap-4 h-full">
-            <Link
-              href="/"
-              onClick={(e) => handleNavClick(e, null)}
-              className="text-2xl font-[family-name:var(--font-stoke)] hover:text-primary transition-colors py-2 mb-4"
-              tabIndex={isMenuOpen ? 0 : -1}
-              aria-label="Go to top"
-            >
-              Cartel
-            </Link>
+          <div className="px-5 py-3 flex flex-col gap-4 h-full">
+            <div className="flex items-center justify-between mb-4">
+              <Link
+                href="/#top"
+                onClick={(e) => handleNavClick(e, 'top')}
+                className="text-2xl font-[family-name:var(--font-stoke)] hover:text-primary transition-colors py-2"
+                tabIndex={isMenuOpen ? 0 : -1}
+                aria-label="Go to top"
+                onMouseEnter={() => {
+                  if (!hasAnimated) {
+                    setIsHovered(true);
+                    setHasAnimated(true);
+                    setTimeout(() => {
+                      setIsHovered(false);
+                      setHasAnimated(false);
+                    }, 500);
+                  }
+                }}
+              >
+                {isHovered ? (
+                  <RollingText text="Cartel" />
+                ) : (
+                  "Cartel"
+                )}
+              </Link>
+              <ModeToggle />
+            </div>
             <Link
               href="/#manifesto"
               onClick={(e) => handleNavClick(e, 'manifesto')}
-              className="text-base font-semibold hover:text-primary transition-colors py-2"
-              tabIndex={isMenuOpen ? 0 : -1}
               aria-label="Go to Manifesto section"
             >
-              Manifesto
+              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+                Manifesto
+              </Button>
             </Link>
             <Link
               href="/#projects"
               onClick={(e) => handleNavClick(e, 'projects')}
-              className="text-base font-semibold hover:text-primary transition-colors py-2"
-              tabIndex={isMenuOpen ? 0 : -1}
               aria-label="Go to Projects section"
             >
-              Projects
+              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+                Projects
+              </Button>
             </Link>
             <Link
               href="/#members"
               onClick={(e) => handleNavClick(e, 'members')}
-              className="text-base font-semibold hover:text-primary transition-colors py-2"
-              tabIndex={isMenuOpen ? 0 : -1}
               aria-label="Go to Members section"
             >
-              Members
+              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+                Members
+              </Button>
             </Link>
-            <ModeToggle />
-            <div className="mt-auto pt-2">
+            <Link
+              href="/#aligned"
+              onClick={(e) => handleNavClick(e, 'aligned')}
+              aria-label="Go to Aligned section"
+            >
+              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+                Aligned
+              </Button>
+            </Link>
+            <Link
+              href="/#treasury"
+              onClick={(e) => handleNavClick(e, 'treasury')}
+              aria-label="Go to Treasury section"
+            >
+              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+                Treasury
+              </Button>
+            </Link>
+            <div className="mt-6">
               <Link href="/apply" className="w-full" aria-label="Go to Apply page">
                 <Button
                   size="default"
-                  className="font-semibold w-full mt-2"
+                  className="font-semibold w-full"
                   tabIndex={isMenuOpen ? 0 : -1}
                 >
                   Apply
                 </Button>
               </Link>
+            </div>
+            <div className="mt-auto pt-2">
+              <UserMenu />
             </div>
           </div>
         </aside>
