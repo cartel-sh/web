@@ -39,7 +39,7 @@ export const CornerCard = ({
   return (
     <div
       className={cn(
-        "relative border rounded-lg border-foreground/30 bg-card/50",
+        "relative border rounded-lg border-border bg-card/50",
         interactive && "transition-transform duration-200 hover:bg-card/80 hover:scale-105",
         className
       )}
@@ -48,17 +48,20 @@ export const CornerCard = ({
       <div className={cn("p-6", contentClassName)}>{children}</div>
 
       {/* Decorative corner image */}
-      <Image
-        src={imageSrc}
-        alt=""
-        width={180}
-        height={80}
+      <div
         className={cn(
-          "pointer-events-none select-none absolute top-0 -right-1 opacity-90 dark:opacity-60",
+          "pointer-events-none select-none text-border opacity-80 absolute top-0 right-0",
           cornerClassName
         )}
-        priority={false}
-      />
+      >
+        <Image
+          src={imageSrc}
+          alt=""
+          width={180}
+          height={80}
+          priority={false}
+        />
+      </div>
     </div>
   );
 };
