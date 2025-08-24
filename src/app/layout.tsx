@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto, Tangerine } from "next/font/google";
+import { Roboto, Tangerine, Stoke } from "next/font/google";
 import "./globals.css";
 import "overlayscrollbars/overlayscrollbars.css";
 import { Providers } from "@/components/providers";
@@ -22,6 +22,13 @@ const tangerine = Tangerine({
   display: "swap",
 });
 
+const stoke = Stoke({
+  variable: "--font-stoke",
+  subsets: ["latin"],
+  weight: "300",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Cartel",
   description: "Accelerating decentralized social one project, one commit, one standard at a time.",
@@ -35,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${roboto.variable} ${tangerine.variable} font-sans antialiased`}
+        className={`${roboto.variable} ${tangerine.variable} ${stoke.variable} font-sans antialiased`}
       >
         <Providers>
           <AppScrollbars>

@@ -86,7 +86,7 @@ export function Sidebar() {
           <Link
             href="/"
             onClick={(e) => handleNavClick(e, null)}
-            className="text-base font-semibold hover:text-primary transition-colors py-1"
+            className="text-2xl font-[family-name:var(--font-stoke)] hover:text-primary transition-colors py-1 mb-4"
             aria-label="Go to top"
           >
             Cartel
@@ -144,7 +144,7 @@ export function Sidebar() {
             <Link
               href="/"
               onClick={(e) => handleNavClick(e, null)}
-              className="text-base font-semibold hover:text-primary transition-colors py-2"
+              className="text-2xl font-[family-name:var(--font-stoke)] hover:text-primary transition-colors py-2 mb-4"
               tabIndex={isMenuOpen ? 0 : -1}
               aria-label="Go to top"
             >

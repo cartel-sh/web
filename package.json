@@ -41,5 +41,13 @@
     "tailwindcss-animate": "^1.0.7",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-gnu": "^1.28.5",
+    "lightningcss-linux-x64-musl": "^1.28.5",
+    "lightningcss-linux-arm64-gnu": "^1.28.5",
+    "lightningcss-linux-arm64-musl": "^1.28.5",
+    "lightningcss-darwin-x64": "^1.28.5",
+    "lightningcss-darwin-arm64": "^1.28.5"
   }
 }
