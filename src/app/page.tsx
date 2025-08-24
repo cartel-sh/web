@@ -5,6 +5,7 @@ import { MemberBadge } from "@/components/ui/member-badge";
 import { ProjectCard } from "@/components/ui/project-card";
 import { TreasuryDisplay } from "@/components/treasury-display";
 import { CornerCard } from "@/components/ui/corner-card";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import membersData from "@/data/members.json";
 import projectsData from "@/data/projects.json";
 import communitiesData from "@/data/communities.json";
@@ -45,7 +46,12 @@ export default function Home() {
 
       <section id="projects" className="mb-20">
         <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Projects</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+        <InfiniteScroll
+          direction="left"
+          speed={40}
+          pauseOnHover={true}
+          className="py-4"
+        >
           {projectsData.map((project) => (
             <ProjectCard
               key={project.id}
@@ -54,12 +60,17 @@ export default function Home() {
               deploymentUrl={project.deploymentUrl}
             />
           ))}
-        </div>
+        </InfiniteScroll>
       </section>
 
       <section id="members" className="mb-20">
         <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Members</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl">
+        <InfiniteScroll
+          direction="right"
+          speed={35}
+          pauseOnHover={true}
+          className="py-4"
+        >
           {membersData.map((member) => (
             <MemberBadge
               key={member.id}
@@ -69,7 +80,7 @@ export default function Home() {
               link={member.link}
             />
           ))}
-        </div>
+        </InfiniteScroll>
       </section>
 
       <section id="allies" className="mb-20">
