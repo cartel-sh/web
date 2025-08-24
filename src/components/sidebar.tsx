@@ -79,7 +79,7 @@ export function Sidebar() {
 
       {/* Desktop sidebar in normal flow */}
       <aside
-        className="hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-6 gap-4 shrink-0 z-40"
+        className="hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-6 gap-4 shrink-0 z-40 bg-secondary/40"
         aria-label="Sidebar navigation"
       >
         <div className="flex flex-col gap-3">
@@ -138,9 +138,9 @@ export function Sidebar() {
         <aside
           role="dialog"
           aria-modal="true"
-          className={`absolute top-0 left-0 h-full w-72 border-r shadow-xl transition-transform duration-300 ease-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+          className={`absolute top-0 left-0 h-full w-72 border-r shadow-xl transition-transform duration-300 ease-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} bg-secondary/40 backdrop-blur-sm`}
         >
-          <div className="px-5 py-6 flex flex-col gap-4 h-full bg-background">
+          <div className="px-5 py-6 flex flex-col gap-4 h-full">
             <Link
               href="/"
               onClick={(e) => handleNavClick(e, null)}

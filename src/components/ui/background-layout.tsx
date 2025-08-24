@@ -8,7 +8,7 @@ export function BackgroundLayout() {
         aria-hidden="true"
         className="md:hidden fixed inset-0 pointer-events-none opacity-35 z-0"
         style={{
-          backgroundImage: 'url(/images/paper_texture.png)',
+          backgroundImage: 'url(/images/paper_texture.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '1024px 1024px',
         }}
@@ -20,19 +20,8 @@ export function BackgroundLayout() {
         aria-hidden="true"
         className="hidden md:block fixed inset-y-0 left-0 pointer-events-none opacity-35 z-0"
         style={{
-          right: '16rem',
-          backgroundImage: 'url(/images/paper_texture.png)',
-          backgroundRepeat: 'repeat',
-          backgroundSize: '1024px 1024px',
-        }}
-      />
-      {/* Sidebar region: fixed width strip on the right */}
-      <div
-        aria-hidden="true"
-        className="hidden md:block fixed inset-y-0 right-0 pointer-events-none opacity-35 z-0"
-        style={{
-          width: '16rem',
-          backgroundImage: 'url(/images/paper_texture.png)',
+          right: '0rem',
+          backgroundImage: 'url(/images/paper_texture.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '1024px 1024px',
         }}
