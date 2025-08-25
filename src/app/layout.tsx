@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Italianno, Roboto, Stoke } from "next/font/google";
+import { Italianno, Outfit, Stoke } from "next/font/google";
 import "./globals.css";
 import "overlayscrollbars/overlayscrollbars.css";
 import { Providers } from "@/components/providers";
@@ -9,8 +9,8 @@ import { SiteHeader } from "@/components/ui/site-header";
 import { SiteFooter } from "@/components/ui/site-footer";
 import { BackgroundLayout } from "@/components/ui/background-layout";
 
-const roboto = Roboto({
-  variable: "--font-roboto",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
   display: "swap",
 });
@@ -31,7 +31,7 @@ const stoke = Stoke({
 
 export const metadata: Metadata = {
   title: "Cartel",
-  description: "Accelerating decentralized social one project, one commit, one standard at a time.",
+  description: "Accelerating public goods",
 };
 
 export default function RootLayout({
@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${roboto.variable} ${italianno.variable} ${stoke.variable} font-sans antialiased`}
+        className={`${outfit.variable} ${italianno.variable} ${stoke.variable} font-sans antialiased`}
       >
         <Providers>
           <AppScrollbars>

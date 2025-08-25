@@ -61,7 +61,7 @@ export function SiteHeader() {
       </div>
       <div className="mt-2 text-center">
         <p className={`${italianno.className} text-3xl md:text-4xl lg:text-5xl text-foreground/90 pl-24 -mt-10`}>
-          The people of the world, accelerating Ethereum social.
+          The people of the world, accelerating public goods.
         </p>
       </div>
     </header>

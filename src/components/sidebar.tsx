@@ -148,12 +148,11 @@ export function Sidebar() {
             </Button>
           </Link>
           <Link
-            href="/#manifesto"
-            onClick={(e) => handleNavClick(e, 'manifesto')}
-            aria-label="Go to Manifesto section"
+            href="/constitution"
+            aria-label="Go to Constitution page"
           >
             <Button variant="ghost" className="w-full justify-start font-semibold text-base">
-              Manifesto
+              Constitution
             </Button>
           </Link>
           <Link
@@ -269,12 +268,11 @@ export function Sidebar() {
               </Button>
             </Link>
             <Link
-              href="/#manifesto"
-              onClick={(e) => handleNavClick(e, 'manifesto')}
-              aria-label="Go to Manifesto section"
+              href="/constitution"
+              aria-label="Go to Constitution page"
             >
               <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
-                Manifesto
+                Constitution
               </Button>
             </Link>
             <Link

@@ -174,7 +174,7 @@ export function InfiniteScroll({
   return (
     <div 
       ref={containerRef}
-      className={cn("relative overflow-x-auto overflow-y-hidden", className)}
+      className={cn("relative overflow-x-auto overflow-y-visible", className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{
@@ -191,8 +191,8 @@ export function InfiniteScroll({
       `}</style>
       <div
         ref={scrollRef}
-        className="relative h-full"
-        style={{ minHeight: `${minHeight}px` }}
+        className="relative"
+        style={{ minHeight: `${minHeight + 20}px` }}
       >
         {duplicatedChildren.map((child, index) => (
           <div 
@@ -200,12 +200,11 @@ export function InfiniteScroll({
             ref={(el) => {
               itemsRef.current[index] = el;
             }}
-            className="absolute top-0 left-0 h-full"
+            className="absolute top-0 left-0"
             style={{ 
               willChange: "transform",
               opacity: isInitialized ? 1 : 0,
-              transition: "opacity 0.3s ease-in-out",
-              minHeight: `${minHeight}px`
+              transition: "opacity 0.3s ease-in-out"
             }}
           >
             {child}

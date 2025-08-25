@@ -63,7 +63,7 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
     <CornerCard
       variant="project"
       interactive
-      className={cn("cursor-pointer bg-card/50 rounded-xl rounded-tr-2xl h-full", className)}
+      className={cn("cursor-pointer bg-card/50 rounded-xl rounded-tr-2xl min-h-[200px]", className)}
       contentClassName="p-6 h-full flex flex-col"
       cornerClassName="-top-0.5 -right-1"
       ariaLabel={`Open ${name} project`}
@@ -95,7 +95,7 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
             Failed to load repository data
           </p>
         ) : (
-          <p className="text-muted-foreground mb-4 flex-grow">
+          <p className="text-muted-foreground mb-4 flex-grow line-clamp-3">
             {repo?.description || "No description available"}
           </p>
         )}
