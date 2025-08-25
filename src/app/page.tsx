@@ -37,39 +37,41 @@ export default function Home() {
             </div>
           </CornerCard>
 
-            <Button variant="outline" 
+          <Button variant="outline"
             className="text-xl cursor-pointer px-6 py-2 h-auto rounded-xl w-full border-t-none rounded-t-none hover:scale-100 active:scale-100">
-              <Link href="/constitution" className="hover:text-primary text-foreground/50 transition-colors flex items-center gap-2">
-                Read the constitution 
-                {/* <ChevronRight className="size-4 -mb-1" strokeWidth={3} /> */}
-              </Link>
-            </Button>
+            <Link href="/constitution" className="hover:text-primary text-foreground/50 transition-colors flex items-center gap-2">
+              Read the constitution
+              {/* <ChevronRight className="size-4 -mb-1" strokeWidth={3} /> */}
+            </Link>
+          </Button>
 
         </div>
       </section>
 
 
-      <section id="projects">
-        <SectionLabel>WHAT WE DO</SectionLabel>
-        <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-2 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Projects</h2>
-        <p className={`${stoke.className} text-lg md:text-xl mb-8 text-primary/40`}>
-          Mass production of public goods, dao tooling, unicorn startups
-        </p>
-        <InfiniteScroll
-          direction="left"
-          speed={40}
-          pauseOnHover={true}
-          className="py-4"
-        >
-          {projectsData.map((project) => (
-            <ProjectCard
-              key={project.id}
-              name={project.name}
-              githubLink={project.githubLink}
-              deploymentUrl={project.deploymentUrl}
-            />
-          ))}
-        </InfiniteScroll>
+      <section id="projects" className="relative">
+        <div className="relative z-10">
+          <SectionLabel>WHAT WE DO</SectionLabel>
+          <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-2 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Projects</h2>
+          <p className={`${stoke.className} text-lg md:text-xl mb-8 text-primary/40`}>
+            Mass production of public goods, dao tooling, unicorn startups
+          </p>
+          <InfiniteScroll
+            direction="left"
+            speed={40}
+            pauseOnHover={true}
+            className="py-4"
+          >
+            {projectsData.map((project) => (
+              <ProjectCard
+                key={project.id}
+                name={project.name}
+                githubLink={project.githubLink}
+                deploymentUrl={project.deploymentUrl}
+              />
+            ))}
+          </InfiniteScroll>
+        </div>
       </section>
 
       <section id="members">
@@ -98,11 +100,13 @@ export default function Home() {
 
       <section id="community">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-          <div className="flex items-center justify-center md:justify-start">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start justify-center ">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl text-center md:text-left md:mb-4">
               <span className={`${stoke.className} font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Join the Community</span><br />
-              {/* <span className={`${stoke.className} text-md  text-muted-foreground/80`}>Your voice matters.</span> */}
             </h2>
+              <p className={`${stoke.className} text-lg md:text-xl text-primary/40`}>
+                Global means for everyone
+              </p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Button
@@ -111,7 +115,7 @@ export default function Home() {
               onClick={() => window.open('https://discord.gg/FZzD7DZksj', '_blank')}
               aria-label="Join Discord"
             >
-              <FaDiscord className="size-12 md:size-20" />
+              <FaDiscord className="size-12 md:size-16" />
             </Button>
             <Button
               variant="outline"
@@ -119,7 +123,7 @@ export default function Home() {
               onClick={() => window.open('https://t.me/cartel_sh', '_blank')}
               aria-label="Join Telegram"
             >
-              <FaTelegram className="size-12 md:size-20" />
+              <FaTelegram className="size-12 md:size-14" />
             </Button>
           </div>
         </div>
@@ -140,12 +144,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="treasury">
-        <SectionLabel>OUR RESOURCES</SectionLabel>
-        <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
-        <CornerCard variant="treasury" contentClassName="p-6" cornerClassName="-top-0.5 -right-0.5" className="bg-card/50 rounded-xl rounded-tr-2xl w-fit">
-          <TreasuryDisplay showHeading={false} showTransactions={false} />
-        </CornerCard>
+      <section id="treasury" className="relative">
+        <div className="relative z-10">
+          <SectionLabel>OUR RESOURCES</SectionLabel>
+          <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
+          <CornerCard variant="treasury" contentClassName="p-6" cornerClassName="-top-0.5 -right-0.5" className="bg-card/80 rounded-xl rounded-tr-2xl w-fit relative">
+            <TreasuryDisplay showHeading={false} showTransactions={false} />
+          </CornerCard>
+        </div>
       </section>
 
       <section id="apply">
