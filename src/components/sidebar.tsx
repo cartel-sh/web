@@ -10,6 +10,11 @@ import { UserMenu } from "@/components/user-menu";
 export function Sidebar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    setHasAnimated(true);
+  }, []);
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -78,7 +83,9 @@ export function Sidebar() {
 
       {/* Desktop sidebar in normal flow */}
       <aside
-        className="hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-3 gap-4 shrink-0 z-40 bg-secondary/40"
+        className={`hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-3 gap-4 shrink-0 z-40 bg-secondary/40 transition-transform duration-700 ease-out ${
+          hasAnimated ? 'translate-x-0' : '-translate-x-full'
+        }`}
         aria-label="Sidebar navigation"
       >
         <div className="flex flex-col gap-3">

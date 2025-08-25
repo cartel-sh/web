@@ -13,16 +13,13 @@ import membersData from "@/data/members.json";
 import projectsData from "@/data/projects.json";
 import communitiesData from "@/data/communities.json";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { FaDiscord, FaTelegram } from "react-icons/fa";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 
 const italianno = Italianno({ subsets: ["latin"], weight: "400" });
 const stoke = Stoke({ subsets: ["latin"], weight: "400" });
 
 export default function Home() {
-  const router = useRouter();
   useEffect(() => {
     document.title = "Cartel";
   }, []);
