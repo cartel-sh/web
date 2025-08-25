@@ -29,8 +29,8 @@ export default function Home() {
 
 
   return (
-    <>
-      <section id="about" className="my-20 text-center">
+    <div className="flex flex-col gap-32 py-20">
+      <section id="about" className="text-center">
         <div className="max-w-3xl mx-auto">
           <CornerCard variant="manifesto" contentClassName="p-8 px-16" cornerClassName="-top-0.5 -right-0.5" className="bg-card/80 rounded-xl rounded-b-none border-b-none">
             <div className={`${italianno.className} text-left text-foreground/90 text-3xl md:text-4xl `}>
@@ -43,7 +43,8 @@ export default function Home() {
             <Button variant="outline" 
             className="text-xl cursor-pointer px-6 py-2 h-auto rounded-xl w-full border-t-none rounded-t-none hover:scale-100 active:scale-100">
               <Link href="/constitution" className="hover:text-primary text-foreground/50 transition-colors flex items-center gap-2">
-                Read the constitution <ChevronRight className="size-4 -mb-1" strokeWidth={3} />
+                Read the constitution 
+                {/* <ChevronRight className="size-4 -mb-1" strokeWidth={3} /> */}
               </Link>
             </Button>
 
@@ -51,7 +52,7 @@ export default function Home() {
       </section>
 
 
-      <section id="projects" className="mt-16 mb-20">
+      <section id="projects">
         <SectionLabel>WHAT WE DO</SectionLabel>
         <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-2 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Projects</h2>
         <p className={`${stoke.className} text-lg md:text-xl mb-8 text-primary/40`}>
@@ -74,7 +75,7 @@ export default function Home() {
         </InfiniteScroll>
       </section>
 
-      <section id="members" className="mb-20">
+      <section id="members">
         <SectionLabel>WHO WE ARE</SectionLabel>
         <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-2 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Members</h2>
         <p className={`${stoke.className} text-lg md:text-xl mb-8 text-primary/40`}>
@@ -98,11 +99,11 @@ export default function Home() {
         </InfiniteScroll>
       </section>
 
-      <section id="community" className="mb-20">
+      <section id="community">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           <div className="flex items-center justify-center md:justify-start">
             <h2 className="text-3xl md:text-4xl lg:text-5xl text-center md:text-left">
-              <span className={`${stoke.className} font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Join the Cartel Community</span><br />
+              <span className={`${stoke.className} font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Join the Community</span><br />
               {/* <span className={`${stoke.className} text-md  text-muted-foreground/80`}>Your voice matters.</span> */}
             </h2>
           </div>
@@ -127,7 +128,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="allies" className="mb-20">
+      <section id="allies">
         <SectionLabel>WHO WE WORK WITH</SectionLabel>
         <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Allies & Partners</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
@@ -142,7 +143,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="treasury" className="mb-20">
+      <section id="treasury">
         <SectionLabel>OUR RESOURCES</SectionLabel>
         <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
         <CornerCard variant="treasury" contentClassName="p-6" cornerClassName="-top-0.5 -right-0.5" className="bg-card/50 rounded-xl rounded-tr-2xl w-fit">
@@ -150,7 +151,7 @@ export default function Home() {
         </CornerCard>
       </section>
 
-      <section id="apply" className="my-20">
+      <section id="apply">
         <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl text-center font-bold mb-8`} style={{ letterSpacing: '-0.1em' }}>
           Want to help us build <br /> the future of social?
         </h2>
@@ -168,6 +169,6 @@ export default function Home() {
         </div>
       </section>
 
-    </>
+    </div>
   );
 }
