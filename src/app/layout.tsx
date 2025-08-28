@@ -50,9 +50,9 @@ export default function RootLayout({
               <div id="top" className="absolute top-0" />
               <BackgroundLayout />
               <div className="relative z-10">
-                <div className="md:ml-64">
-                  <div className="max-w-6xl mx-auto px-6">
-                    <div className="max-w-6xl mx-auto px-6 pt-6">
+                <div className="lg:ml-64">
+                  <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6">
                       <SiteHeader />
                     </div>
                     <main className="relative z-10">
