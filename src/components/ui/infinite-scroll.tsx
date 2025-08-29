@@ -174,12 +174,14 @@ export function InfiniteScroll({
   return (
     <div 
       ref={containerRef}
-      className={cn("relative overflow-x-auto overflow-y-visible", className)}
+      className={cn("relative overflow-x-auto overflow-y-visible touch-pan-y", className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleMouseEnter}
+      onTouchEnd={handleMouseLeave}
       style={{
-        maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-        WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+        maskImage: "linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)",
         msOverflowStyle: "none",
         scrollbarWidth: "none",
       }}
@@ -203,6 +205,7 @@ export function InfiniteScroll({
             className="absolute top-0 left-0"
             style={{ 
               willChange: "transform",
+              transform: "translateZ(0)",
               opacity: isInitialized ? 1 : 0,
               transition: "opacity 0.3s ease-in-out"
             }}

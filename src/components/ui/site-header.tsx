@@ -61,7 +61,10 @@ export function SiteHeader() {
         </div>
       </div>
       <div className="mt-2 text-center">
-        <p className={`${italianno.className} text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-foreground/90 pl-6 sm:pl-12 md:pl-24 -mt-6 sm:-mt-8 md:-mt-10`}>
+        <p className={`${italianno.className} text-foreground/90 -mt-4 sm:-mt-6 md:-mt-8 lg:-mt-10`} style={{
+          fontSize: 'clamp(1.75rem, 5vw, 3.125rem)',
+          paddingLeft: 'clamp(1.5rem, 6vw, 6rem)'
+        }}>
           The people of the world, accelerating public goods.
         </p>
       </div>
