@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useAccount, useSignMessage, useConnect, useDisconnect } from "wagmi";
 import { SiweMessage } from "siwe";
-import { injected } from "wagmi/connectors";
 import { cartel } from "@/lib/cartel-client";
 import { LocalStorageTokenStorage } from "@cartel-sh/api";
 
@@ -59,16 +58,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError(null);
 
     try {
-      // Connect wallet if not connected
-      let walletAddress = address;
-      if (!isConnected) {
-        const result = await connectAsync({ connector: injected() });
-        walletAddress = result.accounts[0];
+      // Ensure wallet is connected
+      if (!isConnected || !address) {
+        throw new Error("Please connect your wallet first");
       }
 
-      if (!walletAddress) {
-        throw new Error("No wallet address available");
-      }
+      const walletAddress = address;
 
       // Request server-generated nonce for security
       const nonceResponse = await fetch('/api/auth/nonce', {

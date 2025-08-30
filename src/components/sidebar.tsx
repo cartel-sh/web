@@ -6,6 +6,7 @@ import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 import Link from "next/link";
 import { SplittingText } from "@/components/animate-ui/text/splitting";
 import { UserMenu } from "@/components/user-menu";
+import { AuthButton } from "@/components/auth-button";
 
 export function Sidebar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -188,6 +189,7 @@ export function Sidebar() {
         </div>
         <div className="mt-auto pt-2">
           <UserMenu />
+          <AuthButton />
         </div>
       </aside>
 
@@ -313,6 +315,7 @@ export function Sidebar() {
             </div>
             <div className="mt-auto pt-2">
               <UserMenu />
+              <AuthButton />
             </div>
           </div>
         </aside>
