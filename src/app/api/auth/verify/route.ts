@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     
     try {
       // Verify with the API to get JWT tokens
-      const authResponse = await serverClient.verifySiwe(message, signature);
+      const authResponse = await serverClient.auth.verifySiwe(message, signature);
       
       // Only delete nonce after successful API verification
       nonceStore.delete(address);

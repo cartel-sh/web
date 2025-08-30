@@ -38,11 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const checkSession = async () => {
       try {
         // Try to get current user via SDK
-        const userData = await cartel.getCurrentUser();
+        const userData = await cartel.auth.me();
         if (userData) {
           setUser({
-            userId: userData.userId,
-            address: userData.address,
+            userId: userData.id,
+            address: userData.address || '',
           });
           setIsAuthenticated(true);
         }
@@ -141,11 +141,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     try {
       // Revoke tokens on server and clear local storage
-      await cartel.revokeTokens();
+      await cartel.auth.revoke();
     } catch (error) {
       console.error("Logout error:", error);
       // Even if revoke fails, clear local tokens
-      cartel.logout();
+      cartel.auth.logout();
     }
 
     // Clear local state
