@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SiweMessage } from 'siwe';
 import { nonceStore } from '@/lib/nonce-store';
+import { CartelClient, InMemoryTokenStorage } from '@cartel-sh/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.cartel.sh';
-const API_KEY = process.env.API_KEY;
+const API_KEY = process.env.API_KEY || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,42 +52,25 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Now send to API to get the authentication cookie (keep nonce until success)
-    // We need to make the request directly since we're in a server environment
-    const response = await fetch(`${API_URL}/api/auth/verify`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': API_KEY || '',
-      },
-      body: JSON.stringify({ message, signature }),
-      credentials: 'include',
-    });
+    // Create a server-side client with in-memory storage (no persistence needed)
+    const serverClient = new CartelClient(API_URL, API_KEY, new InMemoryTokenStorage());
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API verification failed:', errorText);
+    try {
+      // Verify with the API to get JWT tokens
+      const authResponse = await serverClient.verifySiwe(message, signature);
+      
+      // Only delete nonce after successful API verification
+      nonceStore.delete(address);
+      
+      // Return the JWT tokens to the client
+      return NextResponse.json(authResponse);
+    } catch (apiError: any) {
+      console.error('API verification failed:', apiError);
       return NextResponse.json(
-        { error: `API verification failed: ${errorText}` },
-        { status: response.status }
+        { error: apiError.message || 'API verification failed' },
+        { status: 500 }
       );
     }
-    
-    const authResponse = await response.json();
-    
-    // Only delete nonce after successful API verification
-    nonceStore.delete(address);
-    
-    // Create response with auth data
-    const res = NextResponse.json(authResponse);
-    
-    // Forward any set-cookie headers from the API
-    const setCookieHeader = response.headers.get('set-cookie');
-    if (setCookieHeader) {
-      res.headers.set('set-cookie', setCookieHeader);
-    }
-    
-    return res;
     
   } catch (error: any) {
     console.error('Auth verification error:', error);

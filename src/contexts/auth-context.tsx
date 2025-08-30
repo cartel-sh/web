@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useAccount, useSignMessage, useConnect, useDisconnect } from "wagmi";
 import { SiweMessage } from "siwe";
 import { injected } from "wagmi/connectors";
+import { cartel } from "@/lib/cartel-client";
+import { LocalStorageTokenStorage } from "@cartel-sh/api";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -35,20 +37,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        // Try to get current user via our API route
-        const response = await fetch('/api/auth/me', {
-          credentials: 'include',
-        });
-        
-        if (response.ok) {
-          const userData = await response.json();
+        // Try to get current user via SDK
+        const userData = await cartel.getCurrentUser();
+        if (userData) {
           setUser({
             userId: userData.userId,
             address: userData.address,
           });
           setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
         }
       } catch (error) {
         // Not authenticated or error - user needs to login
@@ -107,13 +103,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Sign the message with wallet
       const signature = await signMessageAsync({ message });
 
-      // Verify with our API route (which will use the server-side API key)
+      // Verify with our API route first to validate nonce
       const verifyResponse = await fetch('/api/auth/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({ message, signature }),
       });
 
@@ -124,7 +119,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const response = await verifyResponse.json();
 
-      // Update state with user info
+      if (response.accessToken && response.refreshToken) {
+        const tokenStorage = new LocalStorageTokenStorage();
+        tokenStorage.setTokens(response.accessToken, response.refreshToken, response.expiresIn);
+      }
+
       setUser({
         userId: response.userId,
         address: response.address,
@@ -141,15 +140,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      // Call our API route to logout
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      // Revoke tokens on server and clear local storage
+      await cartel.revokeTokens();
     } catch (error) {
       console.error("Logout error:", error);
+      // Even if revoke fails, clear local tokens
+      cartel.logout();
     }
-    
+
     // Clear local state
     setUser(null);
     setIsAuthenticated(false);
