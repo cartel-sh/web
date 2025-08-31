@@ -3,9 +3,7 @@
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserMenu } from "@/components/user-menu";
-import { User, Settings, Activity, Home, LayoutGrid } from "lucide-react";
-import Link from "next/link";
+import { User, Settings, Activity } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useEnsName } from "@/hooks/use-ens";
@@ -40,32 +38,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      {/* Header Navigation */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-6">
-              <Link href="/" className="flex items-center gap-2">
-                <Home className="h-5 w-5" />
-                <span className="font-semibold text-lg">Cartel</span>
-              </Link>
-              <nav className="hidden md:flex items-center gap-4">
-                <Link href="/dash">
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <LayoutGrid className="h-4 w-4" />
-                    Dashboard
-                  </Button>
-                </Link>
-              </nav>
-            </div>
-            <div className="w-48">
-              <UserMenu />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Welcome back{ensName ? `, ${ensName}` : ''}</h1>
