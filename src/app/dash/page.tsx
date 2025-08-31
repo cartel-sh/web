@@ -3,13 +3,16 @@
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, ArrowLeft, Settings, Activity } from "lucide-react";
+import { UserMenu } from "@/components/user-menu";
+import { User, Settings, Activity, Home, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useEnsName } from "@/hooks/use-ens";
 
 export default function Dashboard() {
   const { isAuthenticated, user, isLoading } = useAuth();
+  const { ensName } = useEnsName(user?.address);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,23 +40,39 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-3xl font-bold">Dashboard</h1>
-              <p className="text-muted-foreground">Welcome back to your cartel dashboard</p>
+      {/* Header Navigation */}
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center justify-between">
+            <div className="flex items-center gap-6">
+              <Link href="/" className="flex items-center gap-2">
+                <Home className="h-5 w-5" />
+                <span className="font-semibold text-lg">Cartel</span>
+              </Link>
+              <nav className="hidden md:flex items-center gap-4">
+                <Link href="/dash">
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <LayoutGrid className="h-4 w-4" />
+                    Dashboard
+                  </Button>
+                </Link>
+              </nav>
+            </div>
+            <div className="w-48">
+              <UserMenu />
             </div>
           </div>
         </div>
+      </header>
 
-        {/* User Info Card */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Welcome back{ensName ? `, ${ensName}` : ''}</h1>
+          <p className="text-muted-foreground">Manage your cartel membership and projects</p>
+        </div>
+
+        {/* User Info Cards */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
           <Card className="col-span-full md:col-span-2 lg:col-span-1">
             <CardHeader className="flex flex-row items-center space-y-0 pb-2">

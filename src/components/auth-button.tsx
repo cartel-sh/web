@@ -4,22 +4,17 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import { ConnectKitButton } from "connectkit";
 import { useAccount } from "wagmi";
-import { useState } from "react";
-import { Wallet, FileText } from "lucide-react";
+import { Wallet, FileText, Loader2 } from "lucide-react";
 
 export function AuthButton() {
-  const { isAuthenticated, login, error } = useAuth();
+  const { isAuthenticated, login, error, isLoading } = useAuth();
   const { isConnected } = useAccount();
-  const [isSigningIn, setIsSigningIn] = useState(false);
 
   const handleSignIn = async () => {
-    setIsSigningIn(true);
     try {
       await login();
     } catch (err) {
       // Error is handled by auth context
-    } finally {
-      setIsSigningIn(false);
     }
   };
 
@@ -35,29 +30,49 @@ export function AuthButton() {
           {({ isConnected, show }) => (
             <Button 
               variant="outline" 
-              size="sm"
               className="w-full justify-start gap-2"
               onClick={show}
+              disabled={isLoading}
             >
               <Wallet className="h-4 w-4" />
-              Connect Wallet
+              {isLoading ? "Connecting..." : "Connect Wallet"}
             </Button>
           )}
         </ConnectKitButton.Custom>
       ) : (
         <Button
           variant="outline"
-          size="sm"
           className="w-full justify-start gap-2"
           onClick={handleSignIn}
-          disabled={isSigningIn}
+          disabled={isLoading}
         >
-          <FileText className="h-4 w-4" />
-          {isSigningIn ? "Signing..." : "Sign in with Ethereum"}
+          {isLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Signing in...
+            </>
+          ) : (
+            <>
+              <FileText className="h-4 w-4" />
+              Sign in with Ethereum
+            </>
+          )}
         </Button>
       )}
       {error && (
-        <p className="text-xs text-destructive px-2">{error}</p>
+        <div className="space-y-1">
+          <p className="text-xs text-destructive px-2">{error}</p>
+          {isConnected && !isLoading && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-xs h-6"
+              onClick={handleSignIn}
+            >
+              Try again
+            </Button>
+          )}
+        </div>
       )}
     </div>
   );

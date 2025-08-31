@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<{ userId: string; address: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasTriedAutoLogin, setHasTriedAutoLogin] = useState(false);
 
   const { address, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
@@ -52,6 +53,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
     checkSession();
   }, []);
+
+  // Reset auto-login flag when wallet disconnects or changes
+  useEffect(() => {
+    if (!isConnected || !address) {
+      setHasTriedAutoLogin(false);
+      setError(null); // Clear any previous errors when wallet disconnects
+    }
+  }, [isConnected, address]);
 
   const login = useCallback(async () => {
     setIsLoading(true);
@@ -132,6 +141,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     }
   }, [address, isConnected, connectAsync, signMessageAsync]);
+
+  // Auto-trigger SIWE when wallet connects and user is not authenticated
+  useEffect(() => {
+    const attemptAutoLogin = async () => {
+      // Only attempt if:
+      // - Wallet is connected
+      // - User is not already authenticated
+      // - We have an address
+      // - We haven't tried auto login yet for this connection
+      if (isConnected && address && !isAuthenticated && !hasTriedAutoLogin && !isLoading) {
+        setHasTriedAutoLogin(true);
+        try {
+          await login();
+        } catch (error) {
+          // Auto-login failed, user can manually retry
+          console.log("Auto-login after wallet connection failed:", error);
+        }
+      }
+    };
+
+    attemptAutoLogin();
+  }, [isConnected, address, isAuthenticated, hasTriedAutoLogin, isLoading, login]);
 
   const logout = useCallback(async () => {
     try {

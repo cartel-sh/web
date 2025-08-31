@@ -84,13 +84,12 @@ export function Sidebar() {
 
       {/* Desktop sidebar in normal flow */}
       <aside
-        className={`hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-3 gap-4 shrink-0 z-40 bg-secondary/40 transition-transform duration-700 ease-out ${
-          hasAnimated ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`hidden md:flex fixed inset-y-0 left-0 w-64 border-r flex-col items-stretch px-5 py-3 gap-4 shrink-0 z-40 bg-secondary/40 transition-transform duration-700 ease-out ${hasAnimated ? 'translate-x-0' : '-translate-x-full'
+          }`}
         aria-label="Sidebar navigation"
       >
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between mt-2 mb-1">
             <Link
               href="/#top"
               onClick={(e) => handleNavClick(e, 'top')}
@@ -133,7 +132,7 @@ export function Sidebar() {
             onClick={(e) => handleNavClick(e, 'projects')}
             aria-label="Go to Projects section"
           >
-            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+            <Button variant="ghost" className="w-full justify-start font-medium text-base">
               Projects
             </Button>
           </Link>
@@ -142,7 +141,7 @@ export function Sidebar() {
             onClick={(e) => handleNavClick(e, 'members')}
             aria-label="Go to Members section"
           >
-            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+            <Button variant="ghost" className="w-full justify-start font-medium text-base">
               Members
             </Button>
           </Link>
@@ -151,7 +150,7 @@ export function Sidebar() {
             onClick={(e) => handleNavClick(e, 'community')}
             aria-label="Go to Community section"
           >
-            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+            <Button variant="ghost" className="w-full justify-start font-medium text-base">
               Community
             </Button>
           </Link>
@@ -159,7 +158,7 @@ export function Sidebar() {
             href="/constitution"
             aria-label="Go to Constitution page"
           >
-            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+            <Button variant="ghost" className="w-full justify-start font-medium text-base">
               Constitution
             </Button>
           </Link>
@@ -168,7 +167,7 @@ export function Sidebar() {
             onClick={(e) => handleNavClick(e, 'allies')}
             aria-label="Go to Allies section"
           >
-            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+            <Button variant="ghost" className="w-full justify-start font-medium text-base">
               Allies
             </Button>
           </Link>
@@ -177,11 +176,11 @@ export function Sidebar() {
             onClick={(e) => handleNavClick(e, 'treasury')}
             aria-label="Go to Treasury section"
           >
-            <Button variant="ghost" className="w-full justify-start font-semibold text-base">
+            <Button variant="ghost" className="w-full justify-start font-medium text-base">
               Treasury
             </Button>
           </Link>
-          <div className="mt-6">
+          <div className="mt-2">
             <Link href="/apply" aria-label="Go to Apply page">
               <Button size="default" className="font-semibold w-full">Apply</Button>
             </Link>
@@ -254,7 +253,7 @@ export function Sidebar() {
               onClick={(e) => handleNavClick(e, 'projects')}
               aria-label="Go to Projects section"
             >
-              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+              <Button variant="ghost" className="w-full justify-start font-medium text-base" tabIndex={isMenuOpen ? 0 : -1}>
                 Projects
               </Button>
             </Link>
@@ -263,7 +262,7 @@ export function Sidebar() {
               onClick={(e) => handleNavClick(e, 'members')}
               aria-label="Go to Members section"
             >
-              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+              <Button variant="ghost" className="w-full justify-start font-medium text-base" tabIndex={isMenuOpen ? 0 : -1}>
                 Members
               </Button>
             </Link>
@@ -272,7 +271,7 @@ export function Sidebar() {
               onClick={(e) => handleNavClick(e, 'community')}
               aria-label="Go to Community section"
             >
-              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+              <Button variant="ghost" className="w-full justify-start font-medium text-base" tabIndex={isMenuOpen ? 0 : -1}>
                 Community
               </Button>
             </Link>
@@ -280,7 +279,7 @@ export function Sidebar() {
               href="/constitution"
               aria-label="Go to Constitution page"
             >
-              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+              <Button variant="ghost" className="w-full justify-start font-medium text-base" tabIndex={isMenuOpen ? 0 : -1}>
                 Constitution
               </Button>
             </Link>
@@ -289,7 +288,7 @@ export function Sidebar() {
               onClick={(e) => handleNavClick(e, 'allies')}
               aria-label="Go to Allies section"
             >
-              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+              <Button variant="ghost" className="w-full justify-start font-medium text-base" tabIndex={isMenuOpen ? 0 : -1}>
                 Allies
               </Button>
             </Link>
@@ -298,11 +297,11 @@ export function Sidebar() {
               onClick={(e) => handleNavClick(e, 'treasury')}
               aria-label="Go to Treasury section"
             >
-              <Button variant="ghost" className="w-full justify-start font-semibold text-base" tabIndex={isMenuOpen ? 0 : -1}>
+              <Button variant="ghost" className="w-full justify-start font-medium text-base" tabIndex={isMenuOpen ? 0 : -1}>
                 Treasury
               </Button>
             </Link>
-            <div className="mt-6">
+            <div className="mt-2">
               <Link href="/apply" className="w-full" aria-label="Go to Apply page">
                 <Button
                   size="default"

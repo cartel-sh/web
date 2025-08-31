@@ -37,14 +37,11 @@ export function UserMenu() {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="flex items-center gap-2 px-3 py-2">
+          <Button variant="outline" className="w-full justify-start gap-2">
             <User className="h-4 w-4" />
-            <div className="flex flex-col items-start">
-              <span className="text-sm font-medium truncate max-w-[120px]">
-                {getDisplayName()}
-              </span>
-              <span className="text-xs text-muted-foreground">Connected</span>
-            </div>
+            <span className="text-sm font-medium truncate">
+              {getDisplayName()}
+            </span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
