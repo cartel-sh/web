@@ -1,5 +1,3 @@
-"use client";
-
 import { Italianno, Stoke } from "next/font/google";
 import { MemberBadge } from "@/components/ui/member-badge";
 import { ProjectCard } from "@/components/ui/project-card";
@@ -10,19 +8,35 @@ import { AlliesCard } from "@/components/ui/allies-card";
 import { Button } from "@/components/ui/button";
 import { SectionLabel } from "@/components/ui/section-label";
 import membersData from "@/data/members.json";
-import projectsData from "@/data/projects.json";
 import communitiesData from "@/data/communities.json";
-import { useEffect } from "react";
-import { FaDiscord, FaTelegram } from "react-icons/fa";
+import type { ProjectWithUser } from "@cartel-sh/api";
+import { CommunityButtons } from "@/components/ui/community-buttons";
 import Link from "next/link";
+import { cartel } from "@/lib/cartel-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Cartel",
+};
 
 const italianno = Italianno({ subsets: ["latin"], weight: "400" });
 const stoke = Stoke({ subsets: ["latin"], weight: "400" });
 
-export default function Home() {
-  useEffect(() => {
-    document.title = "Cartel";
-  }, []);
+async function getPublicProjects(): Promise<ProjectWithUser[]> {
+  try {
+    const projects = await cartel.projects.list({
+      public: "true",
+      limit: 10,
+    });
+    return projects;
+  } catch (error) {
+    console.error('Failed to fetch public projects:', error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const projects = await getPublicProjects();
 
 
   return (
@@ -62,12 +76,12 @@ export default function Home() {
             pauseOnHover={true}
             className="py-4"
           >
-            {projectsData.map((project) => (
+            {projects.map((project) => (
               <ProjectCard
                 key={project.id}
-                name={project.name}
-                githubLink={project.githubLink}
-                deploymentUrl={project.deploymentUrl}
+                name={project.title}
+                githubLink={project.githubUrl || '#'}
+                deploymentUrl={project.deploymentUrl || '#'}
               />
             ))}
           </InfiniteScroll>
@@ -108,24 +122,7 @@ export default function Home() {
                 Global means for everyone
               </p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              className="h-full min-h-[120px] hover:cursor-pointer md:min-h-[150px] flex items-center justify-center rounded-xl  transition-transform"
-              onClick={() => window.open('https://discord.gg/FZzD7DZksj', '_blank')}
-              aria-label="Join Discord"
-            >
-              <FaDiscord className="size-12 md:size-16" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-full min-h-[120px] hover:cursor-pointer md:min-h-[150px] flex items-center justify-center rounded-xl  transition-transform"
-              onClick={() => window.open('https://t.me/cartel_sh', '_blank')}
-              aria-label="Join Telegram"
-            >
-              <FaTelegram className="size-12 md:size-14" />
-            </Button>
-          </div>
+          <CommunityButtons />
         </div>
       </section>
 

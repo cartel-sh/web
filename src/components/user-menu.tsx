@@ -10,14 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User, LogOut, Wallet, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-import { useEnsName } from "@/hooks/use-ens";
 import { ConnectKitButton } from "connectkit";
 import { useState } from "react";
 import Link from "next/link";
 
 export function UserMenu() {
   const { isAuthenticated, isLoading, user, logout, error } = useAuth();
-  const { ensName, isLoading: ensLoading } = useEnsName(user?.address);
   const [isConnecting, setIsConnecting] = useState(false);
 
   const handleLogout = async () => {
@@ -29,8 +27,8 @@ export function UserMenu() {
   };
 
   const getDisplayName = () => {
-    if (ensLoading) return "Loading...";
-    return ensName || formatAddress(user?.address || "");
+    if (isLoading) return "Loading...";
+    return user?.ensName || formatAddress(user?.address || "");
   };
 
   if (isAuthenticated && user) {
@@ -38,7 +36,15 @@ export function UserMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="w-full justify-start gap-2">
-            <User className="h-4 w-4" />
+            {user.ensAvatar ? (
+              <img 
+                src={user.ensAvatar} 
+                alt="ENS Avatar" 
+                className="h-4 w-4 rounded-full"
+              />
+            ) : (
+              <User className="h-4 w-4" />
+            )}
             <span className="text-sm font-medium truncate">
               {getDisplayName()}
             </span>

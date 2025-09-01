@@ -33,7 +33,10 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
       )}
       aria-label="Dashboard navigation"
     >
-      <div className="flex flex-col gap-2 px-5 py-3">
+      <div className={cn(
+        "flex flex-col gap-2 py-3 transition-all duration-300",
+        isCollapsed ? "px-2" : "px-5"
+      )}>
         <div className={cn(
           "flex items-center mt-2 mb-4",
           isCollapsed ? "justify-center" : "justify-between"
@@ -77,9 +80,8 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
           ) : (
             <Button
               variant="ghost"
-              size="icon"
-              className="h-9 w-9"
               onClick={onToggle}
+              className="h-9 w-9 p-0 mx-auto"
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -102,26 +104,41 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
             <Button
               variant={isActive("/dash/projects") ? "secondary" : "ghost"}
               className={cn(
-                "w-full font-medium text-base gap-2",
-                isCollapsed ? "justify-center px-2" : "justify-start"
+                "w-full font-medium text-base transition-all duration-300",
+                isCollapsed ? "h-10 w-10 p-0 justify-center" : "justify-start gap-3 px-3"
               )}
               title={isCollapsed ? "Projects" : undefined}
             >
-              <FolderOpen className="h-4 w-4" />
-              {!isCollapsed && "Projects"}
+              <FolderOpen className={cn(
+                "h-4 w-4 flex-shrink-0",
+                isCollapsed && "mx-auto"
+              )} />
+              <span className={cn(
+                "transition-all duration-300 overflow-hidden whitespace-nowrap",
+                isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+              )}>
+                Projects
+              </span>
             </Button>
           </Link>
         </div>
       </div>
 
-      <div className="mt-auto py-3 px-5">
-        {!isCollapsed && <UserMenu />}
+      <div className={cn(
+        "mt-auto py-3 transition-all duration-300",
+        isCollapsed ? "px-2" : "px-5"
+      )}>
+        <div className={cn(
+          "transition-all duration-300 overflow-hidden",
+          isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+        )}>
+          {!isCollapsed && <UserMenu />}
+        </div>
         {isCollapsed && (
           <Button
             variant="ghost"
-            size="icon"
             onClick={onToggle}
-            className="w-full"
+            className="h-10 w-10 p-0 mx-auto"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>

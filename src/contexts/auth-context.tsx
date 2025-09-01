@@ -12,6 +12,8 @@ interface AuthContextValue {
   user: {
     userId: string;
     address: string;
+    ensName?: string | null;
+    ensAvatar?: string | null;
   } | null;
   login: () => Promise<void>;
   logout: () => Promise<void>;
@@ -24,7 +26,12 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<{ userId: string; address: string } | null>(null);
+  const [user, setUser] = useState<{ 
+    userId: string; 
+    address: string; 
+    ensName?: string | null;
+    ensAvatar?: string | null;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [hasTriedAutoLogin, setHasTriedAutoLogin] = useState(false);
 
@@ -41,8 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const userData = await cartel.auth.me();
         if (userData) {
           setUser({
-            userId: userData.id,
+            userId: userData.userId,
             address: userData.address || '',
+            ensName: userData.user?.ensName,
+            ensAvatar: userData.user?.ensAvatar,
           });
           setIsAuthenticated(true);
         }
@@ -128,9 +137,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         tokenStorage.setTokens(response.accessToken, response.refreshToken, response.expiresIn);
       }
 
+      const userData = await cartel.auth.me();
       setUser({
         userId: response.userId,
         address: response.address,
+        ensName: userData?.user?.ensName,
+        ensAvatar: userData?.user?.ensAvatar,
       });
       setIsAuthenticated(true);
     } catch (err: any) {
