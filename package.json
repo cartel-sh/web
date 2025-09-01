@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cartel-sh/api": "^7.1.0",
+    "@cartel-sh/api": "^7.5.1",
     "@ensdomains/ensjs": "^4.0.2",
     "@marsidev/react-turnstile": "^1.3.0",
     "@radix-ui/react-dialog": "^1.1.15",
