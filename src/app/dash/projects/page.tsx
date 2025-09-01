@@ -154,11 +154,11 @@ export default function ProjectsPage() {
       });
 
       // Update the project in the local state
-      setProjects(prev => prev.map(p => p.id === updatedProject.id 
-        ? { ...updatedProject, user: editingProject.user } 
+      setProjects(prev => prev.map(p => p.id === updatedProject.id
+        ? { ...updatedProject, user: editingProject.user }
         : p
       ));
-      
+
       setIsEditDialogOpen(false);
       setEditingProject(null);
       setFormData({
@@ -465,9 +465,9 @@ export default function ProjectsPage() {
                     </div>
 
                     <div className="flex space-x-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleEditProject(project)}
                       >
                         <Edit className="h-4 w-4 mr-1" />
@@ -485,7 +485,7 @@ export default function ProjectsPage() {
                         <Button variant="outline" size="sm" asChild>
                           <a href={project.deploymentUrl} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-4 w-4 mr-1" />
-                            Demo
+                            Site
                           </a>
                         </Button>
                       )}
@@ -496,8 +496,8 @@ export default function ProjectsPage() {
                         {project.user && user && project.userId !== user.userId && (
                           <div className="text-xs text-muted-foreground flex items-center gap-2">
                             {project.user.ensAvatar && (
-                              <img 
-                                src={project.user.ensAvatar} 
+                              <img
+                                src={project.user.ensAvatar}
                                 alt={project.user.ensName || 'User avatar'}
                                 className="w-4 h-4 rounded-full"
                                 onError={(e) => {
