@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
-import { ExternalLink, Github, Crown, UserCheck, User } from "lucide-react";
+import { ExternalLink, Github, Crown, UserCheck, User, ShieldUser } from "lucide-react";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -19,7 +19,6 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Redirect to home if not authenticated
     if (!isLoading && !isAuthenticated) {
       router.push("/");
     }
@@ -74,14 +73,13 @@ export default function Dashboard() {
         {/* Membership Status Card */}
         {user && (user.role === 'member' || user.role === 'admin') && (
           <Card className="mb-8 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 border-primary/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <span className="text-sm text-muted-foreground">You are</span>
+            <CardHeader className="">
+              <CardTitle className="flex flex-col items-center gap-2 text-base">
                 <div className="flex items-center gap-2">
                   {user.role === 'admin' ? (
                     <>
-                      <Crown className="h-5 w-5 text-primary" />
-                      <span className="text-2xl font-bold text-primary">Admin</span>
+                      <ShieldUser className="h-5 w-5 text-primary" />
+                      <span className="text-2xl font-bold text-primary">Staff</span>
                     </>
                   ) : (
                     <>
@@ -89,8 +87,8 @@ export default function Dashboard() {
                       <span className="text-2xl font-bold text-primary">Member</span>
                     </>
                   )}
-                  <span className="text-sm text-muted-foreground">of the cartel</span>
                 </div>
+                <span className="text-sm text-muted-foreground">of the cartel</span>
               </CardTitle>
             </CardHeader>
           </Card>
@@ -102,7 +100,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>Community Projects</CardTitle>
-                <CardDescription>All public projects in the cartel</CardDescription>
+                <CardDescription>All public projects in Cartel</CardDescription>
               </div>
               <Button asChild>
                 <Link href="/dash/projects">My Projects</Link>
@@ -115,7 +113,7 @@ export default function Dashboard() {
                 {error}
               </div>
             )}
-            
+
             {isLoadingProjects ? (
               <div className="flex justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -141,21 +139,8 @@ export default function Dashboard() {
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
                         {project.description}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        {project.user && (
-                          <div className="flex items-center gap-1">
-                            {project.user.ensAvatar && (
-                              <img 
-                                src={project.user.ensAvatar} 
-                                alt="Creator avatar"
-                                className="w-4 h-4 rounded-full"
-                              />
-                            )}
-                            <span>
-                              {project.user.ensName || project.user.id}
-                            </span>
-                          </div>
-                        )}
+
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
                         {project.tags && project.tags.length > 0 && (
                           <div className="flex gap-1">
                             {project.tags.slice(0, 3).map((tag, index) => (
@@ -171,6 +156,20 @@ export default function Dashboard() {
                           </div>
                         )}
                       </div>
+                      {project.user && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          {project.user.ensAvatar && (
+                            <img
+                              src={project.user.ensAvatar}
+                              alt="Creator avatar"
+                              className="w-4 h-4 rounded-full"
+                            />
+                          )}
+                          <span>
+                            {project.user.ensName || project.user.id}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 ml-4">
                       {project.githubUrl && (

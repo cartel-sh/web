@@ -26,7 +26,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<{ 
     userId: string; 
     address: string;
@@ -36,17 +36,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [hasTriedAutoLogin, setHasTriedAutoLogin] = useState(false);
+  const [hasCheckedSession, setHasCheckedSession] = useState(false);
 
   const { address, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const { connectAsync } = useConnect();
   const { disconnect } = useDisconnect();
 
-  // Check for existing session on mount
   useEffect(() => {
     const checkSession = async () => {
       try {
-        // Try to get current user via SDK
         const userData = await cartel.auth.me();
         if (userData) {
           setUser({
@@ -61,6 +60,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         // Not authenticated or error - user needs to login
         setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+        setHasCheckedSession(true);
       }
     };
     checkSession();
@@ -75,6 +77,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [isConnected, address]);
 
   const login = useCallback(async () => {
+    if (!hasCheckedSession) {
+      // Don't allow login until initial session check is complete
+      return;
+    }
     setIsLoading(true);
     setError(null);
 
@@ -156,7 +162,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [address, isConnected, connectAsync, signMessageAsync]);
+  }, [address, isConnected, connectAsync, signMessageAsync, hasCheckedSession]);
 
   // Auto-trigger SIWE when wallet connects and user is not authenticated
   useEffect(() => {

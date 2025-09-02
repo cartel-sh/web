@@ -108,7 +108,7 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
             </h3>
           )}
           <div className={`${isCollapsed ? "flex flex-col items-center justify-center" : "flex flex-col"}`}>
-            <Link href="/dash" aria-label="Dashboard" className="block">
+            <Link href="/dash" aria-label="Overview" className="block">
               <Button
                 variant={isActive("/dash") ? "secondary" : "ghost"}
                 className={cn(
@@ -117,7 +117,7 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
                     ? "w-10 h-10 p-0 flex items-center justify-center"
                     : "relative w-full h-10"
                 )}
-                title={isCollapsed ? "Dashboard" : undefined}
+                title={isCollapsed ? "Overview" : undefined}
               >
                 {isCollapsed ? (
                   <svg
@@ -155,7 +155,7 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
                       </svg>
                     </div>
                     <div className="absolute left-10 flex items-center h-full whitespace-nowrap">
-                      Dashboard
+                      Overview
                     </div>
                   </>
                 )}

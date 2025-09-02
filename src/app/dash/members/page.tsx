@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { User } from "@cartel-sh/api";
-import { Users, Crown, UserCheck, AlertCircle } from "lucide-react";
+import { Users, Crown, UserCheck, AlertCircle, ShieldUser } from "lucide-react";
 
 interface MemberResponse {
   id: string;
@@ -109,7 +109,7 @@ export default function MembersPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Members</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -118,17 +118,17 @@ export default function MembersPage() {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Members</CardTitle>
+              <CardTitle className="text-sm font-medium">Cartel Members</CardTitle>
               <UserCheck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{memberCount}</div>
+              <div className="text-2xl font-bold">{memberCount + adminCount}</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Admins</CardTitle>
-              <Crown className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Staff</CardTitle>
+              <ShieldUser className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{adminCount}</div>
@@ -150,7 +150,7 @@ export default function MembersPage() {
                 {error}
               </div>
             )}
-            
+
             {isLoadingMembers ? (
               <div className="flex justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -169,8 +169,8 @@ export default function MembersPage() {
                     <div className="flex items-center gap-3">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-muted">
                         {member.ensAvatar ? (
-                          <img 
-                            src={member.ensAvatar} 
+                          <img
+                            src={member.ensAvatar}
                             alt="Member avatar"
                             className="w-10 h-10 rounded-full"
                           />
