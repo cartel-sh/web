@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User, LogOut, Wallet, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-import { ConnectKitButton } from "connectkit";
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";

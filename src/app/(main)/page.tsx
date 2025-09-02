@@ -68,7 +68,7 @@ export default async function Home() {
           <SectionLabel>WHAT WE DO</SectionLabel>
           <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-2 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Projects</h2>
           <p className={`${stoke.className} text-lg md:text-xl mb-8 text-primary/40`}>
-            Mass production of public goods, dao tooling, unicorn startups
+            Mass production of public goods, dao tooling and unicorns 
           </p>
           <InfiniteScroll
             direction="left"

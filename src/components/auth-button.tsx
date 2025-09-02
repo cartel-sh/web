@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
-import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import { Wallet, FileText, Loader2 } from "lucide-react";
 
@@ -26,19 +26,49 @@ export function AuthButton() {
   return (
     <div className="space-y-2">
       {!isConnected ? (
-        <ConnectKitButton.Custom>
-          {({ isConnected, show }) => (
-            <Button 
-              variant="outline" 
-              className="w-full justify-start gap-2"
-              onClick={show}
-              disabled={isLoading}
-            >
-              <Wallet className="h-4 w-4" />
-              {isLoading ? "Connecting..." : "Connect Wallet"}
-            </Button>
-          )}
-        </ConnectKitButton.Custom>
+        <ConnectButton.Custom>
+          {({
+            account,
+            chain,
+            openAccountModal,
+            openChainModal,
+            openConnectModal,
+            authenticationStatus,
+            mounted,
+          }) => {
+            const ready = mounted && authenticationStatus !== 'loading';
+            const connected = ready && account && chain;
+
+            return (
+              <div
+                {...(!ready && {
+                  'aria-hidden': true,
+                  'style': {
+                    opacity: 0,
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                  },
+                })}
+              >
+                {(() => {
+                  if (!connected) {
+                    return (
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start gap-2"
+                        onClick={openConnectModal}
+                        disabled={isLoading}
+                      >
+                        <Wallet className="h-4 w-4" />
+                        {isLoading ? "Connecting..." : "Connect Wallet"}
+                      </Button>
+                    );
+                  }
+                })()}
+              </div>
+            );
+          }}
+        </ConnectButton.Custom>
       ) : (
         <Button
           variant="outline"

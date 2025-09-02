@@ -1,17 +1,43 @@
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import {
+  rainbowWallet,
+  coinbaseWallet,
+  rabbyWallet,
+  metaMaskWallet,
+  walletConnectWallet,
+  zerionWallet,
+  ledgerWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 import { createConfig, http } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
-import { getDefaultConfig } from 'connectkit';
 
-export const wagmiConfig = createConfig(
-  getDefaultConfig({
-    chains: [mainnet],
-    transports: {
-      [mainnet.id]: http(),
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID';
+
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Recommended',
+      wallets: [
+        metaMaskWallet,
+        rainbowWallet,
+        zerionWallet,
+        coinbaseWallet,
+        ledgerWallet,
+        rabbyWallet,
+        walletConnectWallet,
+      ],
     },
-    walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
-    appName: "Cartel",
-    appDescription: "To unite the universe",
-    appUrl: "https://cartel.sh",
-    appIcon: "https://cartel.sh/favicon.ico",
-  })
+  ],
+  {
+    appName: 'Cartel',
+    projectId,
+  }
 );
+
+export const wagmiConfig = createConfig({
+  connectors,
+  chains: [mainnet],
+  transports: {
+    [mainnet.id]: http(),
+  },
+});
