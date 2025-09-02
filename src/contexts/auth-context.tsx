@@ -12,6 +12,7 @@ interface AuthContextValue {
   user: {
     userId: string;
     address: string;
+    role: string;
     ensName?: string | null;
     ensAvatar?: string | null;
   } | null;
@@ -28,7 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<{ 
     userId: string; 
-    address: string; 
+    address: string;
+    role: string;
     ensName?: string | null;
     ensAvatar?: string | null;
   } | null>(null);
@@ -50,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser({
             userId: userData.userId,
             address: userData.address || '',
+            role: userData.user?.role || 'authenticated',
             ensName: userData.user?.ensName,
             ensAvatar: userData.user?.ensAvatar,
           });
@@ -141,6 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser({
         userId: response.userId,
         address: response.address,
+        role: userData?.user?.role || 'authenticated',
         ensName: userData?.user?.ensName,
         ensAvatar: userData?.user?.ensAvatar,
       });

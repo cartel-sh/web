@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github, Crown, UserCheck, User } from "lucide-react";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -70,6 +70,31 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold">Welcome back{user.ensName ? `, ${user.ensName}` : ''}</h1>
           <p className="text-muted-foreground">Manage your cartel membership and projects</p>
         </div>
+
+        {/* Membership Status Card */}
+        {user && (user.role === 'member' || user.role === 'admin') && (
+          <Card className="mb-8 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 border-primary/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <span className="text-sm text-muted-foreground">You are</span>
+                <div className="flex items-center gap-2">
+                  {user.role === 'admin' ? (
+                    <>
+                      <Crown className="h-5 w-5 text-primary" />
+                      <span className="text-2xl font-bold text-primary">Admin</span>
+                    </>
+                  ) : (
+                    <>
+                      <UserCheck className="h-5 w-5 text-primary" />
+                      <span className="text-2xl font-bold text-primary">Member</span>
+                    </>
+                  )}
+                  <span className="text-sm text-muted-foreground">of the cartel</span>
+                </div>
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        )}
 
         {/* Projects Section */}
         <Card>

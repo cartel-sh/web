@@ -9,7 +9,8 @@ import {
   FolderOpen,
   ChevronLeft,
   ChevronRight,
-  Menu
+  Menu,
+  Users
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -100,15 +101,13 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
         </div>
 
 
-        <div className="space-y-4">
+        <div className="space-y-2">
           {!isCollapsed && (
-            <div className="px-3">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Dashboard
-              </h3>
-            </div>
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              Dashboard
+            </h3>
           )}
-          <div className={`${isCollapsed ? "flex flex-col gap-2 items-center justify-center" : "flex flex-col gap-2"}`}>
+          <div className={`${isCollapsed ? "flex flex-col items-center justify-center" : "flex flex-col"}`}>
             <Link href="/dash" aria-label="Dashboard" className="block">
               <Button
                 variant={isActive("/dash") ? "secondary" : "ghost"}
@@ -155,7 +154,7 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
                         <rect width="7" height="5" x="3" y="16" rx="1" />
                       </svg>
                     </div>
-                    <div className="absolute left-13 flex items-center h-full whitespace-nowrap">
+                    <div className="absolute left-10 flex items-center h-full whitespace-nowrap">
                       Dashboard
                     </div>
                   </>
@@ -180,8 +179,33 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
                     <div className="absolute inset-0 flex items-center justify-center w-10">
                       <FolderOpen className="h-4 w-4 flex-shrink-0" />
                     </div>
-                    <div className="absolute left-13 flex items-center h-full whitespace-nowrap">
+                    <div className="absolute left-10 flex items-center h-full whitespace-nowrap">
                       Projects
+                    </div>
+                  </>
+                )}
+              </Button>
+            </Link>
+            <Link href="/dash/members" aria-label="Members" className="block">
+              <Button
+                variant={isActive("/dash/members") ? "secondary" : "ghost"}
+                className={cn(
+                  "font-medium text-base transition-colors overflow-hidden",
+                  isCollapsed
+                    ? "w-10 h-10 p-0 flex items-center justify-center"
+                    : "relative w-full h-10"
+                )}
+                title={isCollapsed ? "Members" : undefined}
+              >
+                {isCollapsed ? (
+                  <Users className="h-4 w-4" />
+                ) : (
+                  <>
+                    <div className="absolute inset-0 flex items-center justify-center w-10">
+                      <Users className="h-4 w-4 flex-shrink-0" />
+                    </div>
+                    <div className="absolute left-10 flex items-center h-full whitespace-nowrap">
+                      Members
                     </div>
                   </>
                 )}
