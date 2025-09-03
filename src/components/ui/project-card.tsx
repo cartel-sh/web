@@ -119,8 +119,8 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
                     onFocus={() => setHoveredContributor(contributor.login)}
                     onBlur={() => setHoveredContributor(null)}
                     className={cn(
-                      "contributor-avatar relative block rounded-full transition-all duration-200",
-                      "hover:scale-125 hover:z-20",
+                      "contributor-avatar relative block rounded-full transition-all duration-200 touch-manipulation",
+                      "hover:scale-125 hover:z-20 p-1 -m-1",
                       "focus-visible:scale-125 focus-visible:z-20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     )}
                     aria-label={`View ${contributor.login}'s GitHub profile. ${contributor.contributions} contributions.`}
@@ -132,6 +132,7 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
                       width={32}
                       height={32}
                       className="w-8 h-8 rounded-full shadow-sm"
+                      loading="lazy"
                       unoptimized
                     />
                   </button>

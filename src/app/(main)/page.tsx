@@ -40,19 +40,22 @@ export default async function Home() {
 
 
   return (
-    <div className="flex flex-col gap-32 py-20">
+    <div className="flex flex-col gap-16 sm:gap-20 md:gap-28 lg:gap-32 py-12 sm:py-16 md:py-20">
       <section id="about" className="text-center">
         <div className="max-w-3xl mx-auto">
-          <CornerCard variant="manifesto" contentClassName="p-8 px-16" cornerClassName="-top-0.5 -right-0.5" className="bg-card/80 rounded-xl rounded-b-none border-b-none">
-            <div className={`${italianno.className} text-left text-foreground/90 text-3xl md:text-4xl `}>
-              <p className="decoration-foreground/40 decoration-2 leading-[1.8] mb-0">
+          <CornerCard variant="manifesto" contentClassName="p-6 sm:p-8 md:px-12 lg:px-16" cornerClassName="-top-0.5 -right-0.5" className="bg-card/80 rounded-xl rounded-b-none border-b-none">
+            <div className={`${italianno.className} text-left text-foreground/90`} style={{
+              fontSize: 'clamp(1.5rem, 4vw, 2.25rem)',
+              lineHeight: 'clamp(2.25rem, 6vw, 3.6rem)'
+            }}>
+              <p className="decoration-foreground/40 decoration-2 mb-0">
                 We the People of the world, unite with the purpose of building a free and prosperous society, develop, support and promote public goods.
               </p>
             </div>
           </CornerCard>
 
           <Button variant="outline"
-            className="text-xl cursor-pointer px-6 py-2 h-auto rounded-xl w-full border-t-none rounded-t-none hover:scale-100 active:scale-100">
+            className="text-lg sm:text-xl cursor-pointer px-5 sm:px-6 py-2.5 sm:py-2 h-auto rounded-xl w-full border-t-none rounded-t-none hover:scale-100 active:scale-100 min-h-[44px]">
             <Link href="/constitution" className="hover:text-primary text-foreground/50 transition-colors flex items-center gap-2">
               Read the constitution
               {/* <ChevronRight className="size-4 -mb-1" strokeWidth={3} /> */}
@@ -66,9 +69,14 @@ export default async function Home() {
       <section id="projects" className="relative">
         <div className="relative z-10">
           <SectionLabel>WHAT WE DO</SectionLabel>
-          <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-2 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Projects</h2>
-          <p className={`${stoke.className} text-lg md:text-xl mb-8 text-primary/40`}>
-            Mass production of public goods, dao tooling and unicorns 
+          <h2 className={`${stoke.className} mb-2 text-left font-bold italic`} style={{ 
+            fontSize: 'clamp(1.75rem, 5vw, 3rem)',
+            letterSpacing: '-0.1em' 
+          }}>Projects</h2>
+          <p className={`${stoke.className} mb-6 sm:mb-8 text-primary/40`} style={{
+            fontSize: 'clamp(1rem, 2.5vw, 1.25rem)'
+          }}>
+            Mass production of public goods, dao tooling and unicorns
           </p>
           <InfiniteScroll
             direction="left"
@@ -90,8 +98,13 @@ export default async function Home() {
 
       <section id="members">
         <SectionLabel>WHO WE ARE</SectionLabel>
-        <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-2 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Members</h2>
-        <p className={`${stoke.className} text-lg md:text-xl mb-8 text-primary/40`}>
+        <h2 className={`${stoke.className} mb-2 text-left font-bold italic`} style={{ 
+            fontSize: 'clamp(1.75rem, 5vw, 3rem)',
+            letterSpacing: '-0.1em' 
+          }}>Members</h2>
+        <p className={`${stoke.className} mb-6 sm:mb-8 text-primary/40`} style={{
+            fontSize: 'clamp(1rem, 2.5vw, 1.25rem)'
+          }}>
           Builders, designers, thinkers, assasins of proprietary software
         </p>
         <InfiniteScroll
@@ -115,10 +128,15 @@ export default async function Home() {
       <section id="community">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           <div className="flex flex-col items-center md:items-start justify-center ">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl text-center md:text-left md:mb-4">
-              <span className={`${stoke.className} font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Join the Community</span><br />
+            <h2 className="text-center md:text-left mb-2 md:mb-4">
+              <span className={`${stoke.className} font-bold italic`} style={{ 
+                fontSize: 'clamp(1.75rem, 5vw, 3rem)',
+                letterSpacing: '-0.1em' 
+              }}>Join the Community</span><br />
             </h2>
-              <p className={`${stoke.className} text-lg md:text-xl text-primary/40`}>
+              <p className={`${stoke.className} text-primary/40`} style={{
+                fontSize: 'clamp(1rem, 2.5vw, 1.25rem)'
+              }}>
                 Global means for everyone
               </p>
           </div>
@@ -128,7 +146,10 @@ export default async function Home() {
 
       <section id="allies">
         <SectionLabel>WHO WE WORK WITH</SectionLabel>
-        <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Allies & Partners</h2>
+        <h2 className={`${stoke.className} mb-6 sm:mb-8 md:mb-10 text-left font-bold italic`} style={{ 
+            fontSize: 'clamp(1.75rem, 5vw, 3rem)',
+            letterSpacing: '-0.1em' 
+          }}>Allies & Partners</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
           {communitiesData.map((community) => (
             <AlliesCard
@@ -144,7 +165,10 @@ export default async function Home() {
       <section id="treasury" className="relative">
         <div className="relative z-10">
           <SectionLabel>OUR RESOURCES</SectionLabel>
-          <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl mb-10 text-left font-bold italic`} style={{ letterSpacing: '-0.1em' }}>Treasury</h2>
+          <h2 className={`${stoke.className} mb-6 sm:mb-8 md:mb-10 text-left font-bold italic`} style={{ 
+            fontSize: 'clamp(1.75rem, 5vw, 3rem)',
+            letterSpacing: '-0.1em' 
+          }}>Treasury</h2>
           <CornerCard variant="treasury" contentClassName="p-6" cornerClassName="-top-0.5 -right-0.5" className="bg-card/80 rounded-xl rounded-tr-2xl w-fit relative">
             <TreasuryDisplay showHeading={false} showTransactions={false} />
           </CornerCard>
@@ -152,17 +176,20 @@ export default async function Home() {
       </section>
 
       <section id="apply">
-        <h2 className={`${stoke.className} text-3xl md:text-4xl lg:text-5xl text-center font-bold mb-8`} style={{ letterSpacing: '-0.1em' }}>
-          Want to help us build <br /> the future of social?
+        <h2 className={`${stoke.className} text-center font-bold mb-6 sm:mb-8`} style={{ 
+          fontSize: 'clamp(1.75rem, 5vw, 3rem)',
+          letterSpacing: '-0.1em' 
+        }}>
+          Want to help us build <br className="sm:hidden" /> the future of social?
         </h2>
-        <div className="flex gap-4 justify-center">
-          <Button size="lg" className="text-xl cursor-pointer px-6 py-3 h-auto rounded-xl">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+          <Button size="lg" className="text-lg sm:text-xl cursor-pointer px-5 sm:px-6 py-3 h-auto rounded-xl min-h-[44px]">
             <Link href="/apply">Apply</Link>
           </Button>
           <Button
             size="lg"
             variant="outline"
-            className="text-xl cursor-pointer px-6 py-2 h-auto rounded-xl"
+            className="text-lg sm:text-xl cursor-pointer px-5 sm:px-6 py-2.5 sm:py-2 h-auto rounded-xl min-h-[44px]"
           >
             <Link href="/community">Join Community</Link>
           </Button>
