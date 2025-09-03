@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cartel } from '@/lib/cartel-client';
+import { CartelClient, InMemoryTokenStorage } from '@cartel-sh/api';
 
 const DISCORD_CLIENT_ID = '1412792170884235376';
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || 'FHVkaG562BP_yJmR6N3ShktKdMTnnpyU';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.cartel.sh';
+const API_KEY = process.env.API_KEY || '';
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
-    const state = searchParams.get('state');
     
     if (!code) {
       return NextResponse.redirect(new URL('/dash/account?error=missing_code', request.url));
@@ -41,12 +42,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/dash/account?error=oauth_error', request.url));
     }
 
-    const accessToken = tokenData.access_token;
+    const discordAccessToken = tokenData.access_token;
 
     // Fetch user profile
     const userResponse = await fetch('https://discord.com/api/v10/users/@me', {
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
+        'Authorization': `Bearer ${discordAccessToken}`,
       },
     });
 
@@ -57,22 +58,8 @@ export async function GET(request: NextRequest) {
 
     const discordUser = await userResponse.json();
 
-    // Fetch user connections for additional profile info
-    let connections = [];
-    try {
-      const connectionsResponse = await fetch('https://discord.com/api/v10/users/@me/connections', {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
-
-      if (connectionsResponse.ok) {
-        connections = await connectionsResponse.json();
-      }
-    } catch (error) {
-      // Connections are optional, don't fail if we can't get them
-      console.log('Could not fetch Discord connections:', error);
-    }
+    // Note: Discord connections could be fetched here if needed for additional profile info
+    // but are not required for basic identity connection
 
     // Build display name
     const displayName = discordUser.global_name || 
@@ -84,9 +71,35 @@ export async function GET(request: NextRequest) {
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.${discordUser.avatar.startsWith('a_') ? 'gif' : 'png'}?size=256`
       : `https://cdn.discordapp.com/embed/avatars/${parseInt(discordUser.discriminator) % 5}.png`;
 
+    const accessToken = request.cookies.get('access_token')?.value;
+    
+    if (!accessToken) {
+      // User is not authenticated, store OAuth data for after login
+      const response = NextResponse.redirect(new URL('/dash?oauth_pending=discord', request.url));
+      response.cookies.set('pending_discord_oauth', JSON.stringify({
+        id: discordUser.id,
+        username: discordUser.username,
+        displayName: displayName,
+        avatarUrl: avatarUrl,
+        email: discordUser.email,
+        profileUrl: `https://discord.com/users/${discordUser.id}`,
+      }), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 300, // 5 minutes
+      });
+      return response;
+    }
+
+    // Create server-side client with user's access token
+    const tokenStorage = new InMemoryTokenStorage();
+    tokenStorage.setTokens(accessToken, '', 0);
+    const serverCartel = new CartelClient(API_URL, API_KEY, tokenStorage);
+
     // Connect the Discord identity to the user's account
     try {
-      const result = await cartel.users.connectMyIdentity({
+      const result = await serverCartel.users.connectMyIdentity({
         platform: 'discord',
         identity: discordUser.id,
         metadata: {

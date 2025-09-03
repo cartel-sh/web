@@ -46,6 +46,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
+        const tokenStorage = new LocalStorageTokenStorage();
+        const accessToken = tokenStorage.getAccessToken();
+        if (accessToken) {
+          const cookies = document.cookie.split(';').map(c => c.trim());
+          const hasAccessTokenCookie = cookies.some(c => c.startsWith('access_token='));
+          if (!hasAccessTokenCookie) {
+            const expiry = localStorage.getItem('cartel_token_expiry');
+            if (expiry) {
+              const maxAge = Math.floor((parseInt(expiry) - Date.now()) / 1000);
+              if (maxAge > 0) {
+                document.cookie = `access_token=${accessToken}; path=/; max-age=${maxAge}; SameSite=Lax${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`;
+              }
+            } else {
+              // Fallback: set cookie for 1 hour if no expiry info
+              document.cookie = `access_token=${accessToken}; path=/; max-age=3600; SameSite=Lax${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`;
+            }
+          }
+        }
+
         const userData = await cartel.auth.me();
         if (userData) {
           setUser({
@@ -144,6 +163,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.accessToken && response.refreshToken) {
         const tokenStorage = new LocalStorageTokenStorage();
         tokenStorage.setTokens(response.accessToken, response.refreshToken, response.expiresIn);
+        
+        document.cookie = `access_token=${response.accessToken}; path=/; max-age=${response.expiresIn}; SameSite=Lax${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`;
       }
 
       const userData = await cartel.auth.me();
@@ -196,9 +217,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       cartel.auth.logout();
     }
 
-    // Clear local state
     setUser(null);
     setIsAuthenticated(false);
+    
+    document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    
     disconnect();
   }, [disconnect]);
 

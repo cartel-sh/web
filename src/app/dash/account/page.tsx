@@ -111,7 +111,7 @@ export default function AccountPage() {
       const redirectUri = `${window.location.origin}/api/auth/github/callback`;
       const clientId = "Ov23li1F1GdAUI3la94w";
 
-      // Store state for CSRF protection
+      // Store state for CSRF protection and auth context
       const state = Math.random().toString(36).substring(7);
       sessionStorage.setItem("github_oauth_state", state);
       
@@ -129,7 +129,7 @@ export default function AccountPage() {
       const redirectUri = `${window.location.origin}/api/auth/discord/callback`;
       const clientId = "1412792170884235376";
 
-      // Store state for CSRF protection
+      // Store state for CSRF protection and auth context
       const state = Math.random().toString(36).substring(7);
       sessionStorage.setItem("discord_oauth_state", state);
       

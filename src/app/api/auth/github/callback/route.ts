@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cartel } from '@/lib/cartel-client';
+import { CartelClient, InMemoryTokenStorage } from '@cartel-sh/api';
 
 const GITHUB_CLIENT_ID = 'Ov23li1F1GdAUI3la94w';
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || '';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.cartel.sh';
+const API_KEY = process.env.API_KEY || '';
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
-    const state = searchParams.get('state');
     
     if (!code) {
       return NextResponse.redirect(new URL('/dash/account?error=missing_code', request.url));
@@ -41,12 +42,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/dash/account?error=oauth_error', request.url));
     }
 
-    const accessToken = tokenData.access_token;
+    const githubAccessToken = tokenData.access_token;
 
     // Fetch user profile
     const userResponse = await fetch('https://api.github.com/user', {
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
+        'Authorization': `Bearer ${githubAccessToken}`,
         'Accept': 'application/vnd.github.v3+json',
       },
     });
@@ -63,7 +64,7 @@ export async function GET(request: NextRequest) {
     if (!email) {
       const emailResponse = await fetch('https://api.github.com/user/emails', {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${githubAccessToken}`,
           'Accept': 'application/vnd.github.v3+json',
         },
       });
@@ -75,9 +76,37 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Get the JWT token from cookies
+    const accessToken = request.cookies.get('access_token')?.value;
+    
+    if (!accessToken) {
+      // User is not authenticated, store OAuth data for after login
+      const response = NextResponse.redirect(new URL('/dash?oauth_pending=github', request.url));
+      response.cookies.set('pending_github_oauth', JSON.stringify({
+        id: githubUser.id.toString(),
+        username: githubUser.login,
+        displayName: githubUser.name || githubUser.login,
+        avatarUrl: githubUser.avatar_url,
+        email: email,
+        bio: githubUser.bio,
+        profileUrl: githubUser.html_url,
+      }), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 300, // 5 minutes
+      });
+      return response;
+    }
+
+    // Create server-side client with user's access token
+    const tokenStorage = new InMemoryTokenStorage();
+    tokenStorage.setTokens(accessToken, '', 0);
+    const serverCartel = new CartelClient(API_URL, API_KEY, tokenStorage);
+
     // Connect the GitHub identity to the user's account
     try {
-      const result = await cartel.users.connectMyIdentity({
+      const result = await serverCartel.users.connectMyIdentity({
         platform: 'github',
         identity: githubUser.id.toString(),
         metadata: {
