@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Plus, Search, Edit, Trash2, Bug, CircleDot } from "lucide-react";
+import { ExternalLink, Github, Plus, Search, Edit, Trash2, Bug, CircleDot, Settings, Eye, EyeOff } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +21,31 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { useAtom } from "jotai";
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useRef } from "react";
+import { GripVertical } from "lucide-react";
+import {
+  projectSettingsAtom,
+  getOrderedProjectsAtom,
+  initializeProjectSettingsAtom,
+  toggleProjectVisibilityAtom,
+  getProjectVisibilityAtom,
+  getHiddenProjectCountAtom,
+  toggleAllProjectsVisibilityAtom,
+  updateProjectOrderAtom,
+} from "@/atoms/project-settings";
 
 interface ProjectFormData {
   title: string;
@@ -31,6 +55,213 @@ interface ProjectFormData {
   tags: string;
   isPublic: boolean;
 }
+
+interface DragItem {
+  type: string;
+  id: string;
+  index: number;
+}
+
+const PROJECT_TYPE = 'PROJECT';
+
+interface DraggableProjectCardProps {
+  project: ProjectWithUser;
+  index: number;
+  moveProject: (dragIndex: number, hoverIndex: number) => void;
+  handleEditProject: (project: ProjectWithUser) => void;
+  user?: any;
+}
+
+const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
+  project,
+  index,
+  moveProject,
+  handleEditProject,
+  user,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: string | symbol | null }>({
+    accept: PROJECT_TYPE,
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId(),
+      };
+    },
+    hover(item: DragItem, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+
+      // Don't replace items with themselves
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      // Determine rectangle on screen
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+
+      // Get vertical middle
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset();
+
+      // Get pixels to the top
+      const hoverClientY = (clientOffset?.y ?? 0) - hoverBoundingRect.top;
+
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
+
+      // Dragging downwards
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      // Dragging upwards
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+
+      // Time to actually perform the action
+      moveProject(dragIndex, hoverIndex);
+
+      // Note: we're mutating the monitor item here!
+      // Generally it's better to avoid mutations,
+      // but it's good here for the sake of performance
+      // to avoid expensive index searches.
+      item.index = hoverIndex;
+    },
+  });
+
+  const [{ isDragging }, drag] = useDrag({
+    type: PROJECT_TYPE,
+    item: () => {
+      return { id: project.id, index };
+    },
+    collect: (monitor: any) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const opacity = isDragging ? 0 : 1;
+  drag(drop(ref));
+
+  return (
+    <Card
+      ref={ref}
+      className="hover:shadow-lg transition-shadow relative group"
+      style={{ opacity }}
+      data-handler-id={handlerId}
+    >
+      <div className="absolute top-2 left-2 cursor-move opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
+      </div>
+      <CardHeader className="pl-8">
+        <div className="flex items-start justify-between">
+          <CardTitle className="line-clamp-1">{project.title}</CardTitle>
+          {!project.isPublic && (
+            <Badge variant="secondary">Private</Badge>
+          )}
+        </div>
+        <CardDescription className="line-clamp-2">
+          {project.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="pl-8">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            {project.tags && project.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {project.tags.slice(0, 3).map((tag, tagIndex) => (
+                  <Badge key={tagIndex} variant="outline" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+                {project.tags.length > 3 && (
+                  <Badge variant="outline" className="text-xs">
+                    +{project.tags.length - 3}
+                  </Badge>
+                )}
+              </div>
+            )}
+            {project.isPublic && (
+              <Badge variant="outline" className="text-xs">Public</Badge>
+            )}
+          </div>
+
+          <div className="flex space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleEditProject(project)}
+            >
+              <Edit className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+            {project.githubUrl && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/dash/issues">
+                  <CircleDot className="h-4 w-4 mr-1" />
+                  Issues
+                </Link>
+              </Button>
+            )}
+            {project.githubUrl && (
+              <Button variant="outline" size="sm" asChild>
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4 mr-1" />
+                  Code
+                </a>
+              </Button>
+            )}
+            {project.deploymentUrl && (
+              <Button variant="outline" size="sm" asChild>
+                <a href={project.deploymentUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-1" />
+                  Site
+                </a>
+              </Button>
+            )}
+          </div>
+
+          {(project.user || project.createdAt) && (
+            <div className="space-y-1">
+              {project.user && user && project.userId !== user.userId && (
+                <div className="text-xs text-muted-foreground flex items-center gap-2">
+                  {project.user.ensAvatar && (
+                    <img
+                      src={project.user.ensAvatar}
+                      alt={project.user.ensName || 'User avatar'}
+                      className="w-4 h-4 rounded-full"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  )}
+                  <span>
+                    {project.user.ensName || `${project.user.id.slice(0, 8)}...`}
+                  </span>
+                </div>
+              )}
+              {project.createdAt && (
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Created {new Date(project.createdAt).toLocaleDateString()}</span>
+                  {project.updatedAt && project.updatedAt !== project.createdAt && (
+                    <span>Updated {new Date(project.updatedAt).toLocaleDateString()}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 export default function ProjectsPage() {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -53,6 +284,16 @@ export default function ProjectsPage() {
     isPublic: true,
   });
 
+  // Jotai hooks for project settings
+  const [projectSettings] = useAtom(projectSettingsAtom);
+  const [, initializeSettings] = useAtom(initializeProjectSettingsAtom);
+  const [, toggleVisibility] = useAtom(toggleProjectVisibilityAtom);
+  const [getVisibility] = useAtom(getProjectVisibilityAtom);
+  const [getOrderedProjects] = useAtom(getOrderedProjectsAtom);
+  const [hiddenCount] = useAtom(getHiddenProjectCountAtom);
+  const [, toggleAllVisibility] = useAtom(toggleAllProjectsVisibilityAtom);
+  const [, updateOrder] = useAtom(updateProjectOrderAtom);
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push("/");
@@ -64,6 +305,13 @@ export default function ProjectsPage() {
       loadProjects();
     }
   }, [isAuthenticated]);
+
+  // Initialize project settings when projects change
+  useEffect(() => {
+    if (projects.length > 0) {
+      initializeSettings(projects);
+    }
+  }, [projects, initializeSettings]);
 
   const loadProjects = async () => {
     try {
@@ -178,11 +426,27 @@ export default function ProjectsPage() {
     }
   };
 
-  const filteredProjects = projects.filter(project =>
+  // Get ordered and filtered projects using Jotai
+  const orderedProjects = getOrderedProjects(projects);
+  
+  // Apply search filter on top of visibility filter
+  const filteredProjects = orderedProjects.filter(project =>
     project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     project.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  // Function to move projects (drag and drop)
+  const moveProject = (dragIndex: number, hoverIndex: number) => {
+    const draggedProject = filteredProjects[dragIndex];
+    const newFilteredProjects = [...filteredProjects];
+    newFilteredProjects.splice(dragIndex, 1);
+    newFilteredProjects.splice(hoverIndex, 0, draggedProject);
+    
+    // Update the order in Jotai storage
+    const newOrder = newFilteredProjects.map(p => p.id);
+    updateOrder(newOrder);
+  };
 
   if (isLoading || !isAuthenticated) {
     return (
@@ -193,7 +457,8 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-shrink-0 px-8 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -202,13 +467,59 @@ export default function ProjectsPage() {
               <p className="text-muted-foreground">Discover and manage cartel projects</p>
             </div>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Project
-                </Button>
-              </DialogTrigger>
+            <div className="flex items-center gap-2">
+              {/* Project visibility dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    View Options
+                    {hiddenCount > 0 && (
+                      <Badge variant="secondary" className="ml-2 h-5">
+                        {hiddenCount} hidden
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuLabel>Project Visibility</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  
+                  {/* Show/Hide All controls */}
+                  <DropdownMenuItem onClick={() => toggleAllVisibility({ projects, makeVisible: true })}>
+                    <Eye className="h-4 w-4 mr-2" />
+                    Show All Projects
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => toggleAllVisibility({ projects, makeVisible: false })}>
+                    <EyeOff className="h-4 w-4 mr-2" />
+                    Hide All Projects
+                  </DropdownMenuItem>
+                  
+                  {projects.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel>Individual Projects</DropdownMenuLabel>
+                      {projects.map((project) => (
+                        <DropdownMenuCheckboxItem
+                          key={project.id}
+                          checked={getVisibility(project.id)}
+                          onCheckedChange={() => toggleVisibility(project.id)}
+                        >
+                          <span className="truncate">{project.title}</span>
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Project
+                  </Button>
+                </DialogTrigger>
               <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                   <DialogTitle>Create New Project</DialogTitle>
@@ -300,6 +611,7 @@ export default function ProjectsPage() {
                 </form>
               </DialogContent>
             </Dialog>
+            </div>
 
             {/* Edit Project Dialog */}
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -432,112 +744,20 @@ export default function ProjectsPage() {
           </Card>
         ) : !error && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredProjects.map((project) => (
-              <Card key={project.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <CardTitle className="line-clamp-1">{project.title}</CardTitle>
-                    {!project.isPublic && (
-                      <Badge variant="secondary">Private</Badge>
-                    )}
-                  </div>
-                  <CardDescription className="line-clamp-2">
-                    {project.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      {project.tags && project.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {project.tags.slice(0, 3).map((tag, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                          {project.tags.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{project.tags.length - 3}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-                      {project.isPublic && (
-                        <Badge variant="outline" className="text-xs">Public</Badge>
-                      )}
-                    </div>
-
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditProject(project)}
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Edit
-                      </Button>
-                      {project.githubUrl && (
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href="/dash/issues">
-                            <CircleDot className="h-4 w-4 mr-1" />
-                            Issues
-                          </Link>
-                        </Button>
-                      )}
-                      {project.githubUrl && (
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                            <Github className="h-4 w-4 mr-1" />
-                            Code
-                          </a>
-                        </Button>
-                      )}
-                      {project.deploymentUrl && (
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={project.deploymentUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4 mr-1" />
-                            Site
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-
-                    {(project.user || project.createdAt) && (
-                      <div className="space-y-1">
-                        {project.user && user && project.userId !== user.userId && (
-                          <div className="text-xs text-muted-foreground flex items-center gap-2">
-                            {project.user.ensAvatar && (
-                              <img
-                                src={project.user.ensAvatar}
-                                alt={project.user.ensName || 'User avatar'}
-                                className="w-4 h-4 rounded-full"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).style.display = 'none';
-                                }}
-                              />
-                            )}
-                            <span>
-                              {project.user.ensName || `${project.user.id.slice(0, 8)}...`}
-                            </span>
-                          </div>
-                        )}
-                        {project.createdAt && (
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span>Created {new Date(project.createdAt).toLocaleDateString()}</span>
-                            {project.updatedAt && project.updatedAt !== project.createdAt && (
-                              <span>Updated {new Date(project.updatedAt).toLocaleDateString()}</span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+            {filteredProjects.map((project, index) => (
+              <DraggableProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                moveProject={moveProject}
+                handleEditProject={handleEditProject}
+                user={user}
+              />
             ))}
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </DndProvider>
   );
 }

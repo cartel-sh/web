@@ -10,11 +10,14 @@ import { RefObject, useEffect, useState, memo, useCallback } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
 import { useGitHubIssues } from "@/hooks/useGitHubIssues";
-import { ExternalLink, Github, Clock, User, GripVertical, RefreshCw, UserCheck } from "lucide-react";
+import { ExternalLink, Github, Clock, User, UserCheck } from "lucide-react";
 import Link from "next/link";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { formatTimeSince } from '@/lib/format-time';
+import { ViewOptions } from '@/components/view-options';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { getOrderedProjectsAtom, updateProjectOrderAtom } from '@/atoms/project-settings';
 
 interface ProjectIssuesProps {
   project: ProjectWithUser;
@@ -23,7 +26,7 @@ interface ProjectIssuesProps {
 }
 
 const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, moveColumn }: ProjectIssuesProps) {
-  const { issues, isLoading, error, repoInfo, refresh } = useGitHubIssues(project.githubUrl || '');
+  const { issues, isLoading, error, repoInfo } = useGitHubIssues(project.githubUrl || '');
 
   const [{ isDragging }, drag, dragPreview] = useDrag({
     type: 'column',
@@ -52,33 +55,12 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
       className={`flex-shrink-0 w-80 h-full ${isDragging ? 'opacity-50' : ''}`}
     >
       <Card className="h-full flex flex-col p-0">
-        <CardHeader className="p-2 flex-shrink-0">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <CardTitle className="text-sm font-semibold truncate">{project.title}</CardTitle>
-              <CardDescription className="text-xs line-clamp-2">
-                {project.description}
-              </CardDescription>
-            </div>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6"
-                onClick={refresh}
-                disabled={isLoading}
-                title="Refresh issues"
-              >
-                <RefreshCw className={`h-3 w-3 ${isLoading ? 'animate-spin' : ''}`} />
-              </Button>
-              <div
-                ref={drag as unknown as RefObject<HTMLDivElement>}
-                className="cursor-move p-1 hover:bg-muted rounded transition-colors"
-                title="Drag to reorder"
-              >
-                <GripVertical className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </div>
+        <CardHeader className="p-2 flex-shrink-0 cursor-move">
+          <div className="min-w-0">
+            <CardTitle className="text-sm font-semibold truncate">{project.title}</CardTitle>
+            <CardDescription className="text-xs line-clamp-2">
+              {project.description}
+            </CardDescription>
           </div>
           <div className="flex items-center gap-2 pt-2">
             {project.githubUrl && (
@@ -229,6 +211,9 @@ export default function IssuesPage() {
   const [projects, setProjects] = useState<ProjectWithUser[]>([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const getOrderedProjects = useAtomValue(getOrderedProjectsAtom);
+  const updateProjectOrder = useSetAtom(updateProjectOrderAtom);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -243,14 +228,13 @@ export default function IssuesPage() {
   }, [isAuthenticated]);
 
   const moveColumn = useCallback((dragIndex: number, hoverIndex: number) => {
-    setProjects(prevProjects => {
-      const draggedProject = prevProjects[dragIndex];
-      const newProjects = [...prevProjects];
-      newProjects.splice(dragIndex, 1);
-      newProjects.splice(hoverIndex, 0, draggedProject);
-      return newProjects;
-    });
-  }, []);
+    const visibleProjects = getOrderedProjects(projects);
+    const draggedProject = visibleProjects[dragIndex];
+    const newOrder = [...visibleProjects];
+    newOrder.splice(dragIndex, 1);
+    newOrder.splice(hoverIndex, 0, draggedProject);
+    updateProjectOrder(newOrder.map(p => p.id));
+  }, [projects, getOrderedProjects, updateProjectOrder]);
 
   const loadProjects = async () => {
     try {
@@ -290,8 +274,13 @@ export default function IssuesPage() {
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
         <div className="container mx-auto px-8 py-8 h-screen flex flex-col">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold">Issues</h1>
-            <p className="text-muted-foreground">GitHub issues for open source projects</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold">Issues</h1>
+                <p className="text-muted-foreground">GitHub issues for open source projects</p>
+              </div>
+              <ViewOptions projects={projects} />
+            </div>
           </div>
 
           {error && (
@@ -322,7 +311,7 @@ export default function IssuesPage() {
             <Card className="flex-1 min-h-0 p-3">
               <ScrollArea orientation="both" className="flex flex-row pr-4 pb-4 gap-2 h-full">
                 <div className="flex flex-row gap-3 h-full">
-                  {projects.map((project, index) => (
+                  {getOrderedProjects(projects).map((project, index) => (
                     <ProjectIssuesColumn
                       key={project.id}
                       project={project}
