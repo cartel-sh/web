@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { CartelClient, InMemoryTokenStorage } from '@cartel-sh/api';
 
 const DISCORD_CLIENT_ID = '1412792170884235376';
-const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || 'FHVkaG562BP_yJmR6N3ShktKdMTnnpyU';
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || '';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.cartel.sh';
 const API_KEY = process.env.API_KEY || '';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://cartel.sh';
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,7 +13,7 @@ export async function GET(request: NextRequest) {
     const code = searchParams.get('code');
     
     if (!code) {
-      return NextResponse.redirect(new URL('/dash/account?error=missing_code', request.url));
+      return NextResponse.redirect(new URL('/dash/account?error=missing_code', APP_URL));
     }
 
     // Exchange code for access token
@@ -26,20 +27,20 @@ export async function GET(request: NextRequest) {
         client_secret: DISCORD_CLIENT_SECRET,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL || 'https://cartel.sh'}/api/auth/discord/callback`,
+        redirect_uri: `${APP_URL}/api/auth/discord/callback`,
       }),
     });
 
     if (!tokenResponse.ok) {
       console.error('Failed to exchange code for token:', await tokenResponse.text());
-      return NextResponse.redirect(new URL('/dash/account?error=token_exchange_failed', request.url));
+      return NextResponse.redirect(new URL('/dash/account?error=token_exchange_failed', APP_URL));
     }
 
     const tokenData = await tokenResponse.json();
     
     if (tokenData.error) {
       console.error('Discord OAuth error:', tokenData.error);
-      return NextResponse.redirect(new URL('/dash/account?error=oauth_error', request.url));
+      return NextResponse.redirect(new URL('/dash/account?error=oauth_error', APP_URL));
     }
 
     const discordAccessToken = tokenData.access_token;
@@ -53,7 +54,7 @@ export async function GET(request: NextRequest) {
 
     if (!userResponse.ok) {
       console.error('Failed to fetch Discord user:', await userResponse.text());
-      return NextResponse.redirect(new URL('/dash/account?error=user_fetch_failed', request.url));
+      return NextResponse.redirect(new URL('/dash/account?error=user_fetch_failed', APP_URL));
     }
 
     const discordUser = await userResponse.json();
@@ -75,7 +76,7 @@ export async function GET(request: NextRequest) {
     
     if (!accessToken) {
       // User is not authenticated, store OAuth data for after login
-      const response = NextResponse.redirect(new URL('/dash?oauth_pending=discord', request.url));
+      const response = NextResponse.redirect(new URL('/dash?oauth_pending=discord', APP_URL));
       response.cookies.set('pending_discord_oauth', JSON.stringify({
         id: discordUser.id,
         username: discordUser.username,
@@ -114,17 +115,17 @@ export async function GET(request: NextRequest) {
 
       // Check if identity was reassigned
       if (result.reassigned) {
-        return NextResponse.redirect(new URL('/dash/account?reassigned=true&platform=discord', request.url));
+        return NextResponse.redirect(new URL('/dash/account?reassigned=true&platform=discord', APP_URL));
       }
 
-      return NextResponse.redirect(new URL('/dash/account?connected=discord', request.url));
+      return NextResponse.redirect(new URL('/dash/account?connected=discord', APP_URL));
     } catch (apiError: any) {
       console.error('Failed to connect Discord identity:', apiError);
       
       // Check if user is not authenticated
       if (apiError.status === 401) {
         // Store OAuth data in session for after login
-        const response = NextResponse.redirect(new URL('/dash?oauth_pending=discord', request.url));
+        const response = NextResponse.redirect(new URL('/dash?oauth_pending=discord', APP_URL));
         response.cookies.set('pending_discord_oauth', JSON.stringify({
           id: discordUser.id,
           username: discordUser.username,
@@ -141,10 +142,10 @@ export async function GET(request: NextRequest) {
         return response;
       }
 
-      return NextResponse.redirect(new URL('/dash/account?error=connection_failed', request.url));
+      return NextResponse.redirect(new URL('/dash/account?error=connection_failed', APP_URL));
     }
   } catch (error: any) {
     console.error('Discord OAuth callback error:', error);
-    return NextResponse.redirect(new URL('/dash/account?error=unexpected', request.url));
+    return NextResponse.redirect(new URL('/dash/account?error=unexpected', APP_URL));
   }
 }
