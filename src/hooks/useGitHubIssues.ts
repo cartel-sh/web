@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { getIssuesAtom, setIssuesAtom, clearIssuesAtom, loadingStatesAtom } from '@/atoms/issues';
 
 export interface GitHubIssue {
   id: number;
@@ -36,73 +38,136 @@ interface GitHubIssuesData {
     owner: string;
     full_name: string;
   };
+  refresh: () => void;
 }
 
 export function useGitHubIssues(githubUrl: string): GitHubIssuesData {
-  const [data, setData] = useState<GitHubIssuesData>({
-    issues: [],
-    isLoading: true,
-    error: null,
+  const getCachedIssues = useAtomValue(getIssuesAtom);
+  const setIssues = useSetAtom(setIssuesAtom);
+  const clearIssues = useSetAtom(clearIssuesAtom);
+  const [loadingStates, setLoadingStates] = useAtom(loadingStatesAtom);
+  const hasFetchedRef = useRef(false);
+
+  const [localData, setLocalData] = useState<Omit<GitHubIssuesData, 'refresh'>>(() => {
+    const cached = getCachedIssues(githubUrl);
+    if (cached) {
+      return {
+        issues: cached.issues,
+        isLoading: false,
+        error: cached.error,
+        repoInfo: cached.repoInfo,
+      };
+    }
+    return {
+      issues: [],
+      isLoading: true,
+      error: null,
+    };
   });
 
-  useEffect(() => {
+  const fetchGitHubIssues = useCallback(async (forceRefresh = false) => {
     if (!githubUrl) {
-      setData(prev => ({ ...prev, isLoading: false }));
+      setLocalData({ issues: [], isLoading: false, error: null });
       return;
     }
 
-    const fetchGitHubIssues = async () => {
-      try {
-        setData(prev => ({ ...prev, isLoading: true, error: null }));
+    // Check if already loading this URL
+    if (!forceRefresh && loadingStates.get(githubUrl)) {
+      return;
+    }
 
-        // Extract owner and repo from GitHub URL
-        const urlParts = githubUrl.replace('https://github.com/', '').split('/');
-        if (urlParts.length < 2) {
-          throw new Error('Invalid GitHub URL');
-        }
-
-        const [owner, repoName] = urlParts;
-        const baseUrl = 'https://api.github.com';
-
-        // Fetch open issues only
-        const issuesResponse = await fetch(
-          `${baseUrl}/repos/${owner}/${repoName}/issues?state=open&per_page=50&sort=updated&direction=desc`
-        );
-        
-        if (!issuesResponse.ok) {
-          if (issuesResponse.status === 404) {
-            throw new Error('Repository not found or issues are disabled');
-          }
-          throw new Error(`Failed to fetch issues: ${issuesResponse.statusText}`);
-        }
-        
-        const issues: GitHubIssue[] = await issuesResponse.json();
-
-        // Filter out pull requests (GitHub API includes PRs in issues endpoint)
-        const filteredIssues = issues.filter(issue => !issue.html_url.includes('/pull/'));
-
-        setData({
-          issues: filteredIssues,
+    // Check cache first (unless forcing refresh)
+    if (!forceRefresh && !hasFetchedRef.current) {
+      const cached = getCachedIssues(githubUrl);
+      if (cached) {
+        setLocalData({
+          issues: cached.issues,
           isLoading: false,
-          error: null,
-          repoInfo: {
-            name: repoName,
-            owner,
-            full_name: `${owner}/${repoName}`,
-          },
+          error: cached.error,
+          repoInfo: cached.repoInfo,
         });
-      } catch (error) {
-        console.error('Error fetching GitHub issues:', error);
-        setData(prev => ({
-          ...prev,
-          isLoading: false,
-          error: error instanceof Error ? error.message : 'Failed to fetch GitHub issues',
-        }));
+        hasFetchedRef.current = true;
+        return;
       }
-    };
+    }
 
-    fetchGitHubIssues();
-  }, [githubUrl]);
+    try {
+      // Mark as loading
+      setLoadingStates(prev => {
+        const newStates = new Map(prev);
+        newStates.set(githubUrl, true);
+        return newStates;
+      });
 
-  return data;
+      setLocalData(prev => ({ ...prev, isLoading: true, error: null }));
+
+      // Extract owner and repo from GitHub URL
+      const urlParts = githubUrl.replace('https://github.com/', '').split('/');
+      if (urlParts.length < 2) {
+        throw new Error('Invalid GitHub URL');
+      }
+
+      const [owner, repoName] = urlParts;
+
+      // Call our API route instead of GitHub directly
+      const apiResponse = await fetch(
+        `/api/github/issues?owner=${encodeURIComponent(owner)}&repo=${encodeURIComponent(repoName)}`
+      );
+
+      if (!apiResponse.ok) {
+        const errorData = await apiResponse.json().catch(() => ({ error: 'Failed to fetch issues' }));
+        throw new Error(errorData.error || `Failed to fetch issues: ${apiResponse.statusText}`);
+      }
+
+      const data = await apiResponse.json();
+      const filteredIssues = data.issues;
+
+      const newData = {
+        issues: filteredIssues,
+        isLoading: false,
+        error: null,
+        repoInfo: data.repoInfo || {
+          name: repoName,
+          owner,
+          full_name: `${owner}/${repoName}`,
+        },
+      };
+
+      // Cache the result
+      setIssues({ url: githubUrl, data: newData });
+      setLocalData(newData);
+      hasFetchedRef.current = true;
+    } catch (error) {
+      console.error('Error fetching GitHub issues:', error);
+      const errorData = {
+        issues: [],
+        isLoading: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch GitHub issues',
+      };
+      setLocalData(errorData);
+      hasFetchedRef.current = true;
+    } finally {
+      // Mark as not loading
+      setLoadingStates(prev => {
+        const newStates = new Map(prev);
+        newStates.delete(githubUrl);
+        return newStates;
+      });
+    }
+  }, [githubUrl, getCachedIssues, setIssues, setLoadingStates]);
+
+  const refresh = useCallback(() => {
+    hasFetchedRef.current = false;
+    clearIssues(githubUrl);
+    fetchGitHubIssues(true);
+  }, [githubUrl, clearIssues, fetchGitHubIssues]);
+
+  useEffect(() => {
+    // Only fetch if we haven't fetched yet
+    if (!hasFetchedRef.current) {
+      fetchGitHubIssues();
+    }
+  }, [githubUrl]); // Only depend on githubUrl, not fetchGitHubIssues
+
+  return { ...localData, refresh };
 }

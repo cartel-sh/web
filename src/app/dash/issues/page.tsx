@@ -10,7 +10,7 @@ import { RefObject, useEffect, useState, memo, useCallback } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
 import { useGitHubIssues } from "@/hooks/useGitHubIssues";
-import { ExternalLink, Github, Clock, User, GripVertical } from "lucide-react";
+import { ExternalLink, Github, Clock, User, GripVertical, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -22,7 +22,7 @@ interface ProjectIssuesProps {
 }
 
 const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, moveColumn }: ProjectIssuesProps) {
-  const { issues, isLoading, error, repoInfo } = useGitHubIssues(project.githubUrl || '');
+  const { issues, isLoading, error, repoInfo, refresh } = useGitHubIssues(project.githubUrl || '');
 
   const [{ isDragging }, drag, dragPreview] = useDrag({
     type: 'column',
@@ -59,12 +59,24 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
                 {project.description}
               </CardDescription>
             </div>
-            <div
-              ref={drag as unknown as RefObject<HTMLDivElement>}
-              className="cursor-move p-1 hover:bg-muted rounded transition-colors"
-              title="Drag to reorder"
-            >
-              <GripVertical className="h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                onClick={refresh}
+                disabled={isLoading}
+                title="Refresh issues"
+              >
+                <RefreshCw className={`h-3 w-3 ${isLoading ? 'animate-spin' : ''}`} />
+              </Button>
+              <div
+                ref={drag as unknown as RefObject<HTMLDivElement>}
+                className="cursor-move p-1 hover:bg-muted rounded transition-colors"
+                title="Drag to reorder"
+              >
+                <GripVertical className="h-4 w-4 text-muted-foreground" />
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2 pt-2">
@@ -95,6 +107,11 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
           ) : error ? (
             <div className="text-center text-muted-foreground py-4">
               <p className="text-xs">{error}</p>
+              {error.includes('rate limit') && (
+                <p className="text-xs mt-2 text-amber-600">
+                  Server needs a GitHub token configured for higher rate limits
+                </p>
+              )}
             </div>
           ) : issues.length === 0 ? (
             <div className="text-center text-muted-foreground py-4">
