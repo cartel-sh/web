@@ -65,34 +65,28 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <div className="container mx-auto px-8 py-8">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Welcome back{user.ensName ? `, ${user.ensName}` : ''}</h1>
-          <p className="text-muted-foreground">Manage your cartel membership and projects</p>
-        </div>
-
-        {/* Membership Status Card */}
-        {user && (user.role === 'member' || user.role === 'admin') && (
-          <Card className="mb-8 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 border-primary/20">
-            <CardHeader className="">
-              <CardTitle className="flex flex-col items-center gap-2 text-base">
+        <div className="mb-8 flex justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Welcome back{user.ensName ? `, ${user.ensName}` : ''}</h1>
+            <p className="text-muted-foreground">Manage your cartel membership and projects</p>
+          </div>
+          {user && (user.role === 'member' || user.role === 'admin') && (
+            <div className="flex items-center gap-2 flex-col">
+              {user.role === 'admin' ? (
                 <div className="flex items-center gap-2">
-                  {user.role === 'admin' ? (
-                    <>
-                      <ShieldUser className="h-5 w-5 text-primary" />
-                      <span className="text-2xl font-bold text-primary">Staff</span>
-                    </>
-                  ) : (
-                    <>
-                      <UserCheck className="h-5 w-5 text-primary" />
-                      <span className="text-2xl font-bold text-primary">Member</span>
-                    </>
-                  )}
+                  <ShieldUser className="h-5 w-5 text-primary" />
+                  <span className="text-lg font-semibold text-primary">Staff</span>
                 </div>
-                <span className="text-sm text-muted-foreground">of the cartel</span>
-              </CardTitle>
-            </CardHeader>
-          </Card>
-        )}
+              ) : (
+                <div className="flex items-center gap-2">
+                  <UserCheck className="h-5 w-5 text-primary" />
+                  <span className="text-lg font-semibold text-primary">Member</span>
+                </div>
+              )}
+              <span className="text-muted-foreground">of the cartel</span>
+            </div>
+          )}
+        </div>
 
         {/* Projects Section */}
         <Card>
