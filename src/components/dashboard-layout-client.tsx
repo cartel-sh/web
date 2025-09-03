@@ -12,13 +12,13 @@ export default function DashboardLayoutClient({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="h-screen w-screen">
       <DashboardSidebar 
         isCollapsed={isSidebarCollapsed}
         onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
       <main className={cn(
-        "flex-1 transition-all duration-300",
+        "h-full overflow-hidden transition-all duration-300",
         isSidebarCollapsed ? "ml-16" : "ml-64"
       )}>
         {children}

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Plus, Search, Edit, Trash2 } from "lucide-react";
+import { ExternalLink, Github, Plus, Search, Edit, Trash2, Bug } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import Link from "next/link";
 
 interface ProjectFormData {
   title: string;
@@ -192,8 +193,8 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-8 py-8">
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex-shrink-0 px-8 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -405,7 +406,9 @@ export default function ProjectsPage() {
             />
           </div>
         </div>
+      </div>
 
+      <div className="flex-1 overflow-y-auto px-8 pb-8">
         {error && !isLoadingProjects && (
           <Card>
             <CardContent className="text-center py-8">
@@ -473,6 +476,14 @@ export default function ProjectsPage() {
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Button>
+                      {project.githubUrl && (
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href="/dash/issues">
+                            <Bug className="h-4 w-4 mr-1" />
+                            Issues
+                          </Link>
+                        </Button>
+                      )}
                       {project.githubUrl && (
                         <Button variant="outline" size="sm" asChild>
                           <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">

@@ -10,7 +10,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  Users
+  Users,
+  Bug,
+  CircleDot
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -181,6 +183,31 @@ export function DashboardSidebar({ isCollapsed, onToggle }: DashboardSidebarProp
                     </div>
                     <div className="absolute left-10 flex items-center h-full whitespace-nowrap">
                       Projects
+                    </div>
+                  </>
+                )}
+              </Button>
+            </Link>
+            <Link href="/dash/issues" aria-label="Issues" className="block">
+              <Button
+                variant={isActive("/dash/issues") ? "secondary" : "ghost"}
+                className={cn(
+                  "font-medium text-base transition-colors overflow-hidden",
+                  isCollapsed
+                    ? "w-10 h-10 p-0 flex items-center justify-center"
+                    : "relative w-full h-10"
+                )}
+                title={isCollapsed ? "Issues" : undefined}
+              >
+                {isCollapsed ? (
+                  <CircleDot className="h-4 w-4" />
+                ) : (
+                  <>
+                    <div className="absolute inset-0 flex items-center justify-center w-10">
+                      <CircleDot className="h-4 w-4 flex-shrink-0" />
+                    </div>
+                    <div className="absolute left-10 flex items-center h-full whitespace-nowrap">
+                      Issues
                     </div>
                   </>
                 )}
