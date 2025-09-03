@@ -50,8 +50,8 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
       }}
       className={`flex-shrink-0 w-80 h-full ${isDragging ? 'opacity-50' : ''}`}
     >
-      <Card className="h-full flex flex-col">
-        <CardHeader className="pb-3 flex-shrink-0">
+      <Card className="h-full flex flex-col p-0">
+        <CardHeader className="p-3 pt-2 flex-shrink-0">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
               <CardTitle className="text-sm font-semibold truncate">{project.title}</CardTitle>
@@ -99,7 +99,7 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
           </div>
         </CardHeader>
 
-        <CardContent className="flex-1 pt-0 overflow-hidden">
+        <CardContent className="flex-1 pt-0 overflow-hidden p-3">
           {isLoading ? (
             <div className="flex justify-center py-4">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
@@ -119,11 +119,11 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
             </div>
           ) : (
             <ScrollArea className="h-full">
-              <div className="space-y-3 pr-3">
+              <div className="space-y-3">
                 {issues.map((issue) => (
                   <div
                     key={issue.id}
-                    className="border rounded-lg p-3 hover:bg-muted/50 transition-colors"
+                    className="border rounded-lg p-2 hover:bg-muted/50 transition-colors"
                   >
                     <div className="space-y-2">
                       <div>
@@ -262,7 +262,7 @@ export default function IssuesPage() {
 
           {error && (
             <Card className="mb-6">
-              <CardContent className="text-center py-8">
+              <CardContent className="text-center py-4">
                 <p className="text-destructive mb-4">{error}</p>
                 <Button onClick={loadProjects} variant="outline">Retry</Button>
               </CardContent>
@@ -275,7 +275,7 @@ export default function IssuesPage() {
             </div>
           ) : !error && projects.length === 0 ? (
             <Card>
-              <CardContent className="text-center py-8">
+              <CardContent className="text-center py-4">
                 <p className="text-muted-foreground">
                   No open source projects with GitHub links found
                 </p>
@@ -285,9 +285,9 @@ export default function IssuesPage() {
               </CardContent>
             </Card>
           ) : !error && (
-            <Card className="flex-1 min-h-0 p-4">
-              <ScrollArea orientation="horizontal" className="flex flex-row overflow-x-auto gap-2 h-full">
-                <div className="flex flex-row gap-2 h-full">
+            <Card className="flex-1 min-h-0 p-3">
+              <ScrollArea orientation="both" className="flex flex-row pr-4 pb-4 gap-2 h-full">
+                <div className="flex flex-row gap-3 h-full">
                   {projects.map((project, index) => (
                     <ProjectIssuesColumn
                       key={project.id}
