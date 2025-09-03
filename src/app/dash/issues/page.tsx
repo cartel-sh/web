@@ -10,10 +10,11 @@ import { RefObject, useEffect, useState, memo, useCallback } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
 import { useGitHubIssues } from "@/hooks/useGitHubIssues";
-import { ExternalLink, Github, Clock, User, GripVertical, RefreshCw } from "lucide-react";
+import { ExternalLink, Github, Clock, User, GripVertical, RefreshCw, UserCheck } from "lucide-react";
 import Link from "next/link";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { formatTimeSince } from '@/lib/format-time';
 
 interface ProjectIssuesProps {
   project: ProjectWithUser;
@@ -51,7 +52,7 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
       className={`flex-shrink-0 w-80 h-full ${isDragging ? 'opacity-50' : ''}`}
     >
       <Card className="h-full flex flex-col p-0">
-        <CardHeader className="p-3 pt-2 flex-shrink-0">
+        <CardHeader className="p-2 flex-shrink-0">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
               <CardTitle className="text-sm font-semibold truncate">{project.title}</CardTitle>
@@ -99,7 +100,7 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
           </div>
         </CardHeader>
 
-        <CardContent className="flex-1 pt-0 overflow-hidden p-3">
+        <CardContent className="flex-1 pt-0 overflow-hidden p-2">
           {isLoading ? (
             <div className="flex justify-center py-4">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
@@ -119,24 +120,46 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
             </div>
           ) : (
             <ScrollArea className="h-full">
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {issues.map((issue) => (
                   <div
                     key={issue.id}
                     className="border rounded-lg p-2 hover:bg-muted/50 transition-colors"
                   >
                     <div className="space-y-2">
-                      <div>
+                      <div className="flex items-start gap-2">
                         <a
-                          href={issue.html_url}
+                          href={issue.user.html_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-medium hover:text-primary transition-colors line-clamp-2"
+                          className="flex-shrink-0"
                         >
-                          {issue.title}
+                          <img
+                            src={issue.user.avatar_url}
+                            alt={issue.user.login}
+                            className="w-8 h-8 rounded-full hover:ring-2 hover:ring-primary transition-all"
+                          />
                         </a>
-                        <div className="flex items-center gap-1 mt-1">
-                          <span className="text-xs text-muted-foreground">#{issue.number}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <a
+                              href={issue.user.html_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs font-medium text-muted-foreground truncate hover:text-primary transition-colors"
+                            >
+                              {issue.user.login}
+                            </a>
+                            <span className="text-xs text-muted-foreground">#{issue.number}</span>
+                          </div>
+                          <a
+                            href={issue.html_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-medium hover:text-primary transition-colors line-clamp-2"
+                          >
+                            {issue.title}
+                          </a>
                         </div>
                       </div>
 
@@ -165,15 +188,26 @@ const ProjectIssuesColumn = memo(function ProjectIssuesColumn({ project, index, 
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
-                          <User className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-xs text-muted-foreground truncate max-w-20">
-                            {issue.user.login}
-                          </span>
+                          {issue.assignee ? (
+                            <>
+                              <UserCheck className="h-3 w-3 text-muted-foreground" />
+                              <img
+                                src={issue.assignee.avatar_url}
+                                alt={issue.assignee.login}
+                                className="w-3 h-3 rounded-full"
+                              />
+                              <span className="text-xs text-muted-foreground truncate max-w-20">
+                                {issue.assignee.login}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-xs text-muted-foreground/60 italic">Unassigned</span>
+                          )}
                         </div>
                         <div className="flex items-center gap-1">
-                          <Clock className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(issue.created_at).toLocaleDateString()}
+                          <Clock className="h-3 w-3 text-muted-foreground/60" />
+                          <span className="text-xs text-muted-foreground/60">
+                            {formatTimeSince(issue.updated_at)}
                           </span>
                         </div>
                       </div>

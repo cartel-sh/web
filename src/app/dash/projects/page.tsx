@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Plus, Search, Edit, Trash2, Bug } from "lucide-react";
+import { ExternalLink, Github, Plus, Search, Edit, Trash2, Bug, CircleDot } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -479,7 +479,7 @@ export default function ProjectsPage() {
                       {project.githubUrl && (
                         <Button variant="outline" size="sm" asChild>
                           <Link href="/dash/issues">
-                            <Bug className="h-4 w-4 mr-1" />
+                            <CircleDot className="h-4 w-4 mr-1" />
                             Issues
                           </Link>
                         </Button>

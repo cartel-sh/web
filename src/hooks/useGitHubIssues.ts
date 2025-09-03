@@ -23,10 +23,10 @@ export interface GitHubIssue {
     name: string;
     color: string;
   }[];
-  assignees: {
+  assignee: {
     login: string;
     avatar_url: string;
-  }[];
+  };
 }
 
 interface GitHubIssuesData {
