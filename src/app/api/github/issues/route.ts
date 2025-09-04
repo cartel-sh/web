@@ -113,9 +113,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse the request body
     const body = await request.json();
     const { owner, repo, title, body: issueBody, labels } = body;
+
+    console.log('GitHub issue creation request:', {
+      owner,
+      repo, 
+      title,
+      bodyLength: issueBody?.length || 0,
+      hasLabels: !!labels
+    });
 
     if (!owner || !repo || !title) {
       return NextResponse.json(

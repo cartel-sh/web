@@ -61,6 +61,11 @@ export function CreateIssueDialog({ project }: CreateIssueDialogProps) {
     }
 
     const repoInfo = extractRepoInfo(project.githubUrl);
+    console.log('GitHub URL parsing:', {
+      originalUrl: project.githubUrl,
+      extractedInfo: repoInfo
+    });
+    
     if (!repoInfo) {
       setError("Invalid GitHub URL format");
       return;
@@ -70,18 +75,22 @@ export function CreateIssueDialog({ project }: CreateIssueDialogProps) {
     setError(null);
 
     try {
+      const requestPayload = {
+        owner: repoInfo.owner,
+        repo: repoInfo.repo,
+        title: title.trim(),
+        body: body.trim(),
+      };
+      
+      console.log('Creating issue with payload:', requestPayload);
+      
       const response = await fetch('/api/github/issues', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include', // This ensures cookies are sent with the request
-        body: JSON.stringify({
-          owner: repoInfo.owner,
-          repo: repoInfo.repo,
-          title: title.trim(),
-          body: body.trim(),
-        }),
+        body: JSON.stringify(requestPayload),
       });
 
       if (!response.ok) {

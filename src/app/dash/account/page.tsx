@@ -116,7 +116,7 @@ export default function AccountPage() {
       sessionStorage.setItem("github_oauth_state", state);
       
       // Redirect to GitHub OAuth
-      window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&scope=read:user user:email`;
+      window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&scope=read:user user:email public_repo`;
     } catch (error: any) {
       console.error("Failed to initiate GitHub OAuth:", error);
       setError("Failed to connect GitHub account. Please try again.");
