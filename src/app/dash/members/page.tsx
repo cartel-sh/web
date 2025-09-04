@@ -185,8 +185,8 @@ export default function MembersPage() {
                           </h3>
                           {member.role === "admin" && (
                             <Badge variant="default" className="text-xs">
-                              <Crown className="h-3 w-3 mr-1" />
-                              Admin
+                              <ShieldUser className="h-3 w-3 mr-1" />
+                              Staff
                             </Badge>
                           )}
                           {member.role === "member" && (
@@ -202,11 +202,6 @@ export default function MembersPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {member.ensName && (
-                        <Badge variant="outline" className="text-xs">
-                          ENS
-                        </Badge>
-                      )}
                       {member.address && (
                         <code className="text-xs bg-muted px-2 py-1 rounded">
                           {member.address.slice(0, 6)}...{member.address.slice(-4)}
