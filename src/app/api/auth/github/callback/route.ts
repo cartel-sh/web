@@ -115,13 +115,15 @@ export async function GET(request: NextRequest) {
       console.log('Attempting to connect GitHub identity:', {
         githubId: githubUser.id.toString(),
         githubLogin: githubUser.login,
-        tokenUserId: accessToken ? 'token present' : 'no token'
+        tokenUserId: accessToken ? 'token present' : 'no token',
+        githubAccessToken: githubAccessToken ? 'token present' : 'no token',
+        githubAccessTokenLength: githubAccessToken?.length
       });
 
       const tokenUser = await serverCartel.auth.me();
       console.log('Token belongs to user:', tokenUser?.userId, 'address:', tokenUser?.address);
 
-      const result = await serverCartel.users.connectMyIdentity({
+      const connectPayload = {
         platform: 'github',
         identity: githubUser.id.toString(),
         metadata: {
@@ -133,7 +135,15 @@ export async function GET(request: NextRequest) {
           profileUrl: githubUser.html_url,
         },
         verifiedAt: new Date().toISOString(),
+        oauthAccessToken: githubAccessToken,
+      };
+      
+      console.log('Connect payload:', {
+        ...connectPayload,
+        oauthAccessToken: connectPayload.oauthAccessToken ? 'present' : 'missing'
       });
+
+      const result = await serverCartel.users.connectMyIdentity(connectPayload);
 
       console.log('GitHub identity connection result:', {
         reassigned: result.reassigned,
