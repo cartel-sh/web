@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
-    
+
     if (!code) {
       return NextResponse.redirect(new URL('/dash/account?error=missing_code', APP_URL));
     }
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     }
 
     const tokenData = await tokenResponse.json();
-    
+
     if (tokenData.error) {
       console.error('Discord OAuth error:', tokenData.error);
       return NextResponse.redirect(new URL('/dash/account?error=oauth_error', APP_URL));
@@ -63,12 +63,12 @@ export async function GET(request: NextRequest) {
     // but are not required for basic identity connection
 
     // Build display name
-    const displayName = discordUser.global_name || 
-                       discordUser.display_name || 
-                       discordUser.username;
+    const displayName = discordUser.global_name ||
+      discordUser.display_name ||
+      discordUser.username;
 
     // Build avatar URL
-    const avatarUrl = discordUser.avatar 
+    const avatarUrl = discordUser.avatar
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.${discordUser.avatar.startsWith('a_') ? 'gif' : 'png'}?size=256`
       : `https://cdn.discordapp.com/embed/avatars/${parseInt(discordUser.discriminator) % 5}.png`;
 
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
     if (accessToken) {
       console.log('Access token length:', accessToken.length);
     }
-    
+
     if (!accessToken) {
       // User is not authenticated, store OAuth data for after login
       const response = NextResponse.redirect(new URL('/dash?oauth_pending=discord', APP_URL));
@@ -99,12 +99,24 @@ export async function GET(request: NextRequest) {
     }
 
     // Create server-side client with user's access token
+    // Pass API_KEY for app-level operations but SDK will prefer JWT token
     const tokenStorage = new InMemoryTokenStorage();
-    tokenStorage.setTokens(accessToken, '', 0);
+    // Set a reasonable expiry time (1 hour) for the token since we don't have the actual expiry
+    tokenStorage.setTokens(accessToken, '', 3600);
     const serverCartel = new CartelClient(API_URL, API_KEY, tokenStorage);
 
     // Connect the Discord identity to the user's account
     try {
+      console.log('Attempting to connect Discord identity:', {
+        discordId: discordUser.id,
+        discordUsername: discordUser.username,
+        tokenPresent: accessToken ? 'YES' : 'NO'
+      });
+
+      // First verify which user this token belongs to
+      const tokenUser = await serverCartel.auth.me();
+      console.log('Token belongs to user:', tokenUser?.userId, 'address:', tokenUser?.address);
+
       const result = await serverCartel.users.connectMyIdentity({
         platform: 'discord',
         identity: discordUser.id,
@@ -126,7 +138,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/dash/account?connected=discord', APP_URL));
     } catch (apiError: any) {
       console.error('Failed to connect Discord identity:', apiError);
-      
+
       // Check if user is not authenticated
       if (apiError.status === 401) {
         // Store OAuth data in session for after login

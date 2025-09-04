@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
-    
+
     if (!code) {
       return NextResponse.redirect(new URL('/dash/account?error=missing_code', APP_URL));
     }
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     }
 
     const tokenData = await tokenResponse.json();
-    
+
     if (tokenData.error) {
       console.error('GitHub OAuth error:', tokenData.error);
       return NextResponse.redirect(new URL('/dash/account?error=oauth_error', APP_URL));
@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     if (accessToken) {
       console.log('Access token length:', accessToken.length);
     }
-    
+
     if (!accessToken) {
       // User is not authenticated, store OAuth data for after login
       const response = NextResponse.redirect(new URL('/dash?oauth_pending=github', APP_URL));
@@ -107,11 +107,20 @@ export async function GET(request: NextRequest) {
 
     // Create server-side client with user's access token
     const tokenStorage = new InMemoryTokenStorage();
-    tokenStorage.setTokens(accessToken, '', 0);
+    tokenStorage.setTokens(accessToken, '', 3600);
     const serverCartel = new CartelClient(API_URL, API_KEY, tokenStorage);
 
     // Connect the GitHub identity to the user's account
     try {
+      console.log('Attempting to connect GitHub identity:', {
+        githubId: githubUser.id.toString(),
+        githubLogin: githubUser.login,
+        tokenUserId: accessToken ? 'token present' : 'no token'
+      });
+
+      const tokenUser = await serverCartel.auth.me();
+      console.log('Token belongs to user:', tokenUser?.userId, 'address:', tokenUser?.address);
+
       const result = await serverCartel.users.connectMyIdentity({
         platform: 'github',
         identity: githubUser.id.toString(),
@@ -126,6 +135,12 @@ export async function GET(request: NextRequest) {
         verifiedAt: new Date().toISOString(),
       });
 
+      console.log('GitHub identity connection result:', {
+        reassigned: result.reassigned,
+        previousUserId: result.previousUserId,
+        identityUserId: result.identity?.userId
+      });
+
       // Check if identity was reassigned
       if (result.reassigned) {
         return NextResponse.redirect(new URL('/dash/account?reassigned=true&platform=github', APP_URL));
@@ -134,7 +149,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/dash/account?connected=github', APP_URL));
     } catch (apiError: any) {
       console.error('Failed to connect GitHub identity:', apiError);
-      
+
       // Check if user is not authenticated
       if (apiError.status === 401) {
         // Store OAuth data in session for after login
