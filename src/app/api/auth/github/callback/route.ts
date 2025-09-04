@@ -78,7 +78,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Get the JWT token from cookies
+    console.log('All cookies received:', Object.fromEntries(request.cookies.getAll().map(c => [c.name, c.value])));
     const accessToken = request.cookies.get('access_token')?.value;
+    console.log('GitHub OAuth callback - Found access token:', accessToken ? 'YES' : 'NO');
+    if (accessToken) {
+      console.log('Access token length:', accessToken.length);
+    }
     
     if (!accessToken) {
       // User is not authenticated, store OAuth data for after login

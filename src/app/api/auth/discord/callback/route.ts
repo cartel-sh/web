@@ -72,7 +72,12 @@ export async function GET(request: NextRequest) {
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.${discordUser.avatar.startsWith('a_') ? 'gif' : 'png'}?size=256`
       : `https://cdn.discordapp.com/embed/avatars/${parseInt(discordUser.discriminator) % 5}.png`;
 
+    console.log('All cookies received:', Object.fromEntries(request.cookies.getAll().map(c => [c.name, c.value])));
     const accessToken = request.cookies.get('access_token')?.value;
+    console.log('Discord OAuth callback - Found access token:', accessToken ? 'YES' : 'NO');
+    if (accessToken) {
+      console.log('Access token length:', accessToken.length);
+    }
     
     if (!accessToken) {
       // User is not authenticated, store OAuth data for after login

@@ -164,7 +164,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const tokenStorage = new LocalStorageTokenStorage();
         tokenStorage.setTokens(response.accessToken, response.refreshToken, response.expiresIn);
         
-        document.cookie = `access_token=${response.accessToken}; path=/; max-age=${response.expiresIn}; SameSite=Lax${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`;
+        const cookieValue = `access_token=${response.accessToken}; path=/; max-age=${response.expiresIn}; SameSite=Lax${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`;
+        document.cookie = cookieValue;
+        console.log('Setting cookie for user:', response.userId, response.address);
+        console.log('Cookie value:', cookieValue);
       }
 
       const userData = await cartel.auth.me();
