@@ -178,7 +178,7 @@ export function IdentityList({ identities, onDisconnect, onSetPrimary }: Identit
               {!identity.isPrimary && (
                 <DropdownMenuItem 
                   onClick={() => onDisconnect(identity.platform, identity.identity)}
-                  className="text-destructive"
+                  className=""
                 >
                   <Unlink className="h-4 w-4 mr-2" />
                   Disconnect

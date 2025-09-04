@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { cartel } from "@/lib/cartel-client";
 import { Card } from "@/components/ui/card";
-import { IdentityList } from "@/components/identity-list";
-import { ConnectAccountButton } from "@/components/connect-account-button";
-import { User, GitBranch, MessageSquare, Loader2 } from "lucide-react";
+import { User, Loader2 } from "lucide-react";
+import { FaGithub, FaDiscord } from "react-icons/fa";
+import { AccountRow } from "@/components/account-row";
 
 interface UserIdentity {
   userId: string;
@@ -151,15 +151,6 @@ export default function AccountPage() {
     }
   };
 
-  const handleSetPrimary = async (platform: string, identity: string) => {
-    try {
-      await cartel.users.setPrimaryIdentity(platform, identity);
-      await fetchIdentities();
-    } catch (error: any) {
-      console.error("Failed to set primary identity:", error);
-      setError("Failed to set primary account. Please try again.");
-    }
-  };
 
   const handleReassignConfirm = async () => {
     // The reassignment already happened on the backend when connecting
@@ -168,9 +159,6 @@ export default function AccountPage() {
     await fetchIdentities();
   };
 
-  const handleReassignCancel = () => {
-    setReassignDialog({ open: false, platform: "", identity: "" });
-  };
 
   if (authLoading) {
     return (
@@ -216,7 +204,7 @@ export default function AccountPage() {
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">Connected Accounts</h2>
             <p className="text-sm text-muted-foreground">
-              These accounts are linked to your Cartel profile. You can use any of them to access your data.
+              Connect and manage your accounts to access Cartel from multiple platforms.
             </p>
           </div>
 
@@ -224,44 +212,58 @@ export default function AccountPage() {
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
-          ) : identities.length > 0 ? (
-            <IdentityList
-              identities={identities}
-              onDisconnect={handleDisconnect}
-              onSetPrimary={handleSetPrimary}
-            />
           ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">No connected accounts yet.</p>
-              <p className="text-sm text-muted-foreground">Connect your GitHub or Discord account to get started.</p>
+            <div className="space-y-3">
+              {/* GitHub Account */}
+              <AccountRow
+                platformName="GitHub"
+                platformIcon={<FaGithub className="h-6 w-6" />}
+                identity={identities.find(i => i.platform === "github") || null}
+                onConnect={handleConnectGitHub}
+                onDisconnect={handleDisconnect}
+              />
+
+              {/* Discord Account */}
+              <AccountRow
+                platformName="Discord"
+                platformIcon={<FaDiscord className="h-6 w-6" />}
+                identity={identities.find(i => i.platform === "discord") || null}
+                onConnect={handleConnectDiscord}
+                onDisconnect={handleDisconnect}
+              />
+
+              {/* Other connected accounts (EVM, Lens, etc.) */}
+              {identities.filter(i => !['github', 'discord'].includes(i.platform)).map((identity) => {
+                const getPlatformName = (platform: string) => {
+                  switch (platform) {
+                    case "evm": return "Wallet";
+                    case "lens": return "Lens";
+                    case "farcaster": return "Farcaster";
+                    case "telegram": return "Telegram";
+                    default: return platform.charAt(0).toUpperCase() + platform.slice(1);
+                  }
+                };
+
+                return (
+                  <AccountRow
+                    key={`${identity.platform}-${identity.identity}`}
+                    platformName={getPlatformName(identity.platform)}
+                    platformIcon={<User className="h-6 w-6" />}
+                    identity={identity}
+                    onConnect={() => {}} // These platforms don't have connect handlers in this interface
+                    onDisconnect={handleDisconnect}
+                  />
+                );
+              })}
+
+              {identities.length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">No connected accounts yet.</p>
+                  <p className="text-sm text-muted-foreground">Connect your GitHub or Discord account to get started.</p>
+                </div>
+              )}
             </div>
           )}
-        </Card>
-
-        <Card className="p-6">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Add Accounts</h2>
-            <p className="text-sm text-muted-foreground">
-              Connect additional accounts to access Cartel from multiple platforms.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <ConnectAccountButton
-              platform="github"
-              icon={<GitBranch className="h-4 w-4" />}
-              label="Connect GitHub"
-              onClick={handleConnectGitHub}
-              disabled={identities.some(i => i.platform === "github")}
-            />
-            <ConnectAccountButton
-              platform="discord"
-              icon={<MessageSquare className="h-4 w-4" />}
-              label="Connect Discord"
-              onClick={handleConnectDiscord}
-              disabled={identities.some(i => i.platform === "discord")}
-            />
-          </div>
         </Card>
 
         {/* Reassignment Dialog */}
