@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Plus, Search, Edit, Trash2, Bug, CircleDot, Settings, Eye, EyeOff } from "lucide-react";
+import { ExternalLink, Github, Plus, Search, Trash2, Bug, CircleDot, Settings, Eye, EyeOff } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -35,9 +35,7 @@ import { useAtom } from "jotai";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useRef } from "react";
-import { GripVertical } from "lucide-react";
 import {
-  projectSettingsAtom,
   getOrderedProjectsAtom,
   initializeProjectSettingsAtom,
   toggleProjectVisibilityAtom,
@@ -68,7 +66,7 @@ interface DraggableProjectCardProps {
   project: ProjectWithUser;
   index: number;
   moveProject: (dragIndex: number, hoverIndex: number) => void;
-  handleEditProject: (project: ProjectWithUser) => void;
+  handleViewDetails: (project: ProjectWithUser) => void;
   user?: any;
 }
 
@@ -76,7 +74,7 @@ const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
   project,
   index,
   moveProject,
-  handleEditProject,
+  handleViewDetails,
   user,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -153,14 +151,12 @@ const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
   return (
     <Card
       ref={ref}
-      className="hover:shadow-lg transition-shadow relative group"
+      className="hover:shadow-lg transition-shadow cursor-pointer"
       style={{ opacity }}
       data-handler-id={handlerId}
+      onClick={() => handleViewDetails(project)}
     >
-      <div className="absolute top-2 left-2 cursor-move opacity-0 group-hover:opacity-100 transition-opacity z-10">
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
-      </div>
-      <CardHeader className="pl-8">
+      <CardHeader>
         <div className="flex items-start justify-between">
           <CardTitle className="line-clamp-1">{project.title}</CardTitle>
           {!project.isPublic && (
@@ -171,7 +167,7 @@ const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
           {project.description}
         </CardDescription>
       </CardHeader>
-      <CardContent className="pl-8">
+      <CardContent>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             {project.tags && project.tags.length > 0 && (
@@ -194,16 +190,13 @@ const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
           </div>
 
           <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleEditProject(project)}
-            >
-              <Edit className="h-4 w-4 mr-1" />
-              Edit
-            </Button>
             {project.githubUrl && (
-              <Button variant="outline" size="sm" asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                asChild 
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Link href="/dash/issues">
                   <CircleDot className="h-4 w-4 mr-1" />
                   Issues
@@ -211,7 +204,12 @@ const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
               </Button>
             )}
             {project.githubUrl && (
-              <Button variant="outline" size="sm" asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                asChild 
+                onClick={(e) => e.stopPropagation()}
+              >
                 <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4 mr-1" />
                   Code
@@ -219,7 +217,12 @@ const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
               </Button>
             )}
             {project.deploymentUrl && (
-              <Button variant="outline" size="sm" asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                asChild 
+                onClick={(e) => e.stopPropagation()}
+              >
                 <a href={project.deploymentUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4 mr-1" />
                   Site
@@ -228,7 +231,7 @@ const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
             )}
           </div>
 
-          {(project.user || project.createdAt) && (
+          {/* {(project.user || project.createdAt) && (
             <div className="space-y-1">
               {project.user && user && project.userId !== user.userId && (
                 <div className="text-xs text-muted-foreground flex items-center gap-2">
@@ -247,16 +250,8 @@ const DraggableProjectCard: React.FC<DraggableProjectCardProps> = ({
                   </span>
                 </div>
               )}
-              {project.createdAt && (
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Created {new Date(project.createdAt).toLocaleDateString()}</span>
-                  {project.updatedAt && project.updatedAt !== project.createdAt && (
-                    <span>Updated {new Date(project.updatedAt).toLocaleDateString()}</span>
-                  )}
-                </div>
-              )}
             </div>
-          )}
+          )} */}
         </div>
       </CardContent>
     </Card>
@@ -271,9 +266,6 @@ export default function ProjectsPage() {
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<ProjectWithUser | null>(null);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProjectFormData>({
     title: "",
@@ -285,7 +277,6 @@ export default function ProjectsPage() {
   });
 
   // Jotai hooks for project settings
-  const [projectSettings] = useAtom(projectSettingsAtom);
   const [, initializeSettings] = useAtom(initializeProjectSettingsAtom);
   const [, toggleVisibility] = useAtom(toggleProjectVisibilityAtom);
   const [getVisibility] = useAtom(getProjectVisibilityAtom);
@@ -368,63 +359,11 @@ export default function ProjectsPage() {
     }
   };
 
-  const handleEditProject = (project: ProjectWithUser) => {
-    setEditingProject(project);
-    setFormData({
-      title: project.title,
-      description: project.description,
-      githubUrl: project.githubUrl || "",
-      deploymentUrl: project.deploymentUrl || "",
-      tags: project.tags?.join(", ") || "",
-      isPublic: project.isPublic,
-    });
-    setIsEditDialogOpen(true);
+
+  const handleViewDetails = (project: ProjectWithUser) => {
+    router.push(`/dash/projects/${project.id}`);
   };
 
-  const handleUpdateProject = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingProject) return;
-
-    try {
-      setIsUpdating(true);
-      setError(null);
-
-      // Prepare the data, ensuring URLs are null if empty or invalid
-      const githubUrl = formData.githubUrl.trim() || null;
-      const deploymentUrl = formData.deploymentUrl.trim() || null;
-
-      const updatedProject = await cartel.projects.update(editingProject.id, {
-        title: formData.title.trim(),
-        description: formData.description.trim(),
-        githubUrl,
-        deploymentUrl,
-        tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
-        isPublic: formData.isPublic,
-      });
-
-      // Update the project in the local state
-      setProjects(prev => prev.map(p => p.id === updatedProject.id
-        ? { ...updatedProject, user: editingProject.user }
-        : p
-      ));
-
-      setIsEditDialogOpen(false);
-      setEditingProject(null);
-      setFormData({
-        title: "",
-        description: "",
-        githubUrl: "",
-        deploymentUrl: "",
-        tags: "",
-        isPublic: true,
-      });
-    } catch (error) {
-      console.error("Failed to update project:", error);
-      setError(error instanceof Error ? error.message : "Failed to update project");
-    } finally {
-      setIsUpdating(false);
-    }
-  };
 
   // Get ordered and filtered projects using Jotai
   const orderedProjects = getOrderedProjects(projects);
@@ -591,7 +530,7 @@ export default function ProjectsPage() {
                       checked={formData.isPublic}
                       onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isPublic: checked }))}
                     />
-                    <Label htmlFor="isPublic">Make project public</Label>
+                    <Label htmlFor="isPublic">Public project</Label>
                   </div>
 
                   {error && (
@@ -613,99 +552,6 @@ export default function ProjectsPage() {
             </Dialog>
             </div>
 
-            {/* Edit Project Dialog */}
-            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-              <DialogContent className="sm:max-w-[600px]">
-                <DialogHeader>
-                  <DialogTitle>Edit Project</DialogTitle>
-                  <DialogDescription>
-                    Update your project information.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleUpdateProject} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-title">Title</Label>
-                    <Input
-                      id="edit-title"
-                      value={formData.title}
-                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="Enter project title"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-description">Description</Label>
-                    <Textarea
-                      id="edit-description"
-                      value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="Describe your project"
-                      rows={3}
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-githubUrl">GitHub URL</Label>
-                      <Input
-                        id="edit-githubUrl"
-                        value={formData.githubUrl}
-                        onChange={(e) => setFormData(prev => ({ ...prev, githubUrl: e.target.value }))}
-                        placeholder="https://github.com/..."
-                        type="url"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-deploymentUrl">Deployment URL</Label>
-                      <Input
-                        id="edit-deploymentUrl"
-                        value={formData.deploymentUrl}
-                        onChange={(e) => setFormData(prev => ({ ...prev, deploymentUrl: e.target.value }))}
-                        placeholder="https://..."
-                        type="url"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-tags">Tags</Label>
-                    <Input
-                      id="edit-tags"
-                      value={formData.tags}
-                      onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                      placeholder="react, typescript, nextjs (comma separated)"
-                    />
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="edit-isPublic"
-                      checked={formData.isPublic}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isPublic: checked }))}
-                    />
-                    <Label htmlFor="edit-isPublic">Make project public</Label>
-                  </div>
-
-                  {error && (
-                    <div className="bg-destructive/15 border border-destructive/20 rounded-md p-3 text-sm text-destructive">
-                      {error}
-                    </div>
-                  )}
-
-                  <div className="flex justify-end space-x-2 pt-4">
-                    <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={isUpdating}>
-                      {isUpdating ? "Updating..." : "Update Project"}
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
           </div>
 
           <div className="relative">
@@ -750,7 +596,7 @@ export default function ProjectsPage() {
                 project={project}
                 index={index}
                 moveProject={moveProject}
-                handleEditProject={handleEditProject}
+                handleViewDetails={handleViewDetails}
                 user={user}
               />
             ))}
