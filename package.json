@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cartel-sh/api": "^7.13.4",
+    "@cartel-sh/api": "^7.16.0",
     "@coinbase/wallet-sdk": "^4.3.7",
     "@ensdomains/ensjs": "^4.0.2",
     "@marsidev/react-turnstile": "^1.3.0",
