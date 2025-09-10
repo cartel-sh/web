@@ -20,7 +20,6 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
   const [hoveredContributor, setHoveredContributor] = useState<string | null>(null);
 
   const handleCardClick = (e: React.MouseEvent) => {
-    // Only trigger if not clicking on contributor avatars
     if ((e.target as HTMLElement).closest('.contributor-avatar')) {
       return;
     }
@@ -64,7 +63,7 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
       variant="project"
       interactive
       className={cn("cursor-pointer bg-card/50 rounded-xl rounded-tr-2xl min-h-[200px]", className)}
-      contentClassName="p-6 h-full flex flex-col"
+      contentClassName="p-6 h-full flex flex-col min-w-[400px]"
       cornerClassName="-top-0.5 -right-1"
       ariaLabel={`Open ${name} project`}
     >

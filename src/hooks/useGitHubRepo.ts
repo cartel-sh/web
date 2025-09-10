@@ -61,34 +61,30 @@ export function useGitHubRepo(githubUrl: string): GitHubRepoData {
       try {
         setData(prev => ({ ...prev, isLoading: true, error: null }));
 
-        // Extract owner and repo from GitHub URL
         const urlParts = githubUrl.replace('https://github.com/', '').split('/');
         if (urlParts.length < 2) {
           throw new Error('Invalid GitHub URL');
         }
 
         const [owner, repoName] = urlParts;
-        const baseUrl = 'https://api.github.com';
+        const baseUrl = '/api/github';
 
-        // Fetch repository info
         const repoResponse = await fetch(`${baseUrl}/repos/${owner}/${repoName}`);
         if (!repoResponse.ok) {
           throw new Error(`Failed to fetch repository: ${repoResponse.statusText}`);
         }
         const repo: GitHubRepo = await repoResponse.json();
 
-        // Fetch contributors
         const contributorsResponse = await fetch(`${baseUrl}/repos/${owner}/${repoName}/contributors`);
         if (!contributorsResponse.ok) {
           throw new Error(`Failed to fetch contributors: ${contributorsResponse.statusText}`);
         }
         const contributors: GitHubContributor[] = await contributorsResponse.json();
 
-        // Filter out bots and sort by contributions
         const filteredContributors = contributors
           .filter(contributor => {
             const login = contributor.login.toLowerCase();
-            return contributor.type === 'User' && 
+            return contributor.type === 'User' &&
               !BOT_USERNAMES.some(bot => login.includes(bot.toLowerCase())) &&
               !login.includes('bot') &&
               !login.includes('agent');
