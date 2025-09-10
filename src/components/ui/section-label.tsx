@@ -12,7 +12,7 @@ export function SectionLabel({ children, className }: SectionLabelProps) {
     <span 
       className={cn(
         lato.className,
-        "inline-block px-3 py-1 text-xs mb-4 font-medium",
+        "inline-block px-3 py-1 text-xs font-medium",
         "bg-primary/20 text-primary rounded-full",
         "border border-border",
         className

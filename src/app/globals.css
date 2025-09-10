@@ -46,6 +46,10 @@
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
 }
 
+.radial-background {
+  background: radial-gradient(ellipse at 50% 50%, var(--background), var(--background), transparent);
+}
+
 :root {
   --radius: 0.625rem;
   --background: #efe7db;

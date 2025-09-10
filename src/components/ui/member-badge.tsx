@@ -24,7 +24,7 @@ export function MemberBadge({ name, ensName, badge, link, className }: MemberBad
 
   return (
     <button onClick={handleClick} className={cn("text-left cursor-pointer min-w-[220px]", className)} aria-label={`Open ${ensName} profile`}>
-      <CornerCard variant="member" interactive contentClassName="p-5 py-4" cornerClassName="-top-0.5 -right-2" className="bg-card/50 rounded-xl rounded-tr-2xl hover:bg-card/60 transition-colors">
+      <CornerCard variant="member" interactive contentClassName="px-[18px]" cornerClassName="-top-0.5 -right-0.5" className="bg-card/50 rounded-xl rounded-tr-2xl hover:bg-card/60 transition-colors">
         <div className="group relative flex items-center justify-end gap-3">
           <div className="flex-1 min-w-0 text-right">
             <h4 className="font-semibold text-sm truncate group-hover:text-primary transition-colors text-right">

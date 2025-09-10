@@ -44,12 +44,14 @@ export default async function Home() {
 
       <section id="projects" className="relative">
         <div className="relative z-10">
-          <SectionLabel>WHAT WE DO</SectionLabel>
-          <h2 className={`${stoke.className} text-left font-bold italic`} style={{ 
+          <div className="radial-background mb-2 w-fit">
+            <SectionLabel>WHAT WE DO</SectionLabel>
+          </div>
+          <h2 className={`${stoke.className} text-left radial-background w-fit font-bold italic`} style={{ 
             fontSize: 'clamp(1.75rem, 5vw, 3rem)',
             letterSpacing: '-0.1em' 
           }}>Projects</h2>
-          <p className={`${inter.className}  mb-4 sm:mb-6 text-primary/40`} style={{
+          <p className={`${inter.className} radial-background w-fit mb-4 sm:mb-6 text-primary/40`} style={{
             letterSpacing: '-0.015em',
             fontSize: 'clamp(1rem, 2.5vw, 1.25rem)'
           }}>
@@ -74,12 +76,14 @@ export default async function Home() {
       </section>
 
       <section id="members">
-        <SectionLabel>WHO WE ARE</SectionLabel>
-        <h2 className={`${stoke.className} text-left font-bold italic`} style={{ 
+        <div className="radial-background mb-2 w-fit">
+          <SectionLabel>WHO WE ARE</SectionLabel>
+        </div>
+        <h2 className={`${stoke.className} text-left radial-background w-fit font-bold italic`} style={{ 
             fontSize: 'clamp(1.75rem, 5vw, 3rem)',
             letterSpacing: '-0.1em' 
           }}>Members</h2>
-        <p className={`${inter.className} mb-4 sm:mb-6 text-primary/40`} style={{
+        <p className={`${inter.className} radial-background w-fit mb-4 sm:mb-6 text-primary/40`} style={{
             letterSpacing: '-0.015em',
             fontSize: 'clamp(1rem, 2.5vw, 1.25rem)'
           }}>
@@ -107,12 +111,12 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           <div className="flex flex-col items-center md:items-start justify-center ">
             <h2 className="text-center md:text-left">
-              <span className={`${stoke.className} font-bold italic`} style={{ 
+              <span className={`${stoke.className} radial-background w-fit font-bold italic`} style={{ 
                 fontSize: 'clamp(1.75rem, 5vw, 3rem)',
                 letterSpacing: '-0.1em' 
               }}>Join the Community</span><br />
             </h2>
-              <p className={`${inter.className} text-primary/40`} style={{
+              <p className={`${inter.className} radial-background w-fit text-primary/40`} style={{
                 letterSpacing: '-0.015em',
                 fontSize: 'clamp(1rem, 2.5vw, 1.25rem)'
               }}>
@@ -124,8 +128,10 @@ export default async function Home() {
       </section>
 
       <section id="allies">
-        <SectionLabel>WHO WE WORK WITH</SectionLabel>
-        <h2 className={`${stoke.className} mb-4 sm:mb-6 text-left font-bold italic`} style={{ 
+        <div className="radial-background mb-2 w-fit">
+          <SectionLabel>WHO WE WORK WITH</SectionLabel>
+        </div>
+        <h2 className={`${stoke.className} mb-4 sm:mb-6 text-left radial-background w-fit font-bold italic`} style={{ 
             fontSize: 'clamp(1.75rem, 5vw, 3rem)',
             letterSpacing: '-0.1em' 
           }}>Allies & Partners</h2>
@@ -143,8 +149,10 @@ export default async function Home() {
 
       <section id="treasury" className="relative">
         <div className="relative z-10">
-          <SectionLabel>OUR RESOURCES</SectionLabel>
-          <h2 className={`${stoke.className} mb-4 sm:mb-6 text-left font-bold italic`} style={{ 
+          <div className="radial-background mb-2 w-fit">
+            <SectionLabel>OUR RESOURCES</SectionLabel>
+          </div>
+          <h2 className={`${stoke.className} mb-4 sm:mb-6 text-left radial-background w-fit font-bold italic`} style={{ 
             fontSize: 'clamp(1.75rem, 5vw, 3rem)',
             letterSpacing: '-0.1em' 
           }}>Treasury</h2>
@@ -155,11 +163,11 @@ export default async function Home() {
       </section>
 
       <section id="apply">
-        <h2 className={`${stoke.className} text-center font-bold mb-4 sm:mb-6`} style={{ 
+        <h2 className={`${stoke.className} text-center radial-background w-fit mx-auto font-bold mb-4 sm:mb-6`} style={{ 
           fontSize: 'clamp(1.75rem, 5vw, 3rem)',
           letterSpacing: '-0.1em' 
         }}>
-          Want to help us build <br className="sm:hidden" /> the future of social?
+          Want to help us build <br/> the future of social?
         </h2>
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
           <Button size="lg" className="text-lg sm:text-xl cursor-pointer px-5 sm:px-6 py-3 h-auto rounded-xl min-h-[44px]">

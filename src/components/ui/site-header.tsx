@@ -7,7 +7,7 @@ const italianno = Italianno({ subsets: ["latin"], weight: "400" });
 
 export function SiteHeader() {
   return (
-    <header className="mb-6 bg-radial-[at_50%_50%] from-background via-background to-transparent">
+    <header className="mb-6 radial-background">
       <div className="relative w-full mx-auto h-fit">
         <div
           className="relative text-foreground"
@@ -72,7 +72,7 @@ export function SiteHeader() {
         </p>
 
         <p
-          className={`${italianno.className} -mt-4 underline decoration-foreground decoration-1.5 sm:decoration-2 md:decoration-2.5 underline-offset-2 sm:underline-offset-3 md:underline-offset-4`} 
+          className={`${italianno.className} -mt-5 underline decoration-foreground decoration-1.5 sm:decoration-2 md:decoration-2.5 underline-offset-2 sm:underline-offset-3 md:underline-offset-4`} 
           style={{
             fontSize: 'clamp(1.75rem, 5vw, 3.125rem)',
             paddingLeft: 'clamp(1.5rem, 6vw, 6rem)',

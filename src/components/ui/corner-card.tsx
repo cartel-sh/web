@@ -45,14 +45,13 @@ export const CornerCard = ({
       )}
       aria-label={ariaLabel}
     >
-      <div className={cn("p-4 sm:p-5 md:p-6", contentClassName)}>{children}</div>
+      <div className={cn("p-4", contentClassName)}>{children}</div>
 
       {/* Decorative corner image */}
       <div
         className={cn(
           "pointer-events-none select-none text-border opacity-80 absolute top-0 right-0",
           cornerClassName,
-          variant === "member" && "right-[0.25px]" // Override for member cards - must come after cornerClassName
         )}
       >
         <Image
