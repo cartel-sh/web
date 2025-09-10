@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
-  const path = params.path.join('/');
-  const { searchParams } = new URL(request.url);
+  const { path } = await params;
+  const pathString = path.join('/');
   
   const headers: HeadersInit = {
     'X-GitHub-Api-Version': '2022-11-28'
@@ -16,7 +16,7 @@ export async function GET(
   }
 
   try {
-    const githubUrl = `https://api.github.com/${path}`;
+    const githubUrl = `https://api.github.com/${pathString}`;
     const githubResponse = await fetch(githubUrl, { headers });
     
     if (!githubResponse.ok) {
