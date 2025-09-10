@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
+import { useWalletClient } from 'wagmi';
 
 interface ENSData {
   description: string | null;
@@ -23,6 +24,7 @@ export function useENSData(ensName: string): ENSData {
     isLoading: true,
     error: null,
   });
+  useWalletClient
 
   useEffect(() => {
     if (!ensName) {

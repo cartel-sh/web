@@ -7,7 +7,7 @@ const italianno = Italianno({ subsets: ["latin"], weight: "400" });
 
 export function SiteHeader() {
   return (
-    <header className="mb-6">
+    <header className="mb-6 bg-radial-[at_50%_50%] from-background via-background to-transparent">
       <div className="relative w-full mx-auto h-fit">
         <div
           className="relative text-foreground"
@@ -61,11 +61,25 @@ export function SiteHeader() {
         </div>
       </div>
       <div className="mt-2 text-center">
-        <p className={`${italianno.className} text-foreground/90 -mt-4 sm:-mt-6 md:-mt-8 lg:-mt-10`} style={{
+        <p className={`${italianno.className} text-foreground/90 -mt-4 sm:-mt-6 md:-mt-8 lg:-mt-10 leading-10`} style={{
           fontSize: 'clamp(1.75rem, 5vw, 3.125rem)',
-          paddingLeft: 'clamp(1.5rem, 6vw, 6rem)'
+          paddingLeft: 'clamp(1.5rem, 6vw, 6rem)',
+          fontWeight: '600',
+          // lineHeight: '1.0',
+          letterSpacing: '0.01em',
         }}>
-          The people of the world, accelerating public goods.
+          We build decentralized social
+        </p>
+
+        <p
+          className={`${italianno.className} -mt-4 underline decoration-foreground decoration-1.5 sm:decoration-2 md:decoration-2.5 underline-offset-2 sm:underline-offset-3 md:underline-offset-4`} 
+          style={{
+            fontSize: 'clamp(1.75rem, 5vw, 3.125rem)',
+            paddingLeft: 'clamp(1.5rem, 6vw, 6rem)',
+            fontWeight: '900',
+            letterSpacing: '0.01em',
+          }}>
+          really fast.
         </p>
       </div>
     </header>

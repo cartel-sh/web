@@ -156,14 +156,6 @@ export function Sidebar() {
             </Button>
           </Link>
           <Link
-            href="/constitution"
-            aria-label="Go to Constitution page"
-          >
-            <Button variant="ghost" className="w-full justify-start font-medium text-base">
-              Constitution
-            </Button>
-          </Link>
-          <Link
             href="/#allies"
             onClick={(e) => handleNavClick(e, 'allies')}
             aria-label="Go to Allies section"
@@ -274,14 +266,6 @@ export function Sidebar() {
             >
               <Button variant="ghost" className="w-full justify-start font-medium text-base" tabIndex={isMenuOpen ? 0 : -1}>
                 Community
-              </Button>
-            </Link>
-            <Link
-              href="/constitution"
-              aria-label="Go to Constitution page"
-            >
-              <Button variant="ghost" className="w-full justify-start font-medium text-base" tabIndex={isMenuOpen ? 0 : -1}>
-                Constitution
               </Button>
             </Link>
             <Link
