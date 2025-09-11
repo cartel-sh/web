@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAccount, useConnect, useDisconnect, useSignMessage, useEnsName } from 'wagmi';
 import { normalize } from 'viem/ens';
-import { Turnstile } from '@marsidev/react-turnstile';
 
 interface FormData {
   walletAddress: string;
@@ -19,7 +18,6 @@ interface FormData {
   excitement: string;
   motivation: string;
   signature?: string;
-  captchaToken?: string;
 }
 
 interface FormErrors {
@@ -54,7 +52,6 @@ export function ApplicationForm() {
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
   const [mounted, setMounted] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -105,12 +102,6 @@ export function ApplicationForm() {
       return;
     }
 
-    if (!captchaToken) {
-      setSubmitStatus("error");
-      setSubmitMessage("Please complete the captcha verification");
-      return;
-    }
-
     setIsSubmitting(true);
     setSubmitStatus("idle");
     setSubmitMessage("");
@@ -133,7 +124,6 @@ export function ApplicationForm() {
           ensName: ensName || undefined,
           signature,
           message,
-          captchaToken,
         }),
       });
 
@@ -152,7 +142,6 @@ export function ApplicationForm() {
           excitement: "",
           motivation: "",
         });
-        setCaptchaToken(null);
       } else {
         setSubmitStatus("error");
         setSubmitMessage(data.error || "Failed to submit application. Please try again.");
@@ -346,21 +335,6 @@ export function ApplicationForm() {
           )}
         >
           {submitMessage}
-        </div>
-      )}
-
-      {mounted && isConnected && process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
-        <div className="flex justify-center">
-          <Turnstile
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
-            onSuccess={(token) => setCaptchaToken(token)}
-            onExpire={() => setCaptchaToken(null)}
-            onError={() => setCaptchaToken(null)}
-            options={{
-              theme: 'auto',
-              size: 'normal',
-            }}
-          />
         </div>
       )}
 

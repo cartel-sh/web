@@ -13,36 +13,8 @@ interface ApplicationData {
   motivation: string;
   signature: string;
   message: string;
-  captchaToken: string;
 }
 
-async function verifyTurnstileToken(token: string): Promise<boolean> {
-  const secretKey = process.env.TURNSTILE_SECRET_KEY;
-  
-  if (!secretKey) {
-    console.error("[CAPTCHA ERROR] Turnstile secret key not configured");
-    return false;
-  }
-  
-  try {
-    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        secret: secretKey,
-        response: token,
-      }),
-    });
-    
-    const data = await response.json();
-    return data.success === true;
-  } catch (error) {
-    console.error("[CAPTCHA ERROR] Failed to verify Turnstile token");
-    return false;
-  }
-}
 
 async function createApplicationViaAPI(data: ApplicationData): Promise<{ success: boolean; applicationId?: string; applicationNumber?: number; error?: string }> {
   try {
@@ -80,17 +52,9 @@ export async function POST(request: NextRequest) {
     const data: ApplicationData = await request.json();
     
     if (!data.walletAddress || !data.excitement?.trim() || 
-        !data.motivation?.trim() || !data.signature || !data.message || !data.captchaToken) {
+        !data.motivation?.trim() || !data.signature || !data.message) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-    
-    const isCaptchaValid = await verifyTurnstileToken(data.captchaToken);
-    if (!isCaptchaValid) {
-      return NextResponse.json(
-        { error: "Captcha verification failed. Please try again." },
         { status: 400 }
       );
     }
