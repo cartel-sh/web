@@ -241,14 +241,14 @@ export function ApplicationForm() {
           name="github"
           value={formData.github}
           onChange={handleChange("github")}
-          placeholder="https://github.com/username"
+          placeholder="username"
           className="bg-transparent"
           disabled={isSubmitting}
         />
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-sm font-medium">Social Profiles (Optional)</h3>
+        <h3 className="text-sm font-medium">Social Profiles (What applies)</h3>
 
         <div className="space-y-2">
           <label htmlFor="farcaster" className="block text-xs text-muted-foreground">
@@ -259,7 +259,7 @@ export function ApplicationForm() {
             name="farcaster"
             value={formData.farcaster}
             onChange={handleChange("farcaster")}
-            placeholder="@username or farcaster://..."
+            placeholder="username"
             className="bg-transparent"
             disabled={isSubmitting}
           />
@@ -274,7 +274,7 @@ export function ApplicationForm() {
             name="lens"
             value={formData.lens}
             onChange={handleChange("lens")}
-            placeholder="lens.xyz/username or @username.lens"
+            placeholder="username"
             className="bg-transparent"
             disabled={isSubmitting}
           />
@@ -289,7 +289,7 @@ export function ApplicationForm() {
             name="twitter"
             value={formData.twitter}
             onChange={handleChange("twitter")}
-            placeholder="@username or https://x.com/username"
+            placeholder="username"
             className="bg-transparent"
             disabled={isSubmitting}
           />

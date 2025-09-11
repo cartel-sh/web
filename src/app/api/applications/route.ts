@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyMessage } from 'viem';
+import { cartel } from "@/lib/cartel-client";
 
 interface ApplicationData {
   walletAddress: string;
@@ -43,33 +44,34 @@ async function verifyTurnstileToken(token: string): Promise<boolean> {
   }
 }
 
-async function sendToApplicationServer(data: ApplicationData): Promise<boolean> {
-  const serverUrl = process.env.APPLICATION_SERVER_URL;
-  
-  if (!serverUrl) {
-    console.error("[DELIVERY FAILED] Application server URL not configured in environment variables");
-    return false;
-  }
-  
+async function createApplicationViaAPI(data: ApplicationData): Promise<{ success: boolean; applicationId?: string; applicationNumber?: number; error?: string }> {
   try {
-    const response = await fetch(serverUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.APPLICATION_SERVER_TOKEN || ''}`,
-      },
-      body: JSON.stringify(data),
+    const result = await cartel.applications.create({
+      messageId: "pending", // Will be updated after Discord posting
+      walletAddress: data.walletAddress,
+      ensName: data.ensName || null,
+      github: data.github || null,
+      farcaster: data.farcaster || null,
+      lens: data.lens || null,
+      twitter: data.twitter || null,
+      excitement: data.excitement,
+      motivation: data.motivation,
+      signature: data.signature,
     });
-    
-    if (!response.ok) {
-      console.error(`[DELIVERY FAILED] Bot server returned ${response.status}`);
-      return false;
-    }
-    
-    return true;
-  } catch (error) {
-    console.error(`[DELIVERY FAILED] Could not reach bot server`);
-    return false;
+
+    console.log(`[APPLICATION CREATED] Application #${result.applicationNumber} created with ID: ${result.id}`);
+
+    return {
+      success: true,
+      applicationId: result.id,
+      applicationNumber: result.applicationNumber
+    };
+  } catch (error: any) {
+    console.error("[API ERROR] Failed to create application:", error);
+    return {
+      success: false,
+      error: error?.message || "Failed to create application"
+    };
   }
 }
 
@@ -121,21 +123,25 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    const sent = await sendToApplicationServer(data);
+    const result = await createApplicationViaAPI(data);
     
-    if (!sent) {
-      console.error("[APPLICATION FAILED] Could not deliver to bot server");
+    if (!result.success) {
+      console.error("[APPLICATION FAILED] Could not create application:", result.error);
       
       return NextResponse.json(
-        { error: "Failed to submit application. Please try again or contact support." },
+        { error: result.error || "Failed to submit application. Please try again or contact support." },
         { status: 500 }
       );
     }
     
-    console.log(`[APPLICATION SUCCESS] Application processed and delivered`);
+    console.log(`[APPLICATION SUCCESS] Application #${result.applicationNumber} processed successfully`);
     
     return NextResponse.json(
-      { success: true, message: "Application submitted successfully!" },
+      { 
+        success: true, 
+        message: "Application submitted successfully!",
+        applicationNumber: result.applicationNumber
+      },
       { status: 200 }
     );
     
