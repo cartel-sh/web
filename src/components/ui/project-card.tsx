@@ -62,7 +62,7 @@ export function ProjectCard({ name, githubLink, deploymentUrl, className }: Proj
     <CornerCard
       variant="project"
       interactive
-      className={cn("cursor-pointer bg-card/50 rounded-xl rounded-tr-2xl min-h-[200px]", className)}
+      className={cn("cursor-pointer bg-card rounded-xl rounded-tr-2xl min-h-[200px]", className)}
       contentClassName="p-6 h-full flex flex-col min-w-[400px]"
       cornerClassName="-top-0.5 -right-1"
       ariaLabel={`Open ${name} project`}

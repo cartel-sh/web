@@ -22,7 +22,7 @@ export function AlliesCard({ name, description, link, className }: AlliesCardPro
       <CornerCard 
         variant="ally" 
         contentClassName="p-6" 
-        className="bg-card/50 rounded-xl rounded-tr-2xl hover:bg-card/60 transition-colors" 
+        className="bg-card rounded-xl rounded-tr-2xl hover:bg-card transition-colors" 
         cornerClassName="-top-0.5 -right-0.5"
       >
         <h3 className="text-xl font-semibold mb-2">{name}</h3>

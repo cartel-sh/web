@@ -8,7 +8,7 @@ export function CommunityButtons() {
     <div className="grid grid-cols-2 gap-3 sm:gap-4">
       <Button
         variant="outline"
-        className="h-full min-h-[100px] sm:min-h-[120px] md:min-h-[150px] hover:cursor-pointer flex items-center justify-center rounded-xl transition-transform"
+        className="h-full min-h-[100px] sm:min-h-[120px] md:min-h-[130px] hover:bg-card hover:cursor-pointer flex items-center justify-center rounded-xl transition-transform duration-200 hover:scale-[1.02]"
         onClick={() => window.open('https://discord.gg/FZzD7DZksj', '_blank')}
         aria-label="Join Discord"
       >
@@ -16,7 +16,7 @@ export function CommunityButtons() {
       </Button>
       <Button
         variant="outline"
-        className="h-full min-h-[100px] sm:min-h-[120px] md:min-h-[150px] hover:cursor-pointer flex items-center justify-center rounded-xl transition-transform"
+        className="h-full min-h-[100px] sm:min-h-[120px] md:min-h-[130px] hover:bg-card hover:cursor-pointer flex items-center justify-center rounded-xl transition-transform duration-200 hover:scale-[1.02]"
         onClick={() => window.open('https://t.me/cartel_sh', '_blank')}
         aria-label="Join Telegram"
       >

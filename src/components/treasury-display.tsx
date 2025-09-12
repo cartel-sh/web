@@ -104,7 +104,7 @@ export function TreasuryDisplay({ showHeading = true, showTransactions = true }:
           <h3 className={`${stoke.className} text-lg sm:text-xl font-bold mb-4 text-left`}>Latest Transactions</h3>
           <div className="space-y-2">
             {latestTransactions.map((tx) => (
-              <div key={tx.hash} className="bg-card/60 border rounded-2xl p-3 sm:p-4">
+              <div key={tx.hash} className="bg-card border rounded-2xl p-3 sm:p-4">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                     <span className="font-bold text-primary text-sm sm:text-base">
