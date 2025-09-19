@@ -10,6 +10,7 @@ import { cartel } from "@/lib/cartel-client";
 import type { ProjectWithUser } from "@cartel-sh/api";
 import { ExternalLink, Github, Crown, UserCheck, User, ShieldUser } from "lucide-react";
 import Link from "next/link";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Dashboard() {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -55,6 +56,8 @@ export default function Dashboard() {
       </div>
     );
   }
+
+  const shouldLimitProjectsHeight = projects.length > 5;
 
   if (!isAuthenticated || !user) {
     return null; // Will redirect to home
@@ -117,73 +120,75 @@ export default function Dashboard() {
                 <p>No public projects yet</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {projects.map((project) => (
-                  <div
-                    key={project.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold truncate">{project.title}</h3>
-                        {!project.isPublic && (
-                          <Badge variant="secondary" className="text-xs">Private</Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                        {project.description}
-                      </p>
+              <ScrollArea className={`pr-4 ${shouldLimitProjectsHeight ? "h-[60vh]" : "max-h-[60vh]"}`}>
+                <div className="space-y-4">
+                  {projects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold truncate">{project.title}</h3>
+                          {!project.isPublic && (
+                            <Badge variant="secondary" className="text-xs">Private</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                          {project.description}
+                        </p>
 
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        {project.tags && project.tags.length > 0 && (
-                          <div className="flex gap-1">
-                            {project.tags.slice(0, 3).map((tag, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {tag}
-                              </Badge>
-                            ))}
-                            {project.tags.length > 3 && (
-                              <Badge variant="outline" className="text-xs">
-                                +{project.tags.length - 3}
-                              </Badge>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                          {project.tags && project.tags.length > 0 && (
+                            <div className="flex gap-1">
+                              {project.tags.slice(0, 3).map((tag, index) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {project.tags.length > 3 && (
+                                <Badge variant="outline" className="text-xs">
+                                  +{project.tags.length - 3}
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        {project.user && (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            {project.user.ensAvatar && (
+                              <img
+                                src={project.user.ensAvatar}
+                                alt="Creator avatar"
+                                className="w-4 h-4 rounded-full"
+                              />
                             )}
+                            <span>
+                              {project.user.ensName || project.user.id}
+                            </span>
                           </div>
                         )}
                       </div>
-                      {project.user && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          {project.user.ensAvatar && (
-                            <img
-                              src={project.user.ensAvatar}
-                              alt="Creator avatar"
-                              className="w-4 h-4 rounded-full"
-                            />
-                          )}
-                          <span>
-                            {project.user.ensName || project.user.id}
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2 ml-4">
+                        {project.githubUrl && (
+                          <Button variant="outline" size="sm" asChild>
+                            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                              <Github className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
+                        {project.deploymentUrl && (
+                          <Button variant="outline" size="sm" asChild>
+                            <a href={project.deploymentUrl} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 ml-4">
-                      {project.githubUrl && (
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                            <Github className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
-                      {project.deploymentUrl && (
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={project.deploymentUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </ScrollArea>
             )}
           </CardContent>
         </Card>

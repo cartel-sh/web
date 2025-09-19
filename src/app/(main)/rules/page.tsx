@@ -1,8 +1,12 @@
+import { Stoke } from "next/font/google";
+
+const stoke = Stoke({ subsets: ["latin"], weight: "400" });
+
 export default function RulesPage() {
   return (
-    <div className="container mx-auto px-4 py-16 max-w-4xl">
+    <div className="container mx-auto p-4 pt-16 max-w-4xl">
       <div className="bg-background rounded-lg border p-8">
-        <h1 className="text-3xl font-bold mb-6">Community Guidelines</h1>
+        <h1 className={`${stoke.className} text-3xl font-bold mb-6`}>Behavior Guidelines</h1>
 
         <p className="text-muted-foreground mb-6">
           The Cartel community is strong because its members share a set of common values such as integrity, respect and accountability. We believe these are critical traits for founders to have. The continuing strength and value of this network hinges on the trustworthiness of its members. Founders who behave unethically put the reputation of the entire community at risk.

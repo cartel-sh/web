@@ -35,6 +35,7 @@ import { useAtom } from "jotai";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useRef } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   getOrderedProjectsAtom,
   initializeProjectSettingsAtom,
@@ -566,42 +567,46 @@ export default function ProjectsPage() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-8 pb-8">
-        {error && !isLoadingProjects && (
-          <Card>
-            <CardContent className="text-center py-8">
-              <p className="text-destructive mb-4">{error}</p>
-              <Button onClick={loadProjects} variant="outline">Retry</Button>
-            </CardContent>
-          </Card>
-        )}
+      <div className="flex-1 min-h-0 px-8 pb-8">
+        <ScrollArea className="h-full pr-4">
+          <div className="pb-4">
+            {error && !isLoadingProjects && (
+              <Card>
+                <CardContent className="text-center py-8">
+                  <p className="text-destructive mb-4">{error}</p>
+                  <Button onClick={loadProjects} variant="outline">Retry</Button>
+                </CardContent>
+              </Card>
+            )}
 
-        {!error && isLoadingProjects ? (
-          <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            {!error && isLoadingProjects ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : !error && filteredProjects.length === 0 ? (
+              <Card>
+                <CardContent className="text-center py-8">
+                  <p className="text-muted-foreground">
+                    {projects.length === 0 ? "No projects yet" : "No projects match your search"}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : !error && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredProjects.map((project, index) => (
+                  <DraggableProjectCard
+                    key={project.id}
+                    project={project}
+                    index={index}
+                    moveProject={moveProject}
+                    handleViewDetails={handleViewDetails}
+                    user={user}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        ) : !error && filteredProjects.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-8">
-              <p className="text-muted-foreground">
-                {projects.length === 0 ? "No projects yet" : "No projects match your search"}
-              </p>
-            </CardContent>
-          </Card>
-        ) : !error && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredProjects.map((project, index) => (
-              <DraggableProjectCard
-                key={project.id}
-                project={project}
-                index={index}
-                moveProject={moveProject}
-                handleViewDetails={handleViewDetails}
-                user={user}
-              />
-            ))}
-          </div>
-        )}
+        </ScrollArea>
       </div>
       </div>
     </DndProvider>
